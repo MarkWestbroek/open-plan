@@ -1,0 +1,14 @@
+SECRET_KEY="django-insecure-xqoj)q-n9jblom=-e!8cd**yaj$c8=a$nr=-dv#uazc&#(j@n_"
+DB_NAME="openplan"
+DB_USER="openplan"
+#
+# For peer authentication via unix domain socket
+# these should be kept empty.
+#
+DB_PASSWORD=""
+DB_HOST=""
+DB_PORT=""
+
+# Uncomment to record HTTP fixtures for the VCR tests
+# Should be fine to leave as "once" in dev, but *not* in CI.
+# VCR_RECORD_MODE="once"
