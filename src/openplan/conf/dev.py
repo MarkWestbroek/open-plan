@@ -16,6 +16,7 @@ os.environ.setdefault("DB_USER", "openplan")
 os.environ.setdefault("DB_PASSWORD", "openplan")
 
 os.environ.setdefault("ENVIRONMENT", "development")
+os.environ.setdefault("DISABLE_2FA", "True")
 os.environ.setdefault("OTEL_SDK_DISABLED", "true")
 
 from .base import *  # noqa isort:skip

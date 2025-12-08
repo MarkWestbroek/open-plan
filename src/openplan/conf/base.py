@@ -6,8 +6,10 @@ from pathlib import Path
 from django.urls import reverse_lazy
 
 import sentry_sdk
+from open_api_framework.conf.base import *  # noqa
+from open_api_framework.conf.utils import config
 
-from .utils import config, get_sentry_integrations
+from .utils import get_sentry_integrations
 
 # Build paths inside the project, so further paths can be defined relative to
 # the code root.
@@ -88,35 +90,9 @@ CACHES = {
 # APPLICATIONS enabled for this project
 #
 
-INSTALLED_APPS = [
-    "django.contrib.auth",
-    "django.contrib.sessions",
-    "django.contrib.contenttypes",
-    # NOTE: If enabled, at least one Site object is required and
-    # uncomment SITE_ID above.
-    # 'django.contrib.sites',
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # Two-factor authentication in the Django admin, enforced.
-    "django_otp",
-    "django_otp.plugins.otp_static",
-    "django_otp.plugins.otp_totp",
-    "two_factor",
-    "two_factor.plugins.webauthn",  # USB key/token support
-    "maykin_2fa",
-    # Optional applications.
-    "ordered_model",
-    "django_admin_index",
-    "django.contrib.admin",
-    # OIDC applications.
-    "django_jsonform",
-    "mozilla_django_oidc",
-    "mozilla_django_oidc_db",
-    # 'django.contrib.admindocs',
-    # 'django.contrib.humanize',
-    # 'django.contrib.sitemaps',
+INSTALLED_APPS += [
+    "rest_framework.authtoken",
     # External applications.
-    "axes",
     "hijack",
     "hijack.contrib.admin",
     "maykin_common",
@@ -126,19 +102,8 @@ INSTALLED_APPS = [
     "openplan.plannen",
 ]
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    # 'django.middleware.locale.LocaleMiddleware',
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "maykin_2fa.middleware.OTPMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+MIDDLEWARE += [
     "hijack.middleware.HijackUserMiddleware",
-    # should be last according to docs
-    "axes.middleware.AxesMiddleware",
 ]
 
 ROOT_URLCONF = "openplan.urls"
@@ -342,11 +307,6 @@ CSRF_FAILURE_VIEW = "openplan.accounts.views.csrf_failure"
 
 X_FRAME_OPTIONS = "DENY"
 
-#
-# FIXTURES
-#
-
-FIXTURE_DIRS = (DJANGO_PROJECT_DIR / "fixtures",)
 
 #
 # Custom settings
