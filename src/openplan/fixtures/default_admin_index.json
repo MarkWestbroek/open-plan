@@ -1,0 +1,191 @@
+[
+    {
+        "model": "admin_index.appgroup",
+        "fields": {
+            "order": 1,
+            "translations": {
+                "en": "API Authorisations"
+            },
+            "name": "API Autorisaties",
+            "slug": "api-autorisaties",
+            "models": [
+                [
+                    "authtoken",
+                    "tokenproxy"
+                ],
+                [
+                    "zgw_consumers",
+                    "certificate"
+                ],
+                [
+                    "zgw_consumers",
+                    "service"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "admin_index.appgroup",
+        "fields": {
+            "order": 2,
+            "translations": {
+                "en": "Planning"
+            },
+            "name": "Plannen",
+            "slug": "Plannen",
+            "models": [
+                [
+                    "plannen",
+                    "plan"
+                ],
+                [
+                    "plannen",
+                    "plantype"
+                ],
+                [
+                    "plannen",
+                    "contactmoment"
+                ],
+                [
+                    "plannen",
+                    "doel"
+                ],
+                [
+                    "plannen",
+                    "doelcategorie"
+                ],
+                [
+                    "plannen",
+                    "doeltype"
+                ],
+                [
+                    "plannen",
+                    "instrument"
+                ],
+                [
+                    "plannen",
+                    "instrumentcategorie"
+                ],
+                [
+                    "plannen",
+                    "instrumenttype"
+                ],
+                [
+                    "plannen",
+                    "persoon"
+                ],
+                [
+                    "plannen",
+                    "relatietype"
+                ],
+                [
+                    "plannen",
+                    "relatie"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "admin_index.appgroup",
+        "fields": {
+            "order": 4,
+            "translations": {
+                "en": "Configuration"
+            },
+            "name": "Configuratie",
+            "slug": "configuratie",
+            "models": [
+                [
+                    "admin_index",
+                    "appgroup"
+                ],
+                [
+                    "mozilla_django_oidc_db",
+                    "oidcprovider"
+                ],
+                [
+                    "mozilla_django_oidc_db",
+                    "oidcclient"
+                ],
+                [
+                    "log_outgoing_requests",
+                    "outgoingrequestslogconfig"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "admin_index.appgroup",
+        "fields": {
+            "order": 5,
+            "translations": {
+                "nl": "Gebruikers"
+            },
+            "name": "Users",
+            "slug": "users",
+            "models": [
+                [
+                    "accounts",
+                    "user"
+                ],
+                [
+                    "auth",
+                    "group"
+                ],
+                [
+                    "auth",
+                    "permission"
+                ],
+                [
+                    "otp_static",
+                    "staticdevice"
+                ],
+                [
+                    "otp_static",
+                    "statictoken"
+                ],
+                [
+                    "otp_totp",
+                    "totpdevice"
+                ],
+                [
+                    "two_factor_webauthn",
+                    "webauthndevice"
+                ]
+            ]
+        }
+    },
+    {
+        "model": "admin_index.appgroup",
+        "fields": {
+            "order": 6,
+            "translations": {
+                "nl": "logs"
+            },
+            "name": "Logs",
+            "slug": "logs",
+            "models": [
+                [
+                    "admin",
+                    "logentry"
+                ],
+                [
+                    "axes",
+                    "accessattempt"
+                ],
+                [
+                    "axes",
+                    "accessfailurelog"
+                ],
+                [
+                    "axes",
+                    "accesslog"
+                ],
+                [
+                    "log_outgoing_requests",
+                    "outgoingrequestslog"
+                ]
+            ]
+        }
+    }
+]
