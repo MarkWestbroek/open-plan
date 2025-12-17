@@ -10,8 +10,8 @@ class DoelAdmin(admin.ModelAdmin):
         "persoon",
     )
     list_filter = ("plan",)
-    search_fields = ("uuid", "persoon__naam", "plan__naam")
-    ordering = ("-uuid",)
+    # search_fields = ("uuid", "persoon__naam", "plan__naam")
+    ordering = ("-pk",)
     readonly_fields = ("uuid",)
 
     fieldsets = (

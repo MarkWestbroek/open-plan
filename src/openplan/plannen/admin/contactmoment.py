@@ -10,7 +10,7 @@ class ContactmomentAdmin(admin.ModelAdmin):
         "uuid",
     )
     list_filter = ("plan",)
-    search_fields = ("plan", "uuid")
+    # search_fields = ("plan", "uuid")
     ordering = ("plan",)
     readonly_fields = ("uuid",)
 

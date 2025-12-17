@@ -11,12 +11,12 @@ class RelatieAdmin(admin.ModelAdmin):
         "gerelateerde_persoon",
     )
     list_filter = ("relatietype",)
-    search_fields = (
-        "persoon__naam",
-        "gerelateerde_persoon__naam",
-        "relatietype__naam",
-        "uuid",
-    )
+    # search_fields = (
+    #     "persoon__naam",
+    #     "gerelateerde_persoon__naam",
+    #     "relatietype__naam",
+    #     "uuid",
+    # )
     readonly_fields = ("uuid",)
 
     fieldsets = (

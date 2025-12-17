@@ -10,8 +10,8 @@ class PlanAdmin(admin.ModelAdmin):
         "plantype",
     )
     list_filter = ("plantype",)
-    search_fields = ("uuid", "plantype__naam")
-    ordering = ("-uuid",)
+    # search_fields = ("uuid", "plantype__naam")
+    ordering = ("-pk",)
     readonly_fields = ("uuid",)
 
     fieldsets = (

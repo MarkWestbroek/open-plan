@@ -33,10 +33,7 @@ boltons==25.0.0
 cbor2==5.7.1
     # via webauthn
 celery==5.6.0
-    # via
-    #   flower
-    #   notifications-api-common
-    #   open-api-framework
+    # via notifications-api-common
 certifi==2025.11.12
     # via
     #   elastic-apm
@@ -222,8 +219,6 @@ exceptiongroup==1.3.1
     # via celery
 face==24.0.0
     # via glom
-flower==2.0.1
-    # via open-api-framework
 furl==2.1.4
     # via ape-pie
 glom==24.11.0
@@ -234,8 +229,6 @@ googleapis-common-protos==1.72.0
     #   opentelemetry-exporter-otlp-proto-http
 grpcio==1.76.0
     # via opentelemetry-exporter-otlp-proto-grpc
-humanize==4.14.0
-    # via flower
 idna==3.11
     # via requests
 importlib-metadata==8.7.0
@@ -335,8 +328,6 @@ pillow==12.0.0
     # via -r requirements/base.in
 polib==1.2.0
     # via django-rosetta
-prometheus-client==0.23.1
-    # via flower
 prompt-toolkit==3.0.52
     # via click-repl
 protobuf==6.33.1
@@ -384,8 +375,6 @@ python-dotenv==1.2.1
     #   pydantic-settings
 python-ipware==3.0.0
     # via django-ipware
-pytz==2025.2
-    # via flower
 pyyaml==6.0.3
     # via
     #   drf-spectacular
@@ -435,8 +424,6 @@ structlog==25.5.0
     # via
     #   django-structlog
     #   open-api-framework
-tornado==6.5.2
-    # via flower
 typing-extensions==4.15.0
     # via
     #   exceptiongroup

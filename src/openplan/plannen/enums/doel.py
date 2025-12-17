@@ -3,25 +3,25 @@ from django.utils.translation import gettext_lazy as _
 
 
 class DoelTypeEnum(models.TextChoices):
-    HOOFDDOEL = "Hoofddoel", _("Hoofddoel")
-    SUBDOEL = "Subdoel", _("Subdoel")
-    ONTWIKKELWENS = "Ontwikkelwens", _("Ontwikkelwens")
+    HOOFDDOEL = "hoofddoel", _("Hoofddoel")
+    SUBDOEL = "subdoel", _("Subdoel")
+    ONTWIKKELWENS = "ontwikkelwens", _("Ontwikkelwens")
 
 
 class HoofddoelEnum(models.TextChoices):
-    BETAALDWERKEN = "Betaald werken", _("Betaald werken")
-    ONDERNEMEN = "Ondernemen", _("Ondernemen")
+    BETAALDWERKEN = "betaald_werken", _("Betaald werken")
+    ONDERNEMEN = "ondernemen", _("Ondernemen")
     OPLEIDINGMETSTUDIEFINANCIERING = (
-        "Opleiding met studiefinanciering",
+        "opleiding_met_studiefinanciering",
         _("Opleiding met studiefinanciering"),
     )
 
     BETAALDWERKENNAARVERMOGEN = (
-        "Betaald werken naar vermogen",
+        "betaald_werken_naar_vermogen",
         _("Betaald werken naar vermogen"),
     )
-    WERKFITWORDEN = ("Werkfit worden", _("Werkfit worden"))
+    WERKFITWORDEN = ("werkfit_worden", _("Werkfit worden"))
     MAATSCHAPPELIJKFITWORDEN = (
-        "Maatschappelijk fit worden",
+        "maatschappelijk_fit_worden",
         _("Maatschappelijk fit worden"),
     )

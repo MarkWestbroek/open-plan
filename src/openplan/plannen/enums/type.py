@@ -4,15 +4,15 @@ from django.utils.translation import gettext_lazy as _
 
 class PlanTypeEnum(models.TextChoices):
     INBURGERING = (
-        "PIP",
+        "pip",
         _("Persoonlijk plan inburgering en perticipatie"),
     )
     WERK = (
-        "Werk",
+        "werk",
         _("Werk"),
     )
     INKOMEN = (
-        "Inkomen",
+        "inkomen",
         _("Inkomen"),
     )
 
@@ -20,14 +20,14 @@ class PlanTypeEnum(models.TextChoices):
 class InstrumentTypeEnum(models.TextChoices):
     # voorbeelden
     TRAINING = (
-        "Training",
+        "training",
         _("Training"),
     )
     COACHING = (
-        "Coaching",
+        "coaching",
         _("Coaching"),
     )
     FINANCIËLE_STEUNING = (
-        "Financiële ondersteuning",
-        _("Financiële ondersteuning"),
+        "financiele_ondersteuning",
+        _("Financiele ondersteuning"),
     )

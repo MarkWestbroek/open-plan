@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from vng_api_common.fields import BSNField
+
 
 class Persoon(models.Model):
     uuid = models.UUIDField(
@@ -19,8 +21,7 @@ class Persoon(models.Model):
         help_text="URL naar Open Klant "
         "(verplicht voor primaire personen, optioneel voor secundaire).",
     )
-    bsn = models.CharField(
-        max_length=9,
+    bsn = BSNField(
         blank=True,
         help_text="BSN voor BRP-koppeling "
         "(verplicht voor primaire personen, optioneel voor secundaire).",

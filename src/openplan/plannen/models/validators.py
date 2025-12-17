@@ -1,4 +1,4 @@
-from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 
@@ -31,7 +31,7 @@ def validate_primary_persoon(persoon):
         errors.append(_("Primair persoon moet een BRP-koppeling (BSN) hebben."))
 
     if errors:
-        raise ValidationError({NON_FIELD_ERRORS: errors})
+        raise ValidationError({"persoon": errors})
 
 
 def validate_relatie_uniqueness(relatie):

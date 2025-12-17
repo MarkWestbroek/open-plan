@@ -18,7 +18,7 @@ class DoelCategorie(models.Model):
 
     class Meta:
         verbose_name = _("Doelcategorie")
-        verbose_name_plural = _("Doelcategorieën")
+        verbose_name_plural = _("Doelcategorieen")
 
     def __str__(self):
         return self.naam

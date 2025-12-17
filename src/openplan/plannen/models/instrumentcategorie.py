@@ -18,7 +18,7 @@ class InstrumentCategorie(models.Model):
 
     class Meta:
         verbose_name = _("Instrumentcategorie")
-        verbose_name_plural = _("Instrumentcategorieën")
+        verbose_name_plural = _("Instrumentcategorieen")
 
     def __str__(self):
         return self.naam
