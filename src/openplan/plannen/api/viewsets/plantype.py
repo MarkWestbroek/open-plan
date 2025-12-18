@@ -6,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.plantype import PlanType
 
-from ..filtersets.plantype import PlanTypeFilter
 from ..serializers.plantype import PlanTypeSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -42,7 +41,9 @@ logger = structlog.stdlib.get_logger(__name__)
 class PlanTypeViewSet(viewsets.ModelViewSet):
     queryset = PlanType.objects.all()
     serializer_class = PlanTypeSerializer
-    filterset_class = PlanTypeFilter
+    filterset_fields = {
+        "type",
+    }
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
