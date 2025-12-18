@@ -4,19 +4,13 @@
 #
 # Run this script from the root of the repository:
 #
-#   ./bin/generate_api_schema.sh [outfile]
+#   ./bin/generate_api_schema.sh
 #
-# 'outfile' defaults to `src/openplan/api/openapi.yml`
-#
-# For multiple API specifications (different components or multiple major versions),
-# take a look at the Open Zaak configuration.
-#
-set -eu -o pipefail
-
-OUTFILE=${1:-src/openplan/api/openapi.yaml}
 
 src/manage.py spectacular \
     --validate \
     --fail-on-warn \
-    --lang=en \
-    --file "$OUTFILE"
+    --lang=nl \
+    --urlconf openplan.plannen.api.urls \
+    --file src/plan-openapi.yaml \
+    --custom-settings openplan.plannen.api.urls.custom_settings
