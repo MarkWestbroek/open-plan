@@ -55,7 +55,13 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(),
         name="password_reset_complete",
     ),
-    path("plannen/api/", include("openplan.plannen.api.urls")),
+    path(
+        f"plannen/api/v{settings.API_VERSION}/",
+        include(
+            ("openplan.plannen.api.urls", "plannen_api"),
+            namespace="plannen_api",
+        ),
+    ),
     # Simply show the master template.
     path("", TemplateView.as_view(template_name="master.html"), name="root"),
 ]

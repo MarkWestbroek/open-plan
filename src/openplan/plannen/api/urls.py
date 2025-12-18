@@ -7,11 +7,12 @@ from vng_api_common import routers
 
 from ...utils.views import SpectacularJSONAPIView, SpectacularYAMLAPIView
 from .schema import custom_settings
+from .viewsets.plan import PlanViewSet
 
 app_name = "plannen_api"
 
 router = routers.DefaultRouter()
-
+router.register("plan", PlanViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
