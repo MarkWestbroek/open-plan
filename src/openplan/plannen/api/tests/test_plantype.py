@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from rest_framework import status
+from rest_framework.test import APIClient
 
 from openplan.plannen.models.factories.plantype import PlanTypeFactory
 
@@ -69,3 +70,25 @@ class PlanTypeAPITests(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(PlanType.objects.filter(uuid=plantype.uuid).exists())
+
+    def test_authentication_required(self):
+        client = APIClient()
+        url = reverse("plannen_api:plan-list")
+
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_filter_plantype_by_type(self):
+        plantype_match = PlanTypeFactory.create(type="pip")
+        PlanTypeFactory.create(type="werk")
+        PlanTypeFactory.create(type="inkomen")
+
+        url = reverse("plannen_api:plantype-list")
+        response = self.client.get(url, {"type": "pip"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()
+        self.assertEqual(data["count"], 1)
+        self.assertEqual(data["results"][0]["uuid"], str(plantype_match.uuid))
+        self.assertEqual(data["results"][0]["type"], "pip")

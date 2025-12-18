@@ -1,4 +1,3 @@
-import structlog
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
@@ -7,8 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from openplan.plannen.models.plantype import PlanType
 
 from ..serializers.plantype import PlanTypeSerializer
-
-logger = structlog.stdlib.get_logger(__name__)
 
 
 @extend_schema(tags=["Plantype"])
