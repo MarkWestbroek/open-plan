@@ -20,6 +20,15 @@ class InstrumentAdmin(admin.ModelAdmin):
                 ),
             },
         ),
+        (
+            "URLs",
+            {
+                "fields": (
+                    "product",
+                    "zaak",
+                ),
+            },
+        ),
     )
 
     def get_queryset(self, request):

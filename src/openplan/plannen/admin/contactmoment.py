@@ -21,6 +21,7 @@ class ContactmomentAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "plan",
+                    "persoonsprofiel",
                 ),
             },
         ),

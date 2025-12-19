@@ -4,21 +4,21 @@ from django.db import models
 
 from vng_api_common.fields import BSNField
 
+from openplan.utils.fields import URIField
+
 
 class Persoon(models.Model):
     uuid = models.UUIDField(
         unique=True, default=uuid.uuid4, help_text="Unieke resource identifier (UUID4)"
     )
-    # TODO:
-    # Fix this later
-    persoonsprofiel_url = models.URLField(
+    persoonsprofiel = URIField(
         blank=True,
-        help_text="URL naar het persoonsprofiel "
+        help_text="URI naar het persoonsprofiel "
         "(alleen voor primaire personen verplicht).",
     )
-    open_klant_url = models.URLField(
+    klant = URIField(
         blank=True,
-        help_text="URL naar Open Klant "
+        help_text="URI naar de Klant "
         "(verplicht voor primaire personen, optioneel voor secundaire).",
     )
     bsn = BSNField(
