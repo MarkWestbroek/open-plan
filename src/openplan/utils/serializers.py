@@ -58,11 +58,11 @@ class URIRelatedField(RelatedField):
 
     default_error_messages = {
         "required": _("This field is required."),
-        "no_match": _("Invalid URN - Could not match the expected pattern."),
-        "incorrect_match": _("Invalid URN - Does not conform to the expected format."),
-        "does_not_exist": _("Invalid URN - Corresponding object does not exist."),
+        "no_match": _("Invalid URI - Could not match the expected pattern."),
+        "incorrect_match": _("Invalid URI - Does not conform to the expected format."),
+        "does_not_exist": _("Invalid URI - Corresponding object does not exist."),
         "incorrect_type": _(
-            "Incorrect type. Expected a string representing a URN, received {data_type}."
+            "Incorrect type. Expected a string representing a URI, received {data_type}."
         ),
     }
 
@@ -76,7 +76,7 @@ class URIRelatedField(RelatedField):
             self.urn_namespace = settings.URN_NAMESPACE
         if not self.urn_namespace:
             raise ImproperlyConfigured(
-                "URNRelatedField requires a `urn_namespace` to be specified."
+                "URIRelatedField requires a `urn_namespace` to be specified."
             )
 
         self.urn_component = kwargs.pop("urn_component", self.urn_component)
@@ -102,7 +102,7 @@ class URIRelatedField(RelatedField):
         Extract the `urn_component` name from the DRF request context.
         """
         error_msg = _(
-            "URNRelatedField could not determine the `urn_component`: "
+            "URIRelatedField could not determine the `urn_component`: "
             "request, resolver_match, or namespace is missing in serializer context."
         )
 
@@ -121,7 +121,7 @@ class URIRelatedField(RelatedField):
         Extract the `urn_resource` name from the model associated with the view.
         """
         error_msg = _(
-            "URNRelatedField could not determine the `urn_resource`: "
+            "URIRelatedField could not determine the `urn_resource`: "
             "model not found on the view or serializer."
         )
 
@@ -166,26 +166,36 @@ class URIRelatedField(RelatedField):
         except ValidationError:
             self.fail("no_match")
 
-        if not data.startswith("urn:"):
-            self.fail("no_match")
+        if data.startswith("urn:"):
+            if not self.urn_namespace:
+                self.urn_namespace = getattr(settings, "URN_NAMESPACE", None)
+            if not self.urn_namespace:
+                raise ImproperlyConfigured(
+                    "URIRelatedField requires a `urn_namespace` to be specified for URNs."
+                )
 
-        match = self.URN_PATTERN.match(data)
-        if not match:
-            self.fail("incorrect_match")
-
-        urn_component, urn_resource, urn_identifier = match.groups()
-
-        lookup_value = urn_identifier
-        if self.lookup_field == "uuid":
-            if not re.match(self.UUID_REGEX, lookup_value):
+            match = self.URN_PATTERN.match(data)
+            if not match:
                 self.fail("incorrect_match")
 
-        try:
-            return self.get_object(lookup_value)
-        except (ObjectDoesNotExist, ObjectValueError, ObjectTypeError):
-            self.fail("does_not_exist")
+            urn_component, urn_resource, urn_identifier = match.groups()
+
+            lookup_value = urn_identifier
+            if self.lookup_field == "uuid":
+                if not re.match(self.UUID_REGEX, lookup_value):
+                    self.fail("incorrect_match")
+
+            try:
+                return self.get_object(lookup_value)
+            except (ObjectDoesNotExist, ObjectValueError, ObjectTypeError):
+                self.fail("does_not_exist")
+
+        return data
 
     def to_representation(self, value):
+        if isinstance(value, str) and not value.startswith("urn:"):
+            return value
+
         value = self.get_urn(value)
 
         if not value:

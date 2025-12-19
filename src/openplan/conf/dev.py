@@ -19,6 +19,9 @@ os.environ.setdefault("ENVIRONMENT", "development")
 os.environ.setdefault("DISABLE_2FA", "True")
 os.environ.setdefault("OTEL_SDK_DISABLED", "true")
 
+# URNs
+os.environ.setdefault("URN_NAMESPACE", "maykin")
+
 from .base import *  # noqa isort:skip
 
 # Feel free to switch dev to sqlite3 for simple projects,

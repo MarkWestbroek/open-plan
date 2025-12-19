@@ -108,6 +108,12 @@ MIDDLEWARE += [
     "hijack.middleware.HijackUserMiddleware",
 ]
 
+# URN settings
+URN_NAMESPACE = config(
+    "URN_NAMESPACE",
+    help_text=("Namespace used in URNs schemas."),
+)
+
 PLANNEN_API_VERSION = "0.1.0"
 
 API_VERSION = "0"
