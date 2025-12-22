@@ -1,8 +1,9 @@
 from django.utils.translation import gettext_lazy as _
 
+from vng_api_common.filtersets import FilterSet
+
 from openplan.plannen.models.plan import Plan
 from openplan.utils.filters import (
-    FilterSet,
     UUIDFInFilter,
 )
 

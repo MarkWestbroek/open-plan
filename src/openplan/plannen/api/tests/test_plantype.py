@@ -11,7 +11,7 @@ from .api_testcase import APITestCase
 
 class PlanTypeAPITests(APITestCase):
     def test_create_plantype(self):
-        url = reverse("plannen_api:plantype-list")
+        url = reverse("plannen:plantype-list")
         data = {"type": PlanTypeFactory.build().type}
         response = self.client.post(url, data, format="json")
 
@@ -22,7 +22,7 @@ class PlanTypeAPITests(APITestCase):
     def test_list_plantypes(self):
         PlanTypeFactory.create_batch(3)
 
-        url = reverse("plannen_api:plantype-list")
+        url = reverse("plannen:plantype-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -34,7 +34,7 @@ class PlanTypeAPITests(APITestCase):
 
     def test_retrieve_plantype(self):
         plantype = PlanTypeFactory.create()
-        url = reverse("plannen_api:plantype-detail", kwargs={"uuid": plantype.uuid})
+        url = reverse("plannen:plantype-detail", kwargs={"uuid": plantype.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["uuid"], str(plantype.uuid))
@@ -44,7 +44,7 @@ class PlanTypeAPITests(APITestCase):
         plantype = PlanTypeFactory.create()
         new_type = PlanTypeFactory.build().type
 
-        url = reverse("plannen_api:plantype-detail", kwargs={"uuid": plantype.uuid})
+        url = reverse("plannen:plantype-detail", kwargs={"uuid": plantype.uuid})
         data = {"type": new_type}
         response = self.client.put(url, data, format="json")
 
@@ -56,7 +56,7 @@ class PlanTypeAPITests(APITestCase):
         plantype = PlanTypeFactory.create()
         new_type = PlanTypeFactory.build().type
 
-        url = reverse("plannen_api:plantype-detail", kwargs={"uuid": plantype.uuid})
+        url = reverse("plannen:plantype-detail", kwargs={"uuid": plantype.uuid})
         data = {"type": new_type}
         response = self.client.patch(url, data, format="json")
 
@@ -66,14 +66,14 @@ class PlanTypeAPITests(APITestCase):
 
     def test_delete_plantype(self):
         plantype = PlanTypeFactory.create()
-        url = reverse("plannen_api:plantype-detail", kwargs={"uuid": plantype.uuid})
+        url = reverse("plannen:plantype-detail", kwargs={"uuid": plantype.uuid})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(PlanType.objects.filter(uuid=plantype.uuid).exists())
 
     def test_authentication_required(self):
         client = APIClient()
-        url = reverse("plannen_api:plan-list")
+        url = reverse("plannen:plan-list")
 
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -83,7 +83,7 @@ class PlanTypeAPITests(APITestCase):
         PlanTypeFactory.create(type="werk")
         PlanTypeFactory.create(type="inkomen")
 
-        url = reverse("plannen_api:plantype-list")
+        url = reverse("plannen:plantype-list")
         response = self.client.get(url, {"type": "pip"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

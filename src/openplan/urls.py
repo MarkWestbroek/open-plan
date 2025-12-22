@@ -59,8 +59,8 @@ urlpatterns = [
     path(
         f"plannen/api/v{settings.API_VERSION}/",
         include(
-            ("openplan.plannen.api.urls", "plannen_api"),
-            namespace="plannen_api",
+            ("openplan.plannen.api.urls", "plannen"),
+            namespace="plannen",
         ),
     ),
     # Simply show the master template.

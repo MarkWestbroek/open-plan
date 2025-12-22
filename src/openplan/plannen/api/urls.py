@@ -10,7 +10,7 @@ from .schema import custom_settings
 from .viewsets.plan import PlanViewSet
 from .viewsets.plantype import PlanTypeViewSet
 
-app_name = "plannen_api"
+app_name = "plannen"
 
 router = routers.DefaultRouter()
 router.register("plan", PlanViewSet)
@@ -38,7 +38,7 @@ urlpatterns = [
     path(
         "schema/",
         SpectacularRedocView.as_view(
-            url_name="plannen_api:schema-yaml-plannen",
+            url_name="plannen:schema-yaml-plannen",
         ),
         name="schema-redoc-plannen",
     ),
