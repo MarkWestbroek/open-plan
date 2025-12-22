@@ -2903,6 +2903,11 @@ components:
     PatchedPlan:
       type: object
       properties:
+        uri:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          readOnly: true
+          description: De Uniform Resource Name van de externe taak.
         uuid:
           type: string
           format: uuid
@@ -2918,6 +2923,21 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde plantype.
+        zaak:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URI naar de bijbehorende zaak in het zaaksysteem.
+          maxLength: 255
+        domeinregister:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URI naar het domeinregister voor dit plan.
+          maxLength: 255
+        medewerker:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URI naar de medewerker in het HR-systeem.
+          maxLength: 255
     PatchedPlanType:
       type: object
       properties:
@@ -3016,6 +3036,11 @@ components:
     Plan:
       type: object
       properties:
+        uri:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          readOnly: true
+          description: De Uniform Resource Name van de externe taak.
         uuid:
           type: string
           format: uuid
@@ -3031,9 +3056,25 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde plantype.
+        zaak:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URI naar de bijbehorende zaak in het zaaksysteem.
+          maxLength: 255
+        domeinregister:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URI naar het domeinregister voor dit plan.
+          maxLength: 255
+        medewerker:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URI naar de medewerker in het HR-systeem.
+          maxLength: 255
       required:
       - plantype
       - plantypeUuid
+      - uri
       - uuid
     PlanType:
       type: object

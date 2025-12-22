@@ -20,7 +20,7 @@ class URIField(models.CharField):
     description = _("URI")
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault("max_length", 500)
+        kwargs.setdefault("max_length", 255)
         super().__init__(*args, **kwargs)
 
 

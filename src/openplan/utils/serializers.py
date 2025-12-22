@@ -224,7 +224,7 @@ class URIIdentityField(URIRelatedField):
         return False
 
 
-class URNModelSerializer(serializers.ModelSerializer):
+class URIModelSerializer(serializers.ModelSerializer):
     serializer_related_field = URIIdentityField
     urn_field_name = "uri"
 
@@ -261,7 +261,7 @@ class URNModelSerializer(serializers.ModelSerializer):
         Create nested fields for forward and reverse relationships.
         """
 
-        class NestedSerializer(URNModelSerializer):
+        class NestedSerializer(URIModelSerializer):
             class Meta:
                 model = relation_info.related_model
                 depth = nested_depth - 1
