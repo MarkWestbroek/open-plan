@@ -7,6 +7,9 @@ from vng_api_common import routers
 
 from ...utils.views import SpectacularJSONAPIView, SpectacularYAMLAPIView
 from .schema import custom_settings
+from .viewsets.doel import DoelViewSet
+from .viewsets.doelcategorie import DoelCategorieViewSet
+from .viewsets.doeltype import DoelTypeViewSet
 from .viewsets.plan import PlanViewSet
 from .viewsets.plantype import PlanTypeViewSet
 
@@ -15,6 +18,9 @@ app_name = "plannen"
 router = routers.DefaultRouter()
 router.register("plan", PlanViewSet)
 router.register("plantype", PlanTypeViewSet)
+router.register("doel", DoelViewSet)
+router.register("doeltype", DoelTypeViewSet)
+router.register("doelcategorie", DoelCategorieViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -10,6 +10,638 @@ info:
     name: Maykin Media
     email: support@maykinmedia.nl
 paths:
+  /doel:
+    get:
+      operationId: doel_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doelen opvragen.
+      parameters:
+      - in: query
+        name: doeltypeUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van de gekoppelde doeltypen.
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelList'
+          description: ''
+    post:
+      operationId: doel_create
+      description: Voeg een nieuw doel toe aan het systeem.
+      summary: Nieuw doel aanmaken.
+      tags:
+      - Doel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Doel'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+  /doel/{uuid}:
+    get:
+      operationId: doel_retrieve
+      description: Een specifiek doel opvragen via UUID.
+      summary: Een specifiek doel opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+    put:
+      operationId: doel_update
+      description: Werk alle gegevens van een doel bij.
+      summary: Doel volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Doel'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+    patch:
+      operationId: doel_partial_update
+      description: Werk enkele gegevens van een doel bij.
+      summary: Doel gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoel'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+    delete:
+      operationId: doel_destroy
+      description: Verwijder een specifiek doel.
+      summary: Doel verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /doelcategorie:
+    get:
+      operationId: doelcategorie_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doelcategorieën opvragen.
+      parameters:
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van de doelcategorie.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Doelcategorie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelCategorieList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelCategorieList'
+          description: ''
+    post:
+      operationId: doelcategorie_create
+      description: Voeg een nieuw doelcategorie toe aan het systeem.
+      summary: Nieuw doelcategorie aanmaken.
+      tags:
+      - Doelcategorie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelCategorie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+  /doelcategorie/{uuid}:
+    get:
+      operationId: doelcategorie_retrieve
+      description: Een specifiek doelcategorie opvragen via UUID.
+      summary: Een specifiek doelcategorie opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+    put:
+      operationId: doelcategorie_update
+      description: Werk alle gegevens van een doelcategorie bij.
+      summary: Doelcategorie volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelCategorie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+    patch:
+      operationId: doelcategorie_partial_update
+      description: Werk enkele gegevens van een doelcategorie bij.
+      summary: Doelcategorie gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoelCategorie'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+    delete:
+      operationId: doelcategorie_destroy
+      description: Verwijder een specifiek doelcategorie.
+      summary: Doelcategorie verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /doeltype:
+    get:
+      operationId: doeltype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doeltypen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - hoofddoel
+          - ontwikkelwens
+          - subdoel
+        description: |-
+          De unieke naam van dit doeltype.
+
+          * `hoofddoel` - Hoofddoel
+          * `subdoel` - Subdoel
+          * `ontwikkelwens` - Ontwikkelwens
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelTypeList'
+          description: ''
+    post:
+      operationId: doeltype_create
+      description: Voeg een nieuw doeltype toe aan het systeem.
+      summary: Nieuw doeltype aanmaken.
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+  /doeltype/{uuid}:
+    get:
+      operationId: doeltype_retrieve
+      description: Een specifiek doeltype opvragen via UUID.
+      summary: Een specifiek doeltype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    put:
+      operationId: doeltype_update
+      description: Werk alle gegevens van een doeltype bij.
+      summary: Doeltype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    patch:
+      operationId: doeltype_partial_update
+      description: Werk enkele gegevens van een doeltype bij.
+      summary: Doeltype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoelType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    delete:
+      operationId: doeltype_destroy
+      description: Verwijder een specifiek doeltype.
+      summary: Doeltype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /plan:
     get:
       operationId: plan_list
@@ -438,6 +1070,142 @@ paths:
           description: No response body
 components:
   schemas:
+    Doel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/DoelType'
+          readOnly: true
+          description: De unieke naam van dit doeltype.
+        doeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde doeltype.
+      required:
+      - doeltype
+      - doeltypeUuid
+      - uuid
+    DoelCategorie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        naam:
+          type: string
+          description: Naam van de doelcategorie.
+          maxLength: 200
+      required:
+      - naam
+      - uuid
+    DoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeTypeEnum'
+          description: |-
+            De unieke naam van dit doeltype.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+            * `ontwikkelwens` - Ontwikkelwens
+      required:
+      - type
+      - uuid
+    DoelTypeTypeEnum:
+      enum:
+      - hoofddoel
+      - subdoel
+      - ontwikkelwens
+      type: string
+      description: |-
+        * `hoofddoel` - Hoofddoel
+        * `subdoel` - Subdoel
+        * `ontwikkelwens` - Ontwikkelwens
+    PaginatedDoelCategorieList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelCategorie'
+    PaginatedDoelList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Doel'
+    PaginatedDoelTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelType'
     PaginatedPlanList:
       type: object
       required:
@@ -484,6 +1252,53 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlanType'
+    PatchedDoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/DoelType'
+          readOnly: true
+          description: De unieke naam van dit doeltype.
+        doeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde doeltype.
+    PatchedDoelCategorie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        naam:
+          type: string
+          description: Naam van de doelcategorie.
+          maxLength: 200
+    PatchedDoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeTypeEnum'
+          description: |-
+            De unieke naam van dit doeltype.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+            * `ontwikkelwens` - Ontwikkelwens
     PatchedPlan:
       type: object
       properties:
@@ -512,7 +1327,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/PlanTypeTypeEnum'
           description: |-
             Het type plan.
 
@@ -551,7 +1366,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/PlanTypeTypeEnum'
           description: |-
             Het type plan.
 
@@ -561,7 +1376,7 @@ components:
       required:
       - type
       - uuid
-    TypeEnum:
+    PlanTypeTypeEnum:
       enum:
       - pip
       - werk
