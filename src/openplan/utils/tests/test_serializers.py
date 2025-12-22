@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.test import override_settings
 
@@ -57,7 +58,7 @@ class URIFieldTest(APITestCase):
         field = self.serializer.fields["uri"]
         field.get_queryset = lambda: QuerySetPlan([self.object], lookup_field="uuid")
 
-        value = f"urn:maykin:plan:test:{self.object.uuid}"
+        value = f"urn:maykin:test:{self.object.uuid}"
         result = field.to_internal_value(value)
 
         self.assertEqual(result, self.object)
@@ -65,80 +66,111 @@ class URIFieldTest(APITestCase):
     def test_validation(self):
         field_name = "uri"
 
-        # required
-        serializer = SerializerPlan(context={"request": None}, data={})
-        serializer.is_valid()
-        self.assertEqual(
-            serializer.errors,
-            {field_name: [ErrorDetail(string="Dit veld is vereist.", code="required")]},
-        )
+        with self.subTest("required"):
+            serializer = SerializerPlan(context={"request": None}, data={})
+            serializer.is_valid()
+            self.assertEqual(
+                serializer.errors,
+                {
+                    field_name: [
+                        ErrorDetail(
+                            string="Dit veld is vereist.",
+                            code="required",
+                        )
+                    ]
+                },
+            )
 
-        # invalid type
-        serializer = SerializerPlan(context={"request": None}, data={field_name: []})
-        serializer.is_valid()
-        self.assertEqual(
-            serializer.errors,
-            {
-                field_name: [
-                    ErrorDetail(
-                        string="Incorrect type. Expected a string representing a URI, received list.",
-                        code="incorrect_type",
-                    )
-                ]
-            },
-        )
+        with self.subTest("test incorrect_match uuid"):
+            serializer = SerializerPlan(
+                context={"request": None}, data={field_name: "urn:test:test:1234"}
+            )
+            serializer.is_valid()
+            self.assertEqual(
+                serializer.errors,
+                {
+                    field_name: [
+                        ErrorDetail(
+                            string="Invalid URI - Does not conform to the expected format.",
+                            code="incorrect_match",
+                        )
+                    ]
+                },
+            )
 
-        # invalid URN format
-        serializer = SerializerPlan(
-            context={"request": None}, data={field_name: "urn:test"}
-        )
-        serializer.is_valid()
-        self.assertEqual(
-            serializer.errors,
-            {
-                field_name: [
-                    ErrorDetail(
-                        string="Invalid URI - Could not match the expected pattern.",
-                        code="no_match",
-                    )
-                ]
-            },
-        )
+        with self.subTest("test incorrect_type"):
+            serializer = SerializerPlan(
+                context={"request": None}, data={field_name: []}
+            )
+            serializer.is_valid()
+            self.assertEqual(
+                serializer.errors,
+                {
+                    field_name: [
+                        ErrorDetail(
+                            string=(
+                                "Incorrect type. Expected a string representing a URI, "
+                                "received list."
+                            ),
+                            code="incorrect_type",
+                        )
+                    ]
+                },
+            )
 
-        # invalid URL
-        serializer = SerializerPlan(
-            context={"request": None}, data={field_name: "ftp://example.com"}
-        )
-        serializer.is_valid()
-        self.assertEqual(
-            serializer.errors,
-            {
-                field_name: [
-                    ErrorDetail(
-                        string="Invalid URI - Could not match the expected pattern.",
-                        code="no_match",
-                    )
-                ]
-            },
-        )
+        with self.subTest("test invalid_urn_format"):
+            serializer = SerializerPlan(
+                context={"request": None}, data={field_name: "urn:test"}
+            )
+            serializer.is_valid()
+            self.assertEqual(
+                serializer.errors,
+                {
+                    field_name: [
+                        ErrorDetail(
+                            string="Invalid URI - Could not match the expected pattern.",
+                            code="no_match",
+                        )
+                    ]
+                },
+            )
 
-        # non-existent URN object
-        serializer = SerializerPlan(
-            context={"request": None},
-            data={field_name: f"urn:maykin:plan:test:{uuid.uuid4()}"},
-        )
-        serializer.is_valid()
-        self.assertEqual(
-            serializer.errors,
-            {
-                field_name: [
-                    ErrorDetail(
-                        string="Invalid URI - Corresponding object does not exist..",
-                        code="does_not_exist",
-                    )
-                ]
-            },
-        )
+        with self.subTest("test invalid_url"):
+            serializer = SerializerPlan(
+                context={"request": None}, data={field_name: "ftp://example.com"}
+            )
+            serializer.is_valid()
+            self.assertEqual(
+                serializer.errors,
+                {
+                    field_name: [
+                        ErrorDetail(
+                            string="Invalid URI - Could not match the expected pattern.",
+                            code="no_match",
+                        )
+                    ]
+                },
+            )
+
+        with self.subTest("test does_not_exist"):
+            serializer = SerializerPlan(
+                context={"request": None},
+                data={field_name: f"urn:test:test:{uuid.uuid4()}"},
+            )
+            serializer.is_valid()
+            self.assertEqual(
+                serializer.errors,
+                {
+                    field_name: [
+                        ErrorDetail(
+                            string=(
+                                "Invalid URI - Corresponding object does not exist."
+                            ),
+                            code="does_not_exist",
+                        )
+                    ]
+                },
+            )
 
     def test_valid_urls(self):
         field = self.serializer.fields["uri"]
@@ -156,8 +188,63 @@ class URIFieldTest(APITestCase):
             representation = field.to_representation(url)
             self.assertEqual(representation, url)
 
+    def test_invalid_configuration(self):
+        with self.subTest("test urn_component is None"):
+            field = self.serializer.fields["uri"]
+
+            # urn_component is None
+            field.urn_component = None
+            # request is None
+            self.assertIsNone(self.serializer.context["request"])
+
+            with self.assertRaises(ImproperlyConfigured) as error:
+                field.to_representation(self.object)
+
+            self.assertEqual(
+                str(error.exception),
+                "URIRelatedField could not determine the `urn_component`:"
+                " request, resolver_match, or namespace is missing in serializer context.",
+            )
+
+            field.urn_component = "vtb"
+
+        with self.subTest("test urn_resource is None"):
+            field = self.serializer.fields["uri"]
+
+            # urn_resource is None
+            field.urn_resource = None
+            # request is None
+            self.assertIsNone(self.serializer.context["request"])
+
+            with self.assertRaises(ImproperlyConfigured) as error:
+                field.to_representation(self.object)
+
+            self.assertEqual(
+                str(error.exception),
+                "URIRelatedField could not determine the `urn_resource`: "
+                "model not found on the view or serializer.",
+            )
+
+            field.urn_resource = "test"
+
+        with self.subTest("test no urn match"):
+            field = self.serializer.fields["uri"]
+
+            with self.assertRaises(ImproperlyConfigured) as error:
+                new_object = ModelPlan(uuid=None)
+                field.to_representation(new_object)
+
+            self.assertEqual(
+                str(error.exception),
+                "Could not resolve URN for the object using the configured view."
+                " You may have failed to include the related model in your API, or"
+                " incorrectly configured the `urn_component` or `urn_resource` for this field.",
+            )
+
     @override_settings(URN_NAMESPACE="")
     def test_empty_urn_namespace(self):
+        self.assertEqual(settings.URN_NAMESPACE, "")
+
         with self.assertRaises(ImproperlyConfigured) as error:
             field = self.serializer.fields["uri"]
             field.to_representation(self.object)
@@ -167,7 +254,6 @@ class URIFieldTest(APITestCase):
             "URIRelatedField requires a `urn_namespace` to be specified.",
         )
 
-    @override_settings(URN_NAMESPACE="")
     def test_empty_urn_namespace_with_url(self):
         field = self.serializer.fields["uri"]
         url = "https://example.com/test"
