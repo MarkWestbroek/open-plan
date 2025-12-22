@@ -10,19 +10,20 @@ on:
   pull_request:
   workflow_dispatch:
 
-# jobs:
-#   oas:
-#     name: Checks
-#     uses: maykinmedia/open-api-workflows/.github/workflows/oas.yml@v6
-#     with:
-#       python-version: '3.12'
-#       apt-packages: ''
-#       django-settings-module: openplan.conf.ci
-#       oas-generate-command: ./bin/generate_api_schema.sh
-#       schema-path: src/openplan/api/openapi.yaml
-#       oas-artifact-name: openplan-api-oas
-#       node-version-file: '.nvmrc'
-#       spectral-version: '^6.15.0'
-#       openapi-to-postman-version: '^5.0.0'
-#       postman-artifact-name: openplan-api-postman-collection
-#       openapi-generator-version: '^2.20.0'
+jobs:
+  oas:
+    name: Checks
+    uses: maykinmedia/open-api-workflows/.github/workflows/oas.yml@v6
+    with:
+      python-version: '3.12'
+      apt-packages: ''
+      django-settings-module: openplan.conf.ci
+      oas-generate-command: ./bin/generate_api_schema.sh
+      schema-path: src/plan-openapi.yaml
+      oas-artifact-name: openplan-api-oas
+      node-version-file: '.nvmrc'
+      spectral-version: '^6.15.0'
+      openapi-to-postman-version: '^5.0.0'
+      postman-artifact-name: openplan-api-postman-collection
+      openapi-generator-version: '^2.20.0'
+      spectral-ruleset: https://static.developer.overheid.nl/adr/2.1/ruleset.yaml

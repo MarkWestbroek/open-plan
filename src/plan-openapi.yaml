@@ -1,0 +1,581 @@
+openapi: 3.0.3
+info:
+  title: Plannen API
+  version: 0.1.0
+  description: |2
+
+    Een API voor Plannen.
+  contact:
+    url: https://github.com/maykinmedia/open-plan
+    name: Maykin Media
+    email: support@maykinmedia.nl
+paths:
+  /plan:
+    get:
+      operationId: plan_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle plannen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      - in: query
+        name: plantypeUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van de gekoppelde plantypen.
+        explode: false
+        style: form
+      tags:
+      - Plan
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlanList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlanList'
+          description: ''
+    post:
+      operationId: plan_create
+      description: Voeg een nieuw plan toe aan het systeem.
+      summary: Nieuw plan aanmaken.
+      tags:
+      - Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Plan'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: ''
+  /plan/{uuid}:
+    get:
+      operationId: plan_retrieve
+      description: Een specifiek plan opvragen via UUID.
+      summary: Een specifiek plan opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plan
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: ''
+    put:
+      operationId: plan_update
+      description: Werk alle gegevens van een plan bij.
+      summary: Plan volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Plan'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: ''
+    patch:
+      operationId: plan_partial_update
+      description: Werk enkele gegevens van een plan bij.
+      summary: Plan gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPlan'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Plan'
+          description: ''
+    delete:
+      operationId: plan_destroy
+      description: Verwijder een specifiek plan.
+      summary: Plan verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plan
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /plantype:
+    get:
+      operationId: plantype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle plantypes opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - inkomen
+          - pip
+          - werk
+        description: |-
+          Het type plan.
+
+          * `pip` - Persoonlijk plan inburgering en perticipatie
+          * `werk` - Werk
+          * `inkomen` - Inkomen
+      tags:
+      - Plantype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlanTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPlanTypeList'
+          description: ''
+    post:
+      operationId: plantype_create
+      description: Voeg een nieuw plantype toe aan het systeem.
+      summary: Nieuw plantype aanmaken.
+      tags:
+      - Plantype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+          description: ''
+  /plantype/{uuid}:
+    get:
+      operationId: plantype_retrieve
+      description: Een specifiek plantype opvragen via UUID.
+      summary: Een specifiek plantype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plantype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+          description: ''
+    put:
+      operationId: plantype_update
+      description: Werk alle gegevens van een plantype bij.
+      summary: Plantype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plantype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+          description: ''
+    patch:
+      operationId: plantype_partial_update
+      description: Werk enkele gegevens van een plantype bij.
+      summary: Plantype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plantype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPlanType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PlanType'
+          description: ''
+    delete:
+      operationId: plantype_destroy
+      description: Verwijder een specifiek plantype.
+      summary: Plantype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Plantype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+components:
+  schemas:
+    PaginatedPlanList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Plan'
+    PaginatedPlanTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlanType'
+    PatchedPlan:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plantype:
+          allOf:
+          - $ref: '#/components/schemas/PlanType'
+          readOnly: true
+          description: Het type plan.
+        plantypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde plantype.
+    PatchedPlanType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          description: |-
+            Het type plan.
+
+            * `pip` - Persoonlijk plan inburgering en perticipatie
+            * `werk` - Werk
+            * `inkomen` - Inkomen
+    Plan:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plantype:
+          allOf:
+          - $ref: '#/components/schemas/PlanType'
+          readOnly: true
+          description: Het type plan.
+        plantypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde plantype.
+      required:
+      - plantype
+      - plantypeUuid
+      - uuid
+    PlanType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          description: |-
+            Het type plan.
+
+            * `pip` - Persoonlijk plan inburgering en perticipatie
+            * `werk` - Werk
+            * `inkomen` - Inkomen
+      required:
+      - type
+      - uuid
+    TypeEnum:
+      enum:
+      - pip
+      - werk
+      - inkomen
+      type: string
+      description: |-
+        * `pip` - Persoonlijk plan inburgering en perticipatie
+        * `werk` - Werk
+        * `inkomen` - Inkomen
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
+servers:
+- url: /plannen/api/v0
