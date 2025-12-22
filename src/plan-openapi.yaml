@@ -1078,6 +1078,16 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit doel hoort.
         doeltype:
           allOf:
           - $ref: '#/components/schemas/DoelType'
@@ -1088,9 +1098,28 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde doeltype.
+        persoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde persoon.
+        hoofdDoel:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van de bovenliggende doel (optioneel).
       required:
       - doeltype
       - doeltypeUuid
+      - persoon
+      - persoonUuid
+      - plan
+      - planUuid
       - uuid
     DoelCategorie:
       type: object
@@ -1260,6 +1289,16 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit doel hoort.
         doeltype:
           allOf:
           - $ref: '#/components/schemas/DoelType'
@@ -1270,6 +1309,21 @@ components:
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde doeltype.
+        persoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde persoon.
+        hoofdDoel:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van de bovenliggende doel (optioneel).
     PatchedDoelCategorie:
       type: object
       properties:
@@ -1334,6 +1388,34 @@ components:
             * `pip` - Persoonlijk plan inburgering en perticipatie
             * `werk` - Werk
             * `inkomen` - Inkomen
+    Persoon:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonsprofielUrl:
+          type: string
+          format: uri
+          description: URL naar het persoonsprofiel (alleen voor primaire personen
+            verplicht).
+          maxLength: 200
+        openKlantUrl:
+          type: string
+          format: uri
+          description: URL naar Open Klant (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 200
+        bsn:
+          type: string
+          description: BSN voor BRP-koppeling (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 9
+          minLength: 9
+      required:
+      - uuid
     Plan:
       type: object
       properties:
