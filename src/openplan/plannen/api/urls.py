@@ -10,6 +10,7 @@ from .schema import custom_settings
 from .viewsets.doel import DoelViewSet
 from .viewsets.doelcategorie import DoelCategorieViewSet
 from .viewsets.doeltype import DoelTypeViewSet
+from .viewsets.persoon import PersoonViewSet
 from .viewsets.plan import PlanViewSet
 from .viewsets.plantype import PlanTypeViewSet
 
@@ -21,6 +22,7 @@ router.register("plantype", PlanTypeViewSet)
 router.register("doel", DoelViewSet)
 router.register("doeltype", DoelTypeViewSet)
 router.register("doelcategorie", DoelCategorieViewSet)
+router.register("persoon", PersoonViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

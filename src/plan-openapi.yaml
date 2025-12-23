@@ -642,6 +642,205 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /persoon:
+    get:
+      operationId: persoon_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle personen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Persoon
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersoonList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersoonList'
+          description: ''
+    post:
+      operationId: persoon_create
+      description: Voeg een nieuw persoon toe aan het systeem.
+      summary: Nieuw persoon aanmaken.
+      tags:
+      - Persoon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Persoon'
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+  /persoon/{uuid}:
+    get:
+      operationId: persoon_retrieve
+      description: Een specifiek persoon opvragen via UUID.
+      summary: Een specifiek persoon opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+    put:
+      operationId: persoon_update
+      description: Werk alle gegevens van een persoon bij.
+      summary: Persoon volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Persoon'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+    patch:
+      operationId: persoon_partial_update
+      description: Werk enkele gegevens van een persoon bij.
+      summary: Persoon gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersoon'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+    delete:
+      operationId: persoon_destroy
+      description: Verwijder een specifiek persoon.
+      summary: Persoon verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /plan:
     get:
       operationId: plan_list
@@ -1235,6 +1434,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DoelType'
+    PaginatedPersoonList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Persoon'
     PaginatedPlanList:
       type: object
       required:
@@ -1353,6 +1575,32 @@ components:
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
             * `ontwikkelwens` - Ontwikkelwens
+    PatchedPersoon:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonsprofielUrl:
+          type: string
+          format: uri
+          description: URL naar het persoonsprofiel (alleen voor primaire personen
+            verplicht).
+          maxLength: 200
+        openKlantUrl:
+          type: string
+          format: uri
+          description: URL naar Open Klant (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 200
+        bsn:
+          type: string
+          description: BSN voor BRP-koppeling (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 9
+          minLength: 9
     PatchedPlan:
       type: object
       properties:
