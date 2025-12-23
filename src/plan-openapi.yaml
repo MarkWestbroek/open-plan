@@ -10,6 +10,207 @@ info:
     name: Maykin Media
     email: support@maykinmedia.nl
 paths:
+  /contactmoment:
+    get:
+      operationId: contactmoment_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle contactmomenten opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Contactmoment
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedContactmomentList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedContactmomentList'
+          description: ''
+    post:
+      operationId: contactmoment_create
+      description: Voeg een nieuw contactmoment toe aan het systeem.
+      summary: Nieuw contactmoment aanmaken.
+      tags:
+      - Contactmoment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmoment'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+  /contactmoment/{uuid}:
+    get:
+      operationId: contactmoment_retrieve
+      description: Een specifiek contactmoment opvragen via UUID.
+      summary: Een specifiek contactmoment opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+    put:
+      operationId: contactmoment_update
+      description: Werk alle gegevens van een contactmoment bij.
+      summary: Contactmoment volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmoment'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+    patch:
+      operationId: contactmoment_partial_update
+      description: Werk enkele gegevens van een contactmoment bij.
+      summary: Contactmoment gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedContactmoment'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+    delete:
+      operationId: contactmoment_destroy
+      description: Verwijder een specifiek contactmoment.
+      summary: Contactmoment verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /doel:
     get:
       operationId: doel_list
@@ -631,6 +832,408 @@ paths:
         required: true
       tags:
       - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /instrument:
+    get:
+      operationId: instrument_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle instrumenten opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Instrument
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentList'
+          description: ''
+    post:
+      operationId: instrument_create
+      description: Voeg een nieuw instrument toe aan het systeem.
+      summary: Nieuw instrument aanmaken.
+      tags:
+      - Instrument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+  /instrument/{uuid}:
+    get:
+      operationId: instrument_retrieve
+      description: Een specifiek instrument opvragen via UUID.
+      summary: Een specifiek instrument opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+    put:
+      operationId: instrument_update
+      description: Werk alle gegevens van een instrument bij.
+      summary: Instrument volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+    patch:
+      operationId: instrument_partial_update
+      description: Werk enkele gegevens van een instrument bij.
+      summary: Instrument gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstrument'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+    delete:
+      operationId: instrument_destroy
+      description: Verwijder een specifiek instrument.
+      summary: Instrument verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /instrumenttype:
+    get:
+      operationId: instrumenttype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle instrumenttypen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Instrumenttype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentTypeList'
+          description: ''
+    post:
+      operationId: instrumenttype_create
+      description: Voeg een nieuw instrumenttype toe aan het systeem.
+      summary: Nieuw instrumenttype aanmaken.
+      tags:
+      - Instrumenttype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+  /instrumenttype/{uuid}:
+    get:
+      operationId: instrumenttype_retrieve
+      description: Een specifiek instrumenttype opvragen via UUID.
+      summary: Een specifiek instrumenttype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+    put:
+      operationId: instrumenttype_update
+      description: Werk alle gegevens van een instrumenttype bij.
+      summary: Instrumenttypen volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+    patch:
+      operationId: instrumenttype_partial_update
+      description: Werk enkele gegevens van een instrumenttype bij.
+      summary: Instrumenttypen gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstrumentType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+    delete:
+      operationId: instrumenttype_destroy
+      description: Verwijder een specifiek instrumenttype.
+      summary: Instrumenttypen verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
       security:
       - tokenAuth: []
       responses:
@@ -1676,6 +2279,28 @@ paths:
           description: No response body
 components:
   schemas:
+    Contactmoment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit contactmoment hoort.
+      required:
+      - plan
+      - planUuid
+      - uuid
     Doel:
       type: object
       properties:
@@ -1772,6 +2397,93 @@ components:
         * `hoofddoel` - Hoofddoel
         * `subdoel` - Subdoel
         * `ontwikkelwens` - Ontwikkelwens
+    Instrument:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/Doel'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel waaraan dit instrument gekoppeld is.
+        instrumenttype:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentType'
+          readOnly: true
+          description: Het type instrument.
+        instrumenttypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type instrument dat hier wordt toegepast.
+      required:
+      - doel
+      - doelUuid
+      - instrumenttype
+      - instrumenttypeUuid
+      - uuid
+    InstrumentType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentTypeTypeEnum'
+          description: |-
+            Het type instrument.
+
+            * `training` - Training
+            * `coaching` - Coaching
+            * `financiele_ondersteuning` - Financiele ondersteuning
+      required:
+      - type
+      - uuid
+    InstrumentTypeTypeEnum:
+      enum:
+      - training
+      - coaching
+      - financiele_ondersteuning
+      type: string
+      description: |-
+        * `training` - Training
+        * `coaching` - Coaching
+        * `financiele_ondersteuning` - Financiele ondersteuning
+    PaginatedContactmomentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactmoment'
     PaginatedDoelCategorieList:
       type: object
       required:
@@ -1841,6 +2553,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DoelType'
+    PaginatedInstrumentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instrument'
+    PaginatedInstrumentTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentType'
     PaginatedPersoonList:
       type: object
       required:
@@ -1956,6 +2714,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RelatieType'
+    PatchedContactmoment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/Plan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit contactmoment hoort.
     PatchedDoel:
       type: object
       properties:
@@ -2028,6 +2804,51 @@ components:
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
             * `ontwikkelwens` - Ontwikkelwens
+    PatchedInstrument:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/Doel'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel waaraan dit instrument gekoppeld is.
+        instrumenttype:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentType'
+          readOnly: true
+          description: Het type instrument.
+        instrumenttypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type instrument dat hier wordt toegepast.
+    PatchedInstrumentType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentTypeTypeEnum'
+          description: |-
+            Het type instrument.
+
+            * `training` - Training
+            * `coaching` - Coaching
+            * `financiele_ondersteuning` - Financiele ondersteuning
     PatchedPersoon:
       type: object
       properties:
