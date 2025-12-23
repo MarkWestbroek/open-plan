@@ -13,6 +13,8 @@ from .viewsets.doeltype import DoelTypeViewSet
 from .viewsets.persoon import PersoonViewSet
 from .viewsets.plan import PlanViewSet
 from .viewsets.plantype import PlanTypeViewSet
+from .viewsets.relatie import RelatieViewSet
+from .viewsets.relatietype import RelatieTypeViewSet
 
 app_name = "plannen"
 
@@ -23,6 +25,8 @@ router.register("doel", DoelViewSet)
 router.register("doeltype", DoelTypeViewSet)
 router.register("doelcategorie", DoelCategorieViewSet)
 router.register("persoon", PersoonViewSet)
+router.register("relatie", RelatieViewSet)
+router.register("relatietype", RelatieTypeViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
