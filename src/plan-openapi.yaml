@@ -2289,7 +2289,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         plan:
           allOf:
-          - $ref: '#/components/schemas/Plan'
+          - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
@@ -2311,7 +2311,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         plan:
           allOf:
-          - $ref: '#/components/schemas/Plan'
+          - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
@@ -2407,7 +2407,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         doel:
           allOf:
-          - $ref: '#/components/schemas/Doel'
+          - $ref: '#/components/schemas/NestedDoel'
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
         doelUuid:
@@ -2461,6 +2461,31 @@ components:
         * `training` - Training
         * `coaching` - Coaching
         * `financiele_ondersteuning` - Financiele ondersteuning
+    NestedDoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        hoofdDoel:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van de bovenliggende doel (optioneel).
+      required:
+      - uuid
+    NestedPlan:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+      required:
+      - uuid
     PaginatedContactmomentList:
       type: object
       required:
@@ -2724,7 +2749,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         plan:
           allOf:
-          - $ref: '#/components/schemas/Plan'
+          - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
@@ -2742,7 +2767,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         plan:
           allOf:
-          - $ref: '#/components/schemas/Plan'
+          - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
@@ -2814,7 +2839,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         doel:
           allOf:
-          - $ref: '#/components/schemas/Doel'
+          - $ref: '#/components/schemas/NestedDoel'
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
         doelUuid:

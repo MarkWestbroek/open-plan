@@ -10,6 +10,17 @@ from openplan.utils.fields import UUIDRelatedField
 from .plantype import PlanTypeSerializer
 
 
+class NestedPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plan
+        fields = [
+            "uuid",
+        ]
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+        }
+
+
 class PlanSerializer(serializers.ModelSerializer):
     plantype = PlanTypeSerializer(
         required=False,

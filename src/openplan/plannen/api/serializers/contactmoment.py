@@ -7,11 +7,11 @@ from openplan.plannen.models.contactmoment import Contactmoment
 from openplan.plannen.models.plan import Plan
 from openplan.utils.fields import UUIDRelatedField
 
-from .plan import PlanSerializer
+from .plan import NestedPlanSerializer
 
 
 class ContactmomentSerializer(serializers.ModelSerializer):
-    plan = PlanSerializer(
+    plan = NestedPlanSerializer(
         read_only=True,
         help_text=get_help_text("plannen.Plan", "uuid"),
     )

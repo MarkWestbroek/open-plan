@@ -11,7 +11,33 @@ from openplan.utils.fields import UUIDRelatedField
 
 from .doeltype import DoelTypeSerializer
 from .persoon import PersoonSerializer
-from .plan import PlanSerializer
+from .plan import NestedPlanSerializer
+
+
+class NestedDoelSerializer(serializers.ModelSerializer):
+    hoofd_doel = UUIDRelatedField(
+        queryset=Doel.objects.all(),
+        required=False,
+        allow_null=True,
+        help_text=_("UUID van de bovenliggende doel (optioneel)."),
+    )
+
+    class Meta:
+        model = Doel
+        fields = [
+            "uuid",
+            "hoofd_doel",
+        ]
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+        }
+
+    def to_representation(self, instance):
+        """Ensure hoofd_doel is serialized as a string UUID."""
+        data = super().to_representation(instance)
+        parent = instance.hoofd_doel
+        data["hoofd_doel"] = str(parent.uuid) if parent else None
+        return data
 
 
 class DoelSerializer(serializers.ModelSerializer):
@@ -19,7 +45,7 @@ class DoelSerializer(serializers.ModelSerializer):
         read_only=True,
         help_text=get_help_text("plannen.DoelType", "type"),
     )
-    plan = PlanSerializer(
+    plan = NestedPlanSerializer(
         read_only=True,
         help_text=get_help_text("plannen.Plan", "uuid"),
     )

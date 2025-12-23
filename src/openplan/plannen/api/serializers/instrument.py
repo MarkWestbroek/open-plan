@@ -8,12 +8,12 @@ from openplan.plannen.models.instrument import Instrument
 from openplan.plannen.models.instrumenttype import InstrumentType
 from openplan.utils.fields import UUIDRelatedField
 
-from .doel import DoelSerializer
+from .doel import NestedDoelSerializer
 from .instrumenttype import InstrumentTypeSerializer
 
 
 class InstrumentSerializer(serializers.ModelSerializer):
-    doel = DoelSerializer(
+    doel = NestedDoelSerializer(
         read_only=True,
         help_text=get_help_text("plannen.Doel", "uuid"),
     )
