@@ -64,7 +64,7 @@ urlpatterns = [
         ),
     ),
     # Simply show the master template.
-    path("", TemplateView.as_view(template_name="master.html"), name="root"),
+    path("", TemplateView.as_view(template_name="index.html"), name="root"),
 ]
 
 # NOTE: The staticfiles_urlpatterns also discovers static files (ie. no need to run

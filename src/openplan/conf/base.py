@@ -97,6 +97,7 @@ INSTALLED_APPS += [
     "hijack",
     "hijack.contrib.admin",
     "maykin_common",
+    "capture_tag",
     # Project applications.
     "openplan.accounts",
     "openplan.utils",
@@ -348,7 +349,7 @@ X_FRAME_OPTIONS = "DENY"
 #
 # Custom settings
 #
-PROJECT_NAME = "openplan"
+PROJECT_NAME = "Open Plan"
 ENVIRONMENT = config("ENVIRONMENT", "")
 
 # Displaying environment information

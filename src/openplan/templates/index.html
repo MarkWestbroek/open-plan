@@ -1,26 +1,47 @@
 {% extends "maykin_common/api/index_base.html" %}
-{%load i18n%}
+{% load i18n %}
 
-{% block page_title %}
-{% trans "openplan API" %}
-{% endblock page_title %}
 
-{% block page_subtitle %}
-{% blocktrans trimmed %}
-REPLACE ME OR FACE ETERNAL SHAME
-{% endblocktrans %}
-{% endblock page_subtitle %}
+{% block page_title %}{{ settings.PROJECT_NAME }} API{% endblock %}
+{% block page_subtitle %}{{ settings.SITE_TITLE }}{% endblock page_subtitle %}
 
 
 {% block content_nl %}
-<p>REPLACE ME OR FACE ETERNAL SHAME</p>
+    <p>
+        Open Plan is een applicatie waarin plannen centraal staan en gekoppeld zijn aan personen.
+        Binnen een plan kunnen doelen worden vastgelegd, inclusief producten of zaken die moeten
+        worden afgerond om deze doelen te behalen.
+        Andere systemen kunnen via een REST API communiceren met Open Plan om bijvoorbeeld
+        plangegevens op te halen of doelen te beheren.
+    </p>
 {% endblock content_nl %}
 
+
 {% block content_en %}
-<p>REPLACE ME OR FACE ETERNAL SHAME</p>
+    <p>
+        Open Plan is an application in which plans are central and linked to people.
+        Within a plan, goals can be defined, including products or tasks that need to be completed
+        to achieve these goals. Other systems can communicate with Open Plan via a REST API to, for example,
+        retrieve plan data or manage goals.
+    </p>
 {% endblock content_en %}
 
 
-{% block license_link %}
-https://github.com/maykinmedia/openplan/blob/main/LICENSE.md
+{% block license_link %}https://github.com/maykinmedia/open-plan/blob/main/LICENSE.md{% endblock %}
+
+
+{% block api_links %}
+    <a href="{% url 'plannen:schema-redoc-plannen' %}" class="button">
+        <i class="fas fa-file-alt"></i>
+        {% trans "Plannen API specification" %}
+    </a>
+{% endblock %}
+
+{% block extra_buttons %}
+    <!-- <div class="button-group">
+        <a href="https://github.com/maykinmedia/open-plan/blob/main/src/notificaties.md" class="button">
+            <i class="fas fa-bullhorn"></i>
+            {% trans "Notifications" %}
+        </a>
+    </div> -->
 {% endblock %}
