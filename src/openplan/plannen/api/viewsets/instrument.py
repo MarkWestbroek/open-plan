@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.instrument import Instrument
 
-# from ..filtersets.instrument import InstrumentFilter
 from ..serializers.instrument import InstrumentSerializer
 
 
@@ -39,7 +38,6 @@ from ..serializers.instrument import InstrumentSerializer
 class InstrumentViewSet(viewsets.ModelViewSet):
     queryset = Instrument.objects.all()
     serializer_class = InstrumentSerializer
-    # filterset_class = InstrumentFilter
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)

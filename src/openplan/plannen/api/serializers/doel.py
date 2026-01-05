@@ -32,13 +32,6 @@ class NestedDoelSerializer(serializers.ModelSerializer):
             "uuid": {"read_only": True},
         }
 
-    def to_representation(self, instance):
-        """Ensure hoofd_doel is serialized as a string UUID."""
-        data = super().to_representation(instance)
-        parent = instance.hoofd_doel
-        data["hoofd_doel"] = str(parent.uuid) if parent else None
-        return data
-
 
 class DoelSerializer(serializers.ModelSerializer):
     doeltype = DoelTypeSerializer(
@@ -94,10 +87,3 @@ class DoelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
-
-    def to_representation(self, instance):
-        """Ensure hoofd_doel is serialized as a string UUID."""
-        data = super().to_representation(instance)
-        parent = instance.hoofd_doel
-        data["hoofd_doel"] = str(parent.uuid) if parent else None
-        return data
