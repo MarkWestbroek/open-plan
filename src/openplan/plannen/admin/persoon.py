@@ -17,7 +17,7 @@ class PersoonAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "URLs",
+            "URNs",
             {
                 "fields": (
                     "persoonsprofiel",

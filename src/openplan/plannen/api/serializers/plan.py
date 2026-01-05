@@ -50,6 +50,6 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
             "uuid": {"read_only": True},
             "urn": {
                 "lookup_field": "uuid",
-                "help_text": _("De Uniform Resource Name van de externe taak."),
+                "help_text": _("De Uniform Resource Name van de plan."),
             },
         }
