@@ -7,19 +7,23 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from .validators import URIValidator
+from .validators import URNValidator
 
 
-class URIField(models.CharField):
+class URNField(models.CharField):
     """
-    A Django model field for Uniform Resource Identifiers (RFC 3986),
-    supporting both URLs and URNs.
+    A custom Django model field to store a valid URN (RFC 8141: Uniform Resource Names)
+    https://datatracker.ietf.org/doc/html/rfc8141
+
+    This field extends CharField and automatically validates the value
+    against a basic URN pattern: `urn:<namespace>:<resource>`.
     """
 
-    default_validators = [URIValidator()]
-    description = _("URI")
+    default_validators = [URNValidator()]
+    description = _("URN")
 
     def __init__(self, *args, **kwargs):
+        # Default max length 255 characters
         kwargs.setdefault("max_length", 255)
         super().__init__(*args, **kwargs)
 

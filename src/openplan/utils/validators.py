@@ -1,7 +1,7 @@
 import re
 
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator, URLValidator
+from django.core.validators import RegexValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
@@ -54,35 +54,6 @@ class CustomRegexValidator(RegexValidator):
 validate_postal_code = CustomRegexValidator(
     regex="^[1-9][0-9]{3} ?[a-zA-Z]{2}$", message=_("Invalid postal code.")
 )
-
-
-class URIValidator:
-    """
-    Validates a URI that may be either a URL (http/https)
-    or a URN (RFC 8141).
-    """
-
-    message = _("Enter a valid URI (URL or URN).")
-    code = "invalid_uri"
-
-    def __init__(self):
-        self.url_validator = URLValidator(schemes=["http", "https"])
-        self.urn_validator = URNValidator()
-
-    def __call__(self, value):
-        try:
-            self.url_validator(value)
-            return
-        except ValidationError:
-            pass
-
-        try:
-            self.urn_validator(value)
-            return
-        except ValidationError:
-            pass
-
-        raise ValidationError(self.message, code=self.code)
 
 
 @deconstructible

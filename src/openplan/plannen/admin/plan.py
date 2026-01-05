@@ -25,7 +25,7 @@ class PlanAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "URLs",
+            "URNs",
             {
                 "fields": (
                     "zaak",

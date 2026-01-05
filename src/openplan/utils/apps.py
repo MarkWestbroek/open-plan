@@ -4,15 +4,15 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from .fields import URIField
+from .fields import URNField
 
 
 @extend_schema_field(
     {"type": "string", "example": "urn:namespace:component:resource:uuid"}
 )
-class URISerializerField(serializers.CharField):
+class URNSerializerField(serializers.CharField):
     """
-    Mapping URIField to URISerializerField
+    Mapping URNField to URNSerializerField
     """
 
 
@@ -21,4 +21,4 @@ class UtilsConfig(AppConfig):
 
     def ready(self):
         field_mapping = ModelSerializer.serializer_field_mapping
-        field_mapping[URIField] = URISerializerField
+        field_mapping[URNField] = URNSerializerField

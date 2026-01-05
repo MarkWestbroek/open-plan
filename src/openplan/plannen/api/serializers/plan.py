@@ -6,7 +6,7 @@ from vng_api_common.utils import get_help_text
 from openplan.plannen.models.plan import Plan
 from openplan.plannen.models.plantype import PlanType
 from openplan.utils.fields import UUIDRelatedField
-from openplan.utils.serializers import URIModelSerializer
+from openplan.utils.serializers import URNModelSerializer
 
 from .plantype import PlanTypeSerializer
 
@@ -22,7 +22,7 @@ class NestedPlanSerializer(serializers.ModelSerializer):
         }
 
 
-class PlanSerializer(URIModelSerializer, serializers.ModelSerializer):
+class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
     plantype = PlanTypeSerializer(
         required=False,
         read_only=True,
@@ -38,7 +38,7 @@ class PlanSerializer(URIModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = Plan
         fields = [
-            "uri",
+            "urn",
             "uuid",
             "plantype",
             "plantype_uuid",
@@ -48,7 +48,7 @@ class PlanSerializer(URIModelSerializer, serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "uuid": {"read_only": True},
-            "uri": {
+            "urn": {
                 "lookup_field": "uuid",
                 "help_text": _("De Uniform Resource Name van de externe taak."),
             },

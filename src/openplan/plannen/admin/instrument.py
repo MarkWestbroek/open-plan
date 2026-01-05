@@ -21,7 +21,7 @@ class InstrumentAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "URLs",
+            "URNs",
             {
                 "fields": (
                     "product",

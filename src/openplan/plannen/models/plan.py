@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.utils.fields import URIField
+from openplan.utils.fields import URNField
 
 
 class Plan(models.Model):
@@ -17,18 +17,18 @@ class Plan(models.Model):
         on_delete=models.PROTECT,
         help_text=_("Type van het plan."),
     )
-    zaak = URIField(
-        help_text=_("URI naar de bijbehorende zaak in het zaaksysteem."),
+    zaak = URNField(
+        help_text=_("URN naar de bijbehorende zaak in het zaaksysteem."),
         blank=True,
     )
-    domeinregister = URIField(
-        help_text=_("URI naar het domeinregister voor dit plan."),
+    domeinregister = URNField(
+        help_text=_("URN naar het domeinregister voor dit plan."),
         blank=True,
     )
     # TODO:
     # Multiple uri's???
-    medewerker = URIField(
-        help_text=_("URI naar de medewerker in het HR-systeem."),
+    medewerker = URNField(
+        help_text=_("URN naar de medewerker in het HR-systeem."),
         blank=True,
     )
 

@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.utils.translation import gettext as _
 
 from openplan.utils.validators import (
-    URIValidator,
     URNValidator,
     validate_charfield_entry,
     validate_phone_number,
@@ -94,51 +93,6 @@ class ValidatorsTestCase(TestCase):
         self.assertEqual(validate_phone_number("00695959595"), "00695959595")
         self.assertEqual(validate_phone_number("00-69-59-59-59-5"), "00-69-59-59-59-5")
         self.assertEqual(validate_phone_number("00 69 59 59 59 5"), "00 69 59 59 59 5")
-
-
-class URIValidatorTests(TestCase):
-    def setUp(self):
-        self.validator = URIValidator()
-        super().setUp()
-
-    def test_valid_urls(self):
-        valid_urls = [
-            "http://example.com",
-            "https://example.com",
-            "https://example.com/path",
-            "https://example.com/path?query=1",
-            "https://example.com/path#fragment",
-        ]
-
-        for value in valid_urls:
-            self.validator(value)
-
-    def test_valid_urns(self):
-        valid_urns = [
-            "urn:isbn:9780143127796",
-            "urn:isbn:9780143127796",
-            "urn:uuid:123e4567-e89b-12d3-a456-426614174000",
-            "urn:example:document/2025/12",
-        ]
-
-        for value in valid_urns:
-            self.validator(value)
-
-    def test_invalid_uris(self):
-        invalid_uris = [
-            "example.com",
-            "ftp://example.com",
-            "urn:",
-            "urn:invalid",
-            "http:/example.com",
-            "://missing.scheme",
-        ]
-
-        for value in invalid_uris:
-            with self.assertRaises(ValidationError) as error:
-                self.validator(value)
-
-            self.assertEqual(error.exception.code, "invalid_uri")
 
 
 class URNValidatorTests(TestCase):
