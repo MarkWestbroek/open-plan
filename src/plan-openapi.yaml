@@ -10,6 +10,1440 @@ info:
     name: Maykin Media
     email: support@maykinmedia.nl
 paths:
+  /contactmoment:
+    get:
+      operationId: contactmoment_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle contactmomenten opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Contactmoment
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedContactmomentList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedContactmomentList'
+          description: ''
+    post:
+      operationId: contactmoment_create
+      description: Voeg een nieuw contactmoment toe aan het systeem.
+      summary: Nieuw contactmoment aanmaken.
+      tags:
+      - Contactmoment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmoment'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+  /contactmoment/{uuid}:
+    get:
+      operationId: contactmoment_retrieve
+      description: Een specifiek contactmoment opvragen via UUID.
+      summary: Een specifiek contactmoment opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+    put:
+      operationId: contactmoment_update
+      description: Werk alle gegevens van een contactmoment bij.
+      summary: Contactmoment volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Contactmoment'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+    patch:
+      operationId: contactmoment_partial_update
+      description: Werk enkele gegevens van een contactmoment bij.
+      summary: Contactmoment gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedContactmoment'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Contactmoment'
+          description: ''
+    delete:
+      operationId: contactmoment_destroy
+      description: Verwijder een specifiek contactmoment.
+      summary: Contactmoment verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Contactmoment
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /doel:
+    get:
+      operationId: doel_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doelen opvragen.
+      parameters:
+      - in: query
+        name: doeltypeUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van de gekoppelde doeltypen.
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelList'
+          description: ''
+    post:
+      operationId: doel_create
+      description: Voeg een nieuw doel toe aan het systeem.
+      summary: Nieuw doel aanmaken.
+      tags:
+      - Doel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Doel'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+  /doel/{uuid}:
+    get:
+      operationId: doel_retrieve
+      description: Een specifiek doel opvragen via UUID.
+      summary: Een specifiek doel opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+    put:
+      operationId: doel_update
+      description: Werk alle gegevens van een doel bij.
+      summary: Doel volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Doel'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+    patch:
+      operationId: doel_partial_update
+      description: Werk enkele gegevens van een doel bij.
+      summary: Doel gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoel'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Doel'
+          description: ''
+    delete:
+      operationId: doel_destroy
+      description: Verwijder een specifiek doel.
+      summary: Doel verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doel
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /doelcategorie:
+    get:
+      operationId: doelcategorie_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doelcategorieën opvragen.
+      parameters:
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van de doelcategorie.
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Doelcategorie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelCategorieList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelCategorieList'
+          description: ''
+    post:
+      operationId: doelcategorie_create
+      description: Voeg een nieuw doelcategorie toe aan het systeem.
+      summary: Nieuw doelcategorie aanmaken.
+      tags:
+      - Doelcategorie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelCategorie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+  /doelcategorie/{uuid}:
+    get:
+      operationId: doelcategorie_retrieve
+      description: Een specifiek doelcategorie opvragen via UUID.
+      summary: Een specifiek doelcategorie opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+    put:
+      operationId: doelcategorie_update
+      description: Werk alle gegevens van een doelcategorie bij.
+      summary: Doelcategorie volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelCategorie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+    patch:
+      operationId: doelcategorie_partial_update
+      description: Werk enkele gegevens van een doelcategorie bij.
+      summary: Doelcategorie gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoelCategorie'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelCategorie'
+          description: ''
+    delete:
+      operationId: doelcategorie_destroy
+      description: Verwijder een specifiek doelcategorie.
+      summary: Doelcategorie verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        required: true
+      tags:
+      - Doelcategorie
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /doeltype:
+    get:
+      operationId: doeltype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle doeltypen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - hoofddoel
+          - ontwikkelwens
+          - subdoel
+        description: |-
+          De unieke naam van dit doeltype.
+
+          * `hoofddoel` - Hoofddoel
+          * `subdoel` - Subdoel
+          * `ontwikkelwens` - Ontwikkelwens
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDoelTypeList'
+          description: ''
+    post:
+      operationId: doeltype_create
+      description: Voeg een nieuw doeltype toe aan het systeem.
+      summary: Nieuw doeltype aanmaken.
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+  /doeltype/{uuid}:
+    get:
+      operationId: doeltype_retrieve
+      description: Een specifiek doeltype opvragen via UUID.
+      summary: Een specifiek doeltype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    put:
+      operationId: doeltype_update
+      description: Werk alle gegevens van een doeltype bij.
+      summary: Doeltype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DoelType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    patch:
+      operationId: doeltype_partial_update
+      description: Werk enkele gegevens van een doeltype bij.
+      summary: Doeltype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDoelType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/DoelType'
+          description: ''
+    delete:
+      operationId: doeltype_destroy
+      description: Verwijder een specifiek doeltype.
+      summary: Doeltype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Doeltype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /instrument:
+    get:
+      operationId: instrument_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle instrumenten opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Instrument
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentList'
+          description: ''
+    post:
+      operationId: instrument_create
+      description: Voeg een nieuw instrument toe aan het systeem.
+      summary: Nieuw instrument aanmaken.
+      tags:
+      - Instrument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+  /instrument/{uuid}:
+    get:
+      operationId: instrument_retrieve
+      description: Een specifiek instrument opvragen via UUID.
+      summary: Een specifiek instrument opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+    put:
+      operationId: instrument_update
+      description: Werk alle gegevens van een instrument bij.
+      summary: Instrument volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Instrument'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+    patch:
+      operationId: instrument_partial_update
+      description: Werk enkele gegevens van een instrument bij.
+      summary: Instrument gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstrument'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: ''
+    delete:
+      operationId: instrument_destroy
+      description: Verwijder een specifiek instrument.
+      summary: Instrument verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrument
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /instrumenttype:
+    get:
+      operationId: instrumenttype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle instrumenttypen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Instrumenttype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstrumentTypeList'
+          description: ''
+    post:
+      operationId: instrumenttype_create
+      description: Voeg een nieuw instrumenttype toe aan het systeem.
+      summary: Nieuw instrumenttype aanmaken.
+      tags:
+      - Instrumenttype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+  /instrumenttype/{uuid}:
+    get:
+      operationId: instrumenttype_retrieve
+      description: Een specifiek instrumenttype opvragen via UUID.
+      summary: Een specifiek instrumenttype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+    put:
+      operationId: instrumenttype_update
+      description: Werk alle gegevens van een instrumenttype bij.
+      summary: Instrumenttypen volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstrumentType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+    patch:
+      operationId: instrumenttype_partial_update
+      description: Werk enkele gegevens van een instrumenttype bij.
+      summary: Instrumenttypen gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInstrumentType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/InstrumentType'
+          description: ''
+    delete:
+      operationId: instrumenttype_destroy
+      description: Verwijder een specifiek instrumenttype.
+      summary: Instrumenttypen verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Instrumenttype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /persoon:
+    get:
+      operationId: persoon_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle personen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Persoon
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersoonList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPersoonList'
+          description: ''
+    post:
+      operationId: persoon_create
+      description: Voeg een nieuw persoon toe aan het systeem.
+      summary: Nieuw persoon aanmaken.
+      tags:
+      - Persoon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Persoon'
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+  /persoon/{uuid}:
+    get:
+      operationId: persoon_retrieve
+      description: Een specifiek persoon opvragen via UUID.
+      summary: Een specifiek persoon opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+    put:
+      operationId: persoon_update
+      description: Werk alle gegevens van een persoon bij.
+      summary: Persoon volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Persoon'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+    patch:
+      operationId: persoon_partial_update
+      description: Werk enkele gegevens van een persoon bij.
+      summary: Persoon gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersoon'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Persoon'
+          description: ''
+    delete:
+      operationId: persoon_destroy
+      description: Verwijder een specifiek persoon.
+      summary: Persoon verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4)
+        required: true
+      tags:
+      - Persoon
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
   /plan:
     get:
       operationId: plan_list
@@ -436,8 +1870,783 @@ paths:
               description: 'Geeft een specifieke API-versie aan in de context van
                 een specifieke aanroep. Voorbeeld: 1.2.1.'
           description: No response body
+  /relatie:
+    get:
+      operationId: relatie_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle relaties opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Relatie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRelatieList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRelatieList'
+          description: ''
+    post:
+      operationId: relatie_create
+      description: Voeg een nieuw relatie toe aan het systeem.
+      summary: Nieuw relatie aanmaken.
+      tags:
+      - Relatie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Relatie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+          description: ''
+  /relatie/{uuid}:
+    get:
+      operationId: relatie_retrieve
+      description: Een specifiek relatie opvragen via UUID.
+      summary: Een specifiek relatie opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatie
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+          description: ''
+    put:
+      operationId: relatie_update
+      description: Werk alle gegevens van een relatie bij.
+      summary: Relatie volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Relatie'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+          description: ''
+    patch:
+      operationId: relatie_partial_update
+      description: Werk enkele gegevens van een relatie bij.
+      summary: Relatie gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRelatie'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Relatie'
+          description: ''
+    delete:
+      operationId: relatie_destroy
+      description: Verwijder een specifiek relatie.
+      summary: Relatie verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatie
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /relatietype:
+    get:
+      operationId: relatietype_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle relatietypes opvragen.
+      parameters:
+      - in: query
+        name: naam
+        schema:
+          type: string
+        description: Naam van het relatietype
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Relatietype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRelatieTypeList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRelatieTypeList'
+          description: ''
+    post:
+      operationId: relatietype_create
+      description: Voeg een nieuw relatietype toe aan het systeem.
+      summary: Nieuw relatietype aanmaken.
+      tags:
+      - Relatietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelatieType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+          description: ''
+  /relatietype/{uuid}:
+    get:
+      operationId: relatietype_retrieve
+      description: Een specifiek relatietype opvragen via UUID.
+      summary: Een specifiek relatietype opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatietype
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+          description: ''
+    put:
+      operationId: relatietype_update
+      description: Werk alle gegevens van een relatietype bij.
+      summary: Relatietype volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelatieType'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+          description: ''
+    patch:
+      operationId: relatietype_partial_update
+      description: Werk enkele gegevens van een relatietype bij.
+      summary: Relatietype gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatietype
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRelatieType'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/RelatieType'
+          description: ''
+    delete:
+      operationId: relatietype_destroy
+      description: Verwijder een specifiek relatietype.
+      summary: Relatietype verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Relatietype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
 components:
   schemas:
+    Contactmoment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/NestedPlan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit contactmoment hoort.
+      required:
+      - plan
+      - planUuid
+      - uuid
+    Doel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/NestedPlan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit doel hoort.
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/DoelType'
+          readOnly: true
+          description: De unieke naam van dit doeltype.
+        doeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde doeltype.
+        persoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde persoon.
+        hoofdDoel:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van de bovenliggende doel (optioneel).
+      required:
+      - doeltype
+      - doeltypeUuid
+      - persoon
+      - persoonUuid
+      - plan
+      - planUuid
+      - uuid
+    DoelCategorie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        naam:
+          type: string
+          description: Naam van de doelcategorie.
+          maxLength: 200
+      required:
+      - naam
+      - uuid
+    DoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeTypeEnum'
+          description: |-
+            De unieke naam van dit doeltype.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+            * `ontwikkelwens` - Ontwikkelwens
+      required:
+      - type
+      - uuid
+    DoelTypeTypeEnum:
+      enum:
+      - hoofddoel
+      - subdoel
+      - ontwikkelwens
+      type: string
+      description: |-
+        * `hoofddoel` - Hoofddoel
+        * `subdoel` - Subdoel
+        * `ontwikkelwens` - Ontwikkelwens
+    Instrument:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel waaraan dit instrument gekoppeld is.
+        instrumenttype:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentType'
+          readOnly: true
+          description: Het type instrument.
+        instrumenttypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type instrument dat hier wordt toegepast.
+      required:
+      - doel
+      - doelUuid
+      - instrumenttype
+      - instrumenttypeUuid
+      - uuid
+    InstrumentType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentTypeTypeEnum'
+          description: |-
+            Het type instrument.
+
+            * `training` - Training
+            * `coaching` - Coaching
+            * `financiele_ondersteuning` - Financiele ondersteuning
+      required:
+      - type
+      - uuid
+    InstrumentTypeTypeEnum:
+      enum:
+      - training
+      - coaching
+      - financiele_ondersteuning
+      type: string
+      description: |-
+        * `training` - Training
+        * `coaching` - Coaching
+        * `financiele_ondersteuning` - Financiele ondersteuning
+    NestedDoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        hoofdDoel:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van de bovenliggende doel (optioneel).
+      required:
+      - uuid
+    NestedPlan:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+      required:
+      - uuid
+    PaginatedContactmomentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contactmoment'
+    PaginatedDoelCategorieList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelCategorie'
+    PaginatedDoelList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Doel'
+    PaginatedDoelTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelType'
+    PaginatedInstrumentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instrument'
+    PaginatedInstrumentTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentType'
+    PaginatedPersoonList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Persoon'
     PaginatedPlanList:
       type: object
       required:
@@ -484,6 +2693,213 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlanType'
+    PaginatedRelatieList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Relatie'
+    PaginatedRelatieTypeList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatieType'
+    PatchedContactmoment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/NestedPlan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit contactmoment hoort.
+    PatchedDoel:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/NestedPlan'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        planUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het plan waarbij dit doel hoort.
+        doeltype:
+          allOf:
+          - $ref: '#/components/schemas/DoelType'
+          readOnly: true
+          description: De unieke naam van dit doeltype.
+        doeltypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde doeltype.
+        persoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gekoppelde persoon.
+        hoofdDoel:
+          type: string
+          format: uuid
+          nullable: true
+          description: UUID van de bovenliggende doel (optioneel).
+    PatchedDoelCategorie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        naam:
+          type: string
+          description: Naam van de doelcategorie.
+          maxLength: 200
+    PatchedDoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeTypeEnum'
+          description: |-
+            De unieke naam van dit doeltype.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+            * `ontwikkelwens` - Ontwikkelwens
+    PatchedInstrument:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel waaraan dit instrument gekoppeld is.
+        instrumenttype:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentType'
+          readOnly: true
+          description: Het type instrument.
+        instrumenttypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het type instrument dat hier wordt toegepast.
+    PatchedInstrumentType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentTypeTypeEnum'
+          description: |-
+            Het type instrument.
+
+            * `training` - Training
+            * `coaching` - Coaching
+            * `financiele_ondersteuning` - Financiele ondersteuning
+    PatchedPersoon:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonsprofielUrl:
+          type: string
+          format: uri
+          description: URL naar het persoonsprofiel (alleen voor primaire personen
+            verplicht).
+          maxLength: 200
+        openKlantUrl:
+          type: string
+          format: uri
+          description: URL naar Open Klant (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 200
+        bsn:
+          type: string
+          description: BSN voor BRP-koppeling (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 9
+          minLength: 9
     PatchedPlan:
       type: object
       properties:
@@ -512,13 +2928,91 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/PlanTypeTypeEnum'
           description: |-
             Het type plan.
 
             * `pip` - Persoonlijk plan inburgering en perticipatie
             * `werk` - Werk
             * `inkomen` - Inkomen
+    PatchedRelatie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        persoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de primaire persoon.
+        gerelateerdePersoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        gerelateerdePersoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gerelateerde persoon.
+        relatietype:
+          allOf:
+          - $ref: '#/components/schemas/RelatieType'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        relatietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het relatietype.
+    PatchedRelatieType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        naam:
+          type: string
+          description: Naam van het relatietype
+          maxLength: 100
+    Persoon:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonsprofielUrl:
+          type: string
+          format: uri
+          description: URL naar het persoonsprofiel (alleen voor primaire personen
+            verplicht).
+          maxLength: 200
+        openKlantUrl:
+          type: string
+          format: uri
+          description: URL naar Open Klant (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 200
+        bsn:
+          type: string
+          description: BSN voor BRP-koppeling (verplicht voor primaire personen, optioneel
+            voor secundaire).
+          maxLength: 9
+          minLength: 9
+      required:
+      - uuid
     Plan:
       type: object
       properties:
@@ -551,7 +3045,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/PlanTypeTypeEnum'
           description: |-
             Het type plan.
 
@@ -561,7 +3055,7 @@ components:
       required:
       - type
       - uuid
-    TypeEnum:
+    PlanTypeTypeEnum:
       enum:
       - pip
       - werk
@@ -571,6 +3065,67 @@ components:
         * `pip` - Persoonlijk plan inburgering en perticipatie
         * `werk` - Werk
         * `inkomen` - Inkomen
+    Relatie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        persoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        persoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de primaire persoon.
+        gerelateerdePersoon:
+          allOf:
+          - $ref: '#/components/schemas/Persoon'
+          readOnly: true
+          description: Unieke resource identifier (UUID4)
+        gerelateerdePersoonUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van de gerelateerde persoon.
+        relatietype:
+          allOf:
+          - $ref: '#/components/schemas/RelatieType'
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        relatietypeUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het relatietype.
+      required:
+      - gerelateerdePersoon
+      - gerelateerdePersoonUuid
+      - persoon
+      - persoonUuid
+      - relatietype
+      - relatietypeUuid
+      - uuid
+    RelatieType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        naam:
+          type: string
+          description: Naam van het relatietype
+          maxLength: 100
+      required:
+      - naam
+      - uuid
   securitySchemes:
     tokenAuth:
       type: apiKey

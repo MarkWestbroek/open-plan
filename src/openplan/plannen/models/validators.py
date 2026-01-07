@@ -35,6 +35,13 @@ def validate_primary_persoon(persoon):
 
 
 def validate_relatie_uniqueness(relatie):
+    if (
+        not relatie.persoon_id
+        or not relatie.gerelateerde_persoon_id
+        or not relatie.relatietype_id
+    ):
+        return
+
     if relatie.persoon == relatie.gerelateerde_persoon:
         raise ValidationError(_("Een persoon kan geen relatie met zichzelf hebben."))
 

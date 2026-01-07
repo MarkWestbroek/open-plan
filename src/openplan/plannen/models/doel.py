@@ -47,5 +47,8 @@ class Doel(models.Model):
         return str(self.plan)
 
     def clean(self):
+        if not self.persoon_id:
+            return
+
         validate_hoofd_doel_not_self(self)
         validate_primary_persoon(self.persoon)

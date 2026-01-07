@@ -1,0 +1,88 @@
+from django.urls import reverse
+
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from openplan.plannen.models.factories.instrumenttype import InstrumenttypeFactory
+
+from ...models.instrumenttype import InstrumentType
+from .api_testcase import APITestCase
+
+
+class InstrumentTypeAPITests(APITestCase):
+    def test_create_instrumenttype(self):
+        url = reverse("plannen:instrumenttype-list")
+        data = {"type": InstrumenttypeFactory.build().type}
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        instrumenttype = InstrumentType.objects.get(uuid=response.data["uuid"])
+        self.assertEqual(instrumenttype.type, data["type"])
+
+    def test_list_instrumenttypes(self):
+        InstrumenttypeFactory.create_batch(3)
+
+        url = reverse("plannen:instrumenttype-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.json()["results"]
+        self.assertEqual(len(data), 3)
+        for it in data:
+            self.assertIn("uuid", it)
+            self.assertIn("type", it)
+
+    def test_retrieve_instrumenttype(self):
+        instrumenttype = InstrumenttypeFactory.create()
+        url = reverse(
+            "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["uuid"], str(instrumenttype.uuid))
+        self.assertEqual(response.data["type"], instrumenttype.type)
+
+    def test_update_instrumenttype(self):
+        instrumenttype = InstrumenttypeFactory.create()
+        new_type = InstrumenttypeFactory.build().type
+
+        url = reverse(
+            "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
+        )
+        data = {"type": new_type}
+        response = self.client.put(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        instrumenttype.refresh_from_db()
+        self.assertEqual(instrumenttype.type, new_type)
+
+    def test_partial_update_instrumenttype(self):
+        instrumenttype = InstrumenttypeFactory.create()
+        new_type = InstrumenttypeFactory.build().type
+
+        url = reverse(
+            "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
+        )
+        data = {"type": new_type}
+        response = self.client.patch(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        instrumenttype.refresh_from_db()
+        self.assertEqual(instrumenttype.type, new_type)
+
+    def test_delete_instrumenttype(self):
+        instrumenttype = InstrumenttypeFactory.create()
+        url = reverse(
+            "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(
+            InstrumentType.objects.filter(uuid=instrumenttype.uuid).exists()
+        )
+
+    def test_authentication_required(self):
+        client = APIClient()
+        url = reverse("plannen:instrumenttype-list")
+        response = client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

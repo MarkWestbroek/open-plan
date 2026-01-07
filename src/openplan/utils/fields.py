@@ -29,4 +29,4 @@ class UUIDRelatedField(serializers.RelatedField):
             self.fail("invalid")
 
     def to_representation(self, obj):
-        return obj.uuid
+        return str(obj.uuid)
