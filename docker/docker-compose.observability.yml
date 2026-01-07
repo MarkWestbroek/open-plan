@@ -19,6 +19,8 @@ services:
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - open-plan-dev
 
   prometheus:
     image: prom/prometheus:latest
@@ -27,6 +29,8 @@ services:
     volumes:
       - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-tsdb:/prometheus
+    networks:
+      - open-plan-dev
 
   # log scraping from container output
   promtail:
@@ -39,6 +43,8 @@ services:
       - ./observability/promtail/config.yml:/etc/promtail/config.yml
       - promtail-logs:/var/log
     command: -config.file=/etc/promtail/config.yml
+    networks:
+      - open-plan-dev
 
   # open telemetry collector, receives metrics from the application instance(s)
   otel-collector:
@@ -63,7 +69,13 @@ services:
       - GF_FEATURE_TOGGLES_ENABLE=alertingSimplifiedRouting,alertingQueryAndExpressionsStepMode
     ports:
       - "3000:3000"
+    networks:
+      - open-plan-dev
 
 volumes:
   promtail-logs:
   prometheus-tsdb:
+
+networks:
+  open-plan-dev:
+    name: open-plan-dev
