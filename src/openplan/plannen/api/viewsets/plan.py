@@ -1,3 +1,6 @@
+from django.db import transaction
+
+import structlog
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
@@ -7,6 +10,8 @@ from openplan.plannen.models.plan import Plan
 
 from ..filtersets.plan import PlanFilter
 from ..serializers.plan import PlanSerializer
+
+logger = structlog.stdlib.get_logger(__name__)
 
 
 @extend_schema(tags=["Plan"])
@@ -43,3 +48,29 @@ class PlanViewSet(viewsets.ModelViewSet):
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        plan = serializer.instance
+        logger.info(
+            "plan_created",
+            uuid=str(plan.uuid),
+        )
+
+    @transaction.atomic
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        plan = serializer.instance
+        logger.info(
+            "plan_updated",
+            uuid=str(plan.uuid),
+        )
+
+    @transaction.atomic
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        logger.info(
+            "plan_deleted",
+            uuid=str(instance.uuid),
+        )

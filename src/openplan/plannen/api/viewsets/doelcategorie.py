@@ -1,3 +1,6 @@
+from django.db import transaction
+
+import structlog
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
@@ -6,6 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from openplan.plannen.models.doelcategorie import DoelCategorie
 
 from ..serializers.doelcategorie import DoelCategorieSerializer
+
+logger = structlog.stdlib.get_logger(__name__)
 
 
 @extend_schema(tags=["Doelcategorie"])
@@ -44,3 +49,29 @@ class DoelCategorieViewSet(viewsets.ModelViewSet):
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        doelcategorie = serializer.instance
+        logger.info(
+            "doelcategorie_created",
+            uuid=str(doelcategorie.uuid),
+        )
+
+    @transaction.atomic
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        doelcategorie = serializer.instance
+        logger.info(
+            "doelcategorie_updated",
+            uuid=str(doelcategorie.uuid),
+        )
+
+    @transaction.atomic
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        logger.info(
+            "doelcategorie_deleted",
+            uuid=str(instance.uuid),
+        )
