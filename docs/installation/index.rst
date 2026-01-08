@@ -11,5 +11,6 @@ development, staging and production environments.
     :maxdepth: 2
 
     development
+    observability/index
     staging
     production
