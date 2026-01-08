@@ -9,6 +9,13 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - open-plan-dev
+  
+  redis:
+    image: redis
+    networks:
+      - open-plan-dev
 
   web:
     build: .
@@ -19,6 +26,8 @@ services:
       - DB_NAME=openplan
       - DB_USER=openplan
       - DB_HOST=db
+      - CACHE_DEFAULT=redis:6379/0
+      - CACHE_AXES=redis:6379/0
       # Only allow all hosts for development/testing purposes!
       - ALLOWED_HOSTS=*
       # Enabling Open Telemetry requires the services in docker/docker-compose.observability.yml
@@ -35,6 +44,15 @@ services:
       - 8000:8000
     depends_on:
       - db
+    labels:
+      - app=open-plan
+      - service=api
+    networks:
+      - open-plan-dev
+
+networks:
+  open-plan-dev:
+    name: open-plan-dev
 
 # See: src/openplan/conf/docker.py
 # Optional containers below:

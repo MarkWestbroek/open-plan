@@ -17,6 +17,8 @@ os.environ.setdefault("DB_PASSWORD", "openplan")
 
 os.environ.setdefault("ENVIRONMENT", "development")
 os.environ.setdefault("DISABLE_2FA", "True")
+os.environ.setdefault("LOG_FORMAT_CONSOLE", "plain_console")
+
 os.environ.setdefault("OTEL_SDK_DISABLED", "true")
 
 # URNs
@@ -37,15 +39,15 @@ LOGGING["loggers"].update(
         "openplan": {
             "handlers": ["console"],
             "level": "DEBUG",
-            "propagate": True,
+            "propagate": False,
         },
         "django": {
             "handlers": ["console"],
             "level": "DEBUG",
-            "propagate": True,
+            "propagate": False,
         },
         "django.db.backends": {
-            "handlers": ["django"],
+            "handlers": ["json_file"],
             "level": "DEBUG",
             "propagate": False,
         },
@@ -59,7 +61,7 @@ LOGGING["loggers"].update(
         # Autoreload logs excessively, turn it down a bit.
         #
         "django.utils.autoreload": {
-            "handlers": ["django"],
+            "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
         },

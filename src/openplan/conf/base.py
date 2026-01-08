@@ -6,6 +6,9 @@ from pathlib import Path
 from django.urls import reverse_lazy
 
 import sentry_sdk
+
+os.environ["_USE_STRUCTLOG"] = "True"
+
 from open_api_framework.conf.base import *  # noqa
 from open_api_framework.conf.utils import config
 from vng_api_common.conf.api import BASE_REST_FRAMEWORK  # noqa: F401
@@ -219,90 +222,6 @@ EMAIL_TIMEOUT = 10
 
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="openplan@example.com")
 
-#
-# LOGGING
-#
-LOG_STDOUT = config("LOG_STDOUT", default=False)
-
-LOGGING_DIR = BASE_DIR / "log"
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": (
-                "%(asctime)s %(levelname)s %(name)s %(module)s "
-                "%(process)d %(thread)d  %(message)s"
-            )
-        },
-        "timestamped": {"format": "%(asctime)s %(levelname)s %(name)s  %(message)s"},
-        "simple": {"format": "%(levelname)s  %(message)s"},
-        "performance": {
-            "format": "%(asctime)s %(process)d | %(thread)d | %(message)s",
-        },
-    },
-    "filters": {
-        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
-    },
-    "handlers": {
-        "mail_admins": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "django.utils.log.AdminEmailHandler",
-        },
-        "null": {
-            "level": "DEBUG",
-            "class": "logging.NullHandler",
-        },
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "timestamped",
-        },
-        "django": {
-            "level": "DEBUG",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGGING_DIR / "django.log",
-            "formatter": "verbose",
-            "maxBytes": 1024 * 1024 * 10,  # 10 MB
-            "backupCount": 10,
-        },
-        "project": {
-            "level": "DEBUG",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGGING_DIR / "openplan.log",
-            "formatter": "verbose",
-            "maxBytes": 1024 * 1024 * 10,  # 10 MB
-            "backupCount": 10,
-        },
-        "performance": {
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOGGING_DIR / "performance.log",
-            "formatter": "performance",
-            "maxBytes": 1024 * 1024 * 10,  # 10 MB
-            "backupCount": 10,
-        },
-    },
-    "loggers": {
-        "openplan": {
-            "handlers": ["project"] if not LOG_STDOUT else ["console"],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "django.request": {
-            "handlers": ["django"] if not LOG_STDOUT else ["console"],
-            "level": "ERROR",
-            "propagate": True,
-        },
-        "django.template": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": True,
-        },
-    },
-}
 
 #
 # AUTH settings - user accounts, passwords, backends...

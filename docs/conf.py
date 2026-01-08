@@ -25,7 +25,7 @@ import openplan  # noqa isort:skip
 # -- Project information -----------------------------------------------------
 
 project = "openplan"
-copyright = "Maykin B.V. 2025"
+copyright = "Maykin B.V. 2025"  # noqa: A001
 author = openplan.__author__
 
 # The full version, including alpha/beta/rc tags

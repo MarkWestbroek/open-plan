@@ -10,23 +10,25 @@ they are available for Django settings initialization.
     before Django is initialized.
 """
 
-import logging
 import os
 import warnings
 from pathlib import Path
 
 from django.conf import settings
 
+import structlog
 from dotenv import load_dotenv
 from maykin_common.otel import setup_otel
 
-logger = logging.getLogger(__name__)
+logger = structlog.stdlib.get_logger(__name__)
 
 
 def setup_env():
     # load the environment variables containing the secrets/config
     dotenv_path = Path(__file__).resolve().parent.parent.parent / ".env"
     load_dotenv(dotenv_path)
+
+    structlog.contextvars.bind_contextvars(source="app")
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "openplan.conf.dev")
     if "OTEL_SERVICE_NAME" not in os.environ:
@@ -52,12 +54,12 @@ def monkeypatch_requests():
     try:
         from requests import Session
     except ModuleNotFoundError:
-        logger.debug("Attempt to patch requests, but the library is not installed")
+        logger.debug("patch_requests_failed")
         return
 
     if hasattr(Session, "_original_request"):
         logger.debug(
-            "Session is already patched OR has an ``_original_request`` attribute."
+            "session_already_patched_or_has_original_request_attribute",
         )
         return
 
