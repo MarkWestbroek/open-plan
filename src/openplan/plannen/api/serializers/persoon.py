@@ -8,8 +8,8 @@ class PersoonSerializer(serializers.ModelSerializer):
         model = Persoon
         fields = [
             "uuid",
-            "persoonsprofiel_url",
-            "open_klant_url",
+            "persoonsprofiel",
+            "klant",
             "bsn",
         ]
         extra_kwargs = {

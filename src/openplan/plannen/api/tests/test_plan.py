@@ -2,6 +2,7 @@ from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
+from vng_api_common.tests import get_validation_errors
 
 from openplan.plannen.models.factories.plan import PlanFactory
 from openplan.plannen.models.factories.plantype import PlanTypeFactory
@@ -103,3 +104,58 @@ class PlanAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_plan_urn(self):
+        plantype = PlanTypeFactory.create()
+        plan = PlanFactory.create(plantype=plantype)
+
+        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["urn"], f"urn:maykin:plannen:plan:{str(plan.uuid)}"
+        )
+
+    def test_invalid_create_urn_fields_plan(self):
+        self.assertFalse(Plan.objects.exists())
+
+        plantype = PlanTypeFactory.create()
+        data = {
+            "titel": "Test Plan",
+            "plantype": str(plantype.uuid),
+            "zaak": "invalid",
+            "domeinregister": "urn:maykinmaykinmaykinmaykinmaykinmaykinmaykinmaykinmaykin:1",
+            "medewerker": "test:maykin:organisatie:medewerker:1234567892",
+        }
+
+        url = reverse("plannen:plan-list")
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        self.assertEqual(
+            get_validation_errors(response, "zaak"),
+            {
+                "name": "zaak",
+                "code": "invalid_urn",
+                "reason": "Enter a valid URN. Correct format: 'urn:<namespace>:<resource>' (e.g., urn:isbn:9780143127796).",
+            },
+        )
+        self.assertEqual(
+            get_validation_errors(response, "domeinregister"),
+            {
+                "name": "domeinregister",
+                "code": "invalid_urn",
+                "reason": "Enter a valid URN. Correct format: 'urn:<namespace>:<resource>' (e.g., urn:isbn:9780143127796).",
+            },
+        )
+        self.assertEqual(
+            get_validation_errors(response, "medewerker"),
+            {
+                "name": "medewerker",
+                "code": "invalid_urn",
+                "reason": "Enter a valid URN. Correct format: 'urn:<namespace>:<resource>' (e.g., urn:isbn:9780143127796).",
+            },
+        )
+        self.assertFalse(Plan.objects.exists())

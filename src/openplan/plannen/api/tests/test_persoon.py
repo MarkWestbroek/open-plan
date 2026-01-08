@@ -13,16 +13,16 @@ class PersoonAPITests(APITestCase):
     def test_create_persoon(self):
         url = reverse("plannen:persoon-list")
         data = {
-            "persoonsprofiel_url": "https://example.com/profiel",
-            "open_klant_url": "https://example.com/klant",
-            "bsn": "111222333",
+            "persoonsprofiel": "urn:example:persoon:12345",
+            "klant": "urn:example:klant:67890",
+            "bsn": "963773215",
         }
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         persoon = Persoon.objects.get(uuid=response.data["uuid"])
-        self.assertEqual(persoon.persoonsprofiel_url, data["persoonsprofiel_url"])
-        self.assertEqual(persoon.open_klant_url, data["open_klant_url"])
+        self.assertEqual(persoon.persoonsprofiel, data["persoonsprofiel"])
+        self.assertEqual(persoon.klant, data["klant"])
         self.assertEqual(persoon.bsn, data["bsn"])
 
     def test_list_personen(self):
@@ -36,8 +36,8 @@ class PersoonAPITests(APITestCase):
         self.assertEqual(len(data), 3)
         for p in data:
             self.assertIn("uuid", p)
-            self.assertIn("persoonsprofielUrl", p)
-            self.assertIn("openKlantUrl", p)
+            self.assertIn("persoonsprofiel", p)
+            self.assertIn("klant", p)
             self.assertIn("bsn", p)
 
     def test_retrieve_persoon(self):
@@ -46,17 +46,15 @@ class PersoonAPITests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["uuid"], str(persoon.uuid))
-        self.assertEqual(
-            response.data["persoonsprofiel_url"], persoon.persoonsprofiel_url
-        )
-        self.assertEqual(response.data["open_klant_url"], persoon.open_klant_url)
+        self.assertEqual(response.data["persoonsprofiel"], persoon.persoonsprofiel)
+        self.assertEqual(response.data["klant"], persoon.klant)
         self.assertEqual(response.data["bsn"], persoon.bsn)
 
     def test_update_persoon(self):
         persoon = PersoonFactory.create()
         new_data = {
-            "persoonsprofiel_url": "https://example.com/newprofiel",
-            "open_klant_url": "https://example.com/newklant",
+            "persoonsprofiel": "urn:example:persoon:12345",
+            "klant": "urn:example:klant:67890",
             "bsn": "111222333",
         }
         url = reverse("plannen:persoon-detail", kwargs={"uuid": persoon.uuid})
@@ -64,8 +62,8 @@ class PersoonAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         persoon.refresh_from_db()
-        self.assertEqual(persoon.persoonsprofiel_url, new_data["persoonsprofiel_url"])
-        self.assertEqual(persoon.open_klant_url, new_data["open_klant_url"])
+        self.assertEqual(persoon.persoonsprofiel, new_data["persoonsprofiel"])
+        self.assertEqual(persoon.klant, new_data["klant"])
         self.assertEqual(persoon.bsn, new_data["bsn"])
 
     def test_partial_update_persoon(self):

@@ -3,6 +3,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from openplan.utils.fields import URNField
+
 
 class Instrument(models.Model):
     uuid = models.UUIDField(
@@ -21,8 +23,15 @@ class Instrument(models.Model):
         on_delete=models.PROTECT,
         help_text=_("Het type instrument dat hier wordt toegepast."),
     )
-    # TODO:
-    # Link to Open Product - Open Zaak?
+
+    product = URNField(
+        help_text=_("URN naar de bijbehorende product in het productsysteem."),
+        blank=True,
+    )
+    zaak = URNField(
+        help_text=_("URN naar het bijbehorende zaak in het zaaksysteem."),
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _("Instrument")

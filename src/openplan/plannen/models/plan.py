@@ -3,6 +3,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from openplan.utils.fields import URNField
+
 
 class Plan(models.Model):
     uuid = models.UUIDField(
@@ -15,10 +17,20 @@ class Plan(models.Model):
         on_delete=models.PROTECT,
         help_text=_("Type van het plan."),
     )
+    zaak = URNField(
+        help_text=_("URN naar de bijbehorende zaak in het zaaksysteem."),
+        blank=True,
+    )
+    domeinregister = URNField(
+        help_text=_("URN naar het domeinregister voor dit plan."),
+        blank=True,
+    )
     # TODO:
-    # Zaak hoort bij plan
-    # Link to medewerker in Open Organisatie
-    # Link to sociaal domein
+    # Multiple uri's???
+    medewerker = URNField(
+        help_text=_("URN naar de medewerker in het HR-systeem."),
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _("Plan")

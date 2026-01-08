@@ -24,6 +24,16 @@ class PlanAdmin(admin.ModelAdmin):
                 ),
             },
         ),
+        (
+            "URNs",
+            {
+                "fields": (
+                    "zaak",
+                    "domeinregister",
+                    "medewerker",
+                ),
+            },
+        ),
     )
 
     def get_queryset(self, request):

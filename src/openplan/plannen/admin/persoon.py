@@ -8,3 +8,22 @@ class PersoonAdmin(admin.ModelAdmin):
     list_display = ("uuid",)
     search_fields = ("uuid",)
     readonly_fields = ("uuid",)
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": ("uuid",),
+            },
+        ),
+        (
+            "URNs",
+            {
+                "fields": (
+                    "persoonsprofiel",
+                    "klant",
+                    "bsn",
+                ),
+            },
+        ),
+    )

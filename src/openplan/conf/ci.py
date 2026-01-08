@@ -8,6 +8,8 @@ os.environ.setdefault("ALLOWED_HOSTS", "")
 os.environ.setdefault("OTEL_SDK_DISABLED", "true")
 os.environ.setdefault("OTEL_SERVICE_NAME", "openplan-ci")
 
+os.environ.setdefault("URN_NAMESPACE", "maykin")
+
 from open_api_framework.conf.utils import mute_logging
 
 from .base import *  # noqa isort:skip

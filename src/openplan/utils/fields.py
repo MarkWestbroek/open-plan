@@ -1,10 +1,31 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 from django.utils.encoding import smart_str
 from django.utils.translation import gettext_lazy as _
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
+
+from .validators import URNValidator
+
+
+class URNField(models.CharField):
+    """
+    A custom Django model field to store a valid URN (RFC 8141: Uniform Resource Names)
+    https://datatracker.ietf.org/doc/html/rfc8141
+
+    This field extends CharField and automatically validates the value
+    against a basic URN pattern: `urn:<namespace>:<resource>`.
+    """
+
+    default_validators = [URNValidator()]
+    description = _("URN")
+
+    def __init__(self, *args, **kwargs):
+        # Default max length 255 characters
+        kwargs.setdefault("max_length", 255)
+        super().__init__(*args, **kwargs)
 
 
 @extend_schema_field(OpenApiTypes.UUID)
