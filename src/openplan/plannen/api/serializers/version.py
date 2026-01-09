@@ -1,20 +1,23 @@
-from rest_framework import serializers
+from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
 from openplan.plannen.models.version import Version
 
 
-class VersionSerializer(serializers.ModelSerializer):
-    actor = serializers.StringRelatedField()
-    plan = serializers.PrimaryKeyRelatedField(read_only=True)
+class VersionSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {"plan_uuid": "plan__uuid"}
 
     class Meta:
         model = Version
         fields = [
-            "id",
+            "url",
+            "version",
             "plan",
             "actor",
             "comment",
             "created_at",
             "snapshot",
         ]
-        read_only_fields = fields
+        extra_kwargs = {
+            "url": {"lookup_field": "version"},
+            "version": {"read_only": True},
+        }

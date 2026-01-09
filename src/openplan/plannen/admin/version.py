@@ -55,7 +55,7 @@ class VersionAdminInline(admin.StackedInline):
                 "persoonsprofiel_url": p.get("persoonsprofiel_url"),
                 "open_klant_url": p.get("open_klant_url"),
                 "bsn": p.get("bsn"),
-                "relaties_vanuit": p.get("relaties_vanuit"),
+                "relaties": p.get("relaties_vanuit"),
             }
             for p in personen
         ]

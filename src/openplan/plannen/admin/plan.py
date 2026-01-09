@@ -1,5 +1,8 @@
 from django.contrib import admin
 
+from openplan.plannen.models.version import Version
+from openplan.utils.version_snapshot import build_snapshot
+
 from ..models.plan import Plan
 from .version import VersionAdminInline
 
@@ -30,3 +33,16 @@ class PlanAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("plantype")
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        if not change:
+            return
+
+        Version.objects.create(
+            plan=obj,
+            actor=request.user,
+            comment="Plan updated via admin",
+            snapshot=build_snapshot(obj),
+        )

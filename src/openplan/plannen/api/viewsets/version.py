@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.api.serializers.version import VersionSerializer
 from openplan.plannen.models.version import Version
+from openplan.utils.mixins import NestedViewSetMixin
 
 
 @extend_schema(tags=["Planversies"])
@@ -18,13 +19,13 @@ from openplan.plannen.models.version import Version
         description="Haal één specifieke versie van een plan op inclusief snapshot.",
     ),
 )
-class PlanVersionViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Version.objects.all()
+class PlanVersionViewSet(NestedViewSetMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = Version.objects.order_by("plan", "-version")
     serializer_class = VersionSerializer
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-    lookup_field = "id"
+    lookup_field = "version"
 
     def get_queryset(self):
         plan_id = self.kwargs.get("plan_id")
