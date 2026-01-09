@@ -11,10 +11,6 @@ class VersionAdminInline(admin.StackedInline):
     extra = 0
     max_num = 1
     min_num = 1
-    list_display = ("plan", "version", "actor", "comment", "created_at")
-    list_filter = ("created_at", "actor", "plan")
-    search_fields = ("plan__plantype__naam", "actor__username", "comment")
-    ordering = ("-created_at",)
 
     readonly_fields = (
         "plan",
