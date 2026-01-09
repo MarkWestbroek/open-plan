@@ -33,6 +33,30 @@ class NestedDoelSerializer(serializers.ModelSerializer):
         }
 
 
+class VersionDoelSerializer(serializers.ModelSerializer):
+    doeltype = DoelTypeSerializer(
+        read_only=True,
+        help_text=get_help_text("plannen.DoelType", "type"),
+    )
+    hoofd_doel = UUIDRelatedField(
+        queryset=Doel.objects.all(),
+        required=False,
+        allow_null=True,
+        help_text=_("UUID van de bovenliggende doel (optioneel)."),
+    )
+
+    class Meta:
+        model = Doel
+        fields = [
+            "uuid",
+            "doeltype",
+            "hoofd_doel",
+        ]
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+        }
+
+
 class DoelSerializer(serializers.ModelSerializer):
     doeltype = DoelTypeSerializer(
         read_only=True,

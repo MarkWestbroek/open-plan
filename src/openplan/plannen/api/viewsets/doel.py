@@ -54,7 +54,7 @@ class DoelViewSet(viewsets.ModelViewSet):
         doel = serializer.instance
 
         with_plan_version(
-            plan=doel,
+            plan=doel.plan,
             user=self.request.user,
             comment="Doel created via API",
             fn=lambda: None,

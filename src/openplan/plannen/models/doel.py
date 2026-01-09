@@ -3,12 +3,10 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from openplan.utils.version_model import VersionedModel
-
 from .validators import validate_hoofd_doel_not_self, validate_primary_persoon
 
 
-class Doel(VersionedModel):
+class Doel(models.Model):
     uuid = models.UUIDField(
         unique=True,
         default=uuid.uuid4,

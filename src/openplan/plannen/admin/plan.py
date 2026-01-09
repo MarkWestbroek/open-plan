@@ -1,10 +1,12 @@
 from django.contrib import admin
 
 from ..models.plan import Plan
+from .version import VersionAdminInline
 
 
 @admin.register(Plan)
 class PlanAdmin(admin.ModelAdmin):
+    inlines = [VersionAdminInline]
     list_display = (
         "uuid",
         "plantype",

@@ -12,6 +12,23 @@ from .doel import NestedDoelSerializer
 from .instrumenttype import InstrumentTypeSerializer
 
 
+class NestedInstrumentSerializer(serializers.ModelSerializer):
+    instrumenttype = InstrumentTypeSerializer(
+        read_only=True,
+        help_text=get_help_text("plannen.Instrumenttype", "type"),
+    )
+
+    class Meta:
+        model = Instrument
+        fields = [
+            "uuid",
+            "instrumenttype",
+        ]
+        extra_kwargs = {
+            "uuid": {"read_only": True},
+        }
+
+
 class InstrumentSerializer(serializers.ModelSerializer):
     doel = NestedDoelSerializer(
         read_only=True,
