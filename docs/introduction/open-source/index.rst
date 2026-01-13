@@ -10,6 +10,6 @@ In addition, this project makes use of various open-source `Python libraries`_
 and `npm packages`_ under the hood.
 
 
-.. _`EUPL license`: https://github.com/maykinmedia/openplan/blob/master/LICENSE.md
-.. _`Python libraries`: https://github.com/maykinmedia/openplan/blob/master/requirements/base.txt
-.. _`npm packages`: https://github.com/maykinmedia/openplan/blob/master/package-lock.json
+.. _`EUPL license`: https://github.com/maykinmedia/open-plan/blob/main/LICENSE.md
+.. _`Python libraries`: https://github.com/maykinmedia/open-plan/blob/main/requirements/base.txt
+.. _`npm packages`: https://github.com/maykinmedia/open-plan/blob/main/package-lock.json
