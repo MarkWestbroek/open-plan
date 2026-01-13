@@ -8,23 +8,29 @@
 import os
 import sys
 
+import django
+from django.utils.translation import activate
+
 sys.path.insert(0, os.path.abspath("../src"))
+os.environ["LOG_REQUESTS"] = "false"
+
+from importlib.metadata import version as _version
 
 import openplan  # noqa isort:skip
 
-# from objects.setup import setup_env  # noqa isort:skip
+from openplan.setup import setup_env  # noqa isort:skip
 
 # TODO: This needs to be enabled when we want to use autodoc to grab
 # documentation from classes and functions. However, enabling django.setup()
 # causes RTD to fail because GDAL is not present in the RTD environment.
 # See: https://github.com/readthedocs/readthedocs-docker-images/issues/114#issuecomment-570566599
 #
-# setup_env()
-# django.setup()
+setup_env()
+django.setup()
 
 # -- Project information -----------------------------------------------------
 
-project = "openplan"
+project = "Open Plan"
 copyright = "Maykin B.V. 2025"  # noqa: A001
 author = openplan.__author__
 
@@ -38,10 +44,14 @@ release = openplan.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    # "sphinx.ext.todo",
-    # "sphinx_tabs.tabs",
-    # "recommonmark",
-    # "sphinx_markdown_tables",
+    "sphinx.ext.todo",
+    "sphinx.ext.extlinks",
+    "sphinx.ext.intersphinx",
+    "sphinx_tabs.tabs",
+    "recommonmark",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.graphviz",
+    "vng_api_common.diagrams.uml_images",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -54,12 +64,21 @@ templates_path = ["_templates"]
 # Usually you set "language" from the command line for these cases.
 language = "en"
 
+# Also set the language to English for Django, to make sure that any translatable text
+# is also shown in English (for instance the help texts
+# for setup configuration examples)
+activate("en")
+
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 source_suffix = [".rst", ".md"]
+
+# Datamodel image settings
+graphviz_output_format = "png"
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -84,3 +103,14 @@ linkcheck_ignore = [
     r"http://localhost:\d+/",
     r"https://.*sentry.*",
 ]
+
+sphinx_tabs_valid_builders = ["linkcheck"]
+
+
+django_structlog_version = _version("django-structlog")
+intersphinx_mapping = {
+    "django-structlog": (
+        f"https://django-structlog.readthedocs.io/en/{django_structlog_version}",
+        None,
+    ),
+}
