@@ -1,9 +1,16 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
+from openplan.plannen.metrics import (
+    plannen_create_counter,
+    plannen_delete_counter,
+    plannen_update_counter,
+)
 from openplan.plannen.models.factories.plan import PlanFactory
 from openplan.plannen.models.factories.plantype import PlanTypeFactory
 
@@ -159,3 +166,32 @@ class PlanAPITests(APITestCase):
             },
         )
         self.assertFalse(Plan.objects.exists())
+
+    @patch.object(plannen_create_counter, "add", wraps=plannen_create_counter.add)
+    def test_create_plan_increments_metric(self, mock_add: MagicMock):
+        plantype = PlanTypeFactory.create()
+        url = reverse("plannen:plan-list")
+        data = {"plantypeUuid": str(plantype.uuid)}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(plannen_update_counter, "add", wraps=plannen_update_counter.add)
+    def test_update_plan_increments_metric(self, mock_add: MagicMock):
+        plantype = PlanTypeFactory.create()
+        plan = PlanFactory.create(plantype=plantype)
+        new_plantype = PlanTypeFactory.create()
+        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
+        data = {"plantypeUuid": str(new_plantype.uuid)}
+        response = self.client.patch(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(plannen_delete_counter, "add", wraps=plannen_delete_counter.add)
+    def test_delete_plan_increments_metric(self, mock_add: MagicMock):
+        plantype = PlanTypeFactory.create()
+        plan = PlanFactory.create(plantype=plantype)
+        url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

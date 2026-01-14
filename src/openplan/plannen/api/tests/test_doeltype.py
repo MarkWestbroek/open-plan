@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    doeltypen_create_counter,
+    doeltypen_delete_counter,
+    doeltypen_update_counter,
+)
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 
 from ...models.doeltype import DoelType
@@ -91,3 +98,30 @@ class DoelTypeAPITests(APITestCase):
         self.assertEqual(data["count"], 1)
         self.assertEqual(data["results"][0]["uuid"], str(doeltype_match.uuid))
         self.assertEqual(data["results"][0]["type"], "hoofddoel")
+
+    @patch.object(doeltypen_create_counter, "add", wraps=doeltypen_create_counter.add)
+    def test_create_doeltype_increments_metric(self, mock_add: MagicMock):
+        url = reverse("plannen:doeltype-list")
+        data = {"type": DoelTypeFactory.build().type}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(doeltypen_update_counter, "add", wraps=doeltypen_update_counter.add)
+    def test_update_doeltype_increments_metric(self, mock_add: MagicMock):
+        doeltype = DoelTypeFactory.create()
+        new_type = DoelTypeFactory.build().type
+
+        url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
+        data = {"type": new_type}
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(doeltypen_delete_counter, "add", wraps=doeltypen_delete_counter.add)
+    def test_delete_doeltype_increments_metric(self, mock_add: MagicMock):
+        doeltype = DoelTypeFactory.create()
+        url = reverse("plannen:doeltype-detail", kwargs={"uuid": doeltype.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

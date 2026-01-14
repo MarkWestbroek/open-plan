@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    relaties_create_counter,
+    relaties_delete_counter,
+    relaties_update_counter,
+)
 from openplan.plannen.models.factories.persoon import PersoonFactory
 from openplan.plannen.models.factories.relatie import RelatieFactory
 from openplan.plannen.models.factories.relatietype import RelatieTypeFactory
@@ -192,3 +199,45 @@ class RelatieAPITests(APITestCase):
             },
             response.data["invalid_params"],
         )
+
+    @patch.object(relaties_create_counter, "add", wraps=relaties_create_counter.add)
+    def test_create_relatie_increments_metric(self, mock_add: MagicMock):
+        persoon = PersoonFactory.create()
+        gerelateerde_persoon = PersoonFactory.create()
+        relatietype = RelatieTypeFactory.create()
+
+        url = reverse("plannen:relatie-list")
+        data = {
+            "persoon_uuid": str(persoon.uuid),
+            "gerelateerde_persoon_uuid": str(gerelateerde_persoon.uuid),
+            "relatietype_uuid": str(relatietype.uuid),
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(relaties_update_counter, "add", wraps=relaties_update_counter.add)
+    def test_update_relatie_increments_metric(self, mock_add: MagicMock):
+        relatie = RelatieFactory.create()
+        new_relatietype = RelatieTypeFactory.create()
+
+        url = reverse("plannen:relatie-detail", kwargs={"uuid": relatie.uuid})
+        data = {
+            "persoon_uuid": str(relatie.persoon.uuid),
+            "gerelateerde_persoon_uuid": str(relatie.gerelateerde_persoon.uuid),
+            "relatietype_uuid": str(new_relatietype.uuid),
+        }
+
+        response = self.client.patch(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(relaties_delete_counter, "add", wraps=relaties_delete_counter.add)
+    def test_delete_relatie_increments_metric(self, mock_add: MagicMock):
+        relatie = RelatieFactory.create()
+
+        url = reverse("plannen:relatie-detail", kwargs={"uuid": relatie.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

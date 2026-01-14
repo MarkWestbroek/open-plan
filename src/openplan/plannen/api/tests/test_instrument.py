@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    instrumenten_create_counter,
+    instrumenten_delete_counter,
+    instrumenten_update_counter,
+)
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.instrument import InstrumentFactory
 from openplan.plannen.models.factories.instrumenttype import InstrumenttypeFactory
@@ -94,3 +101,46 @@ class InstrumentAPITests(APITestCase):
         url = reverse("plannen:instrument-list")
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @patch.object(
+        instrumenten_create_counter, "add", wraps=instrumenten_create_counter.add
+    )
+    def test_create_instrument_increments_metric(self, mock_add: MagicMock):
+        doel = DoelFactory.create()
+        instrumenttype = InstrumenttypeFactory.create()
+
+        url = reverse("plannen:instrument-list")
+        data = {
+            "doel_uuid": doel.uuid,
+            "instrumenttype_uuid": instrumenttype.uuid,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(
+        instrumenten_update_counter, "add", wraps=instrumenten_update_counter.add
+    )
+    def test_update_instrument_increments_metric(self, mock_add: MagicMock):
+        instrument = InstrumentFactory.create()
+        new_doel = DoelFactory.create()
+        new_instrumenttype = InstrumenttypeFactory.create()
+
+        url = reverse("plannen:instrument-detail", kwargs={"uuid": instrument.uuid})
+        data = {
+            "doel_uuid": new_doel.uuid,
+            "instrumenttype_uuid": new_instrumenttype.uuid,
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(
+        instrumenten_delete_counter, "add", wraps=instrumenten_delete_counter.add
+    )
+    def test_delete_instrument_increments_metric(self, mock_add: MagicMock):
+        instrument = InstrumentFactory.create()
+        url = reverse("plannen:instrument-detail", kwargs={"uuid": instrument.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)
