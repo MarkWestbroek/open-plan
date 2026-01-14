@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.persoon import Persoon
 
+from ...metrics import (
+    personen_create_counter,
+    personen_delete_counter,
+    personen_update_counter,
+)
 from ..serializers.persoon import PersoonSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -55,6 +60,7 @@ class PersoonViewSet(viewsets.ModelViewSet):
             "persoon_created",
             uuid=str(persoon.uuid),
         )
+        personen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -64,6 +70,7 @@ class PersoonViewSet(viewsets.ModelViewSet):
             "persoon_updated",
             uuid=str(persoon.uuid),
         )
+        personen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -72,3 +79,4 @@ class PersoonViewSet(viewsets.ModelViewSet):
             "persoon_deleted",
             uuid=str(instance.uuid),
         )
+        personen_delete_counter.add(1)

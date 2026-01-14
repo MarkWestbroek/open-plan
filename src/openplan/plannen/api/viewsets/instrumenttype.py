@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.instrumenttype import InstrumentType
 
+from ...metrics import (
+    instrumenttypen_create_counter,
+    instrumenttypen_delete_counter,
+    instrumenttypen_update_counter,
+)
 from ..serializers.instrumenttype import InstrumentTypeSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -55,6 +60,7 @@ class InstrumentTypeViewSet(viewsets.ModelViewSet):
             "instrumenttype_created",
             uuid=str(instrumenttype.uuid),
         )
+        instrumenttypen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -64,6 +70,7 @@ class InstrumentTypeViewSet(viewsets.ModelViewSet):
             "instrumenttype_updated",
             uuid=str(instrumenttype.uuid),
         )
+        instrumenttypen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -72,3 +79,4 @@ class InstrumentTypeViewSet(viewsets.ModelViewSet):
             "instrumenttype_deleted",
             uuid=str(instance.uuid),
         )
+        instrumenttypen_delete_counter.add(1)

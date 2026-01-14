@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doel import Doel
 
+from ...metrics import (
+    doelen_create_counter,
+    doelen_delete_counter,
+    doelen_update_counter,
+)
 from ..filtersets.doel import DoelFilter
 from ..serializers.doel import DoelSerializer
 
@@ -57,6 +62,7 @@ class DoelViewSet(viewsets.ModelViewSet):
             "doel_created",
             uuid=str(doel.uuid),
         )
+        doelen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -66,6 +72,7 @@ class DoelViewSet(viewsets.ModelViewSet):
             "doel_updated",
             uuid=str(doel.uuid),
         )
+        doelen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -74,3 +81,4 @@ class DoelViewSet(viewsets.ModelViewSet):
             "doel_deleted",
             uuid=str(instance.uuid),
         )
+        doelen_delete_counter.add(1)
