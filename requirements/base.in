@@ -18,6 +18,8 @@ maykin-common[axes,mfa,otel]  # other extras: pdf
 mozilla-django-oidc-db
 django-capture-tag
 
+sphinx
+
 # API libraries
 # djangorestframework
 # django-extra-fields
