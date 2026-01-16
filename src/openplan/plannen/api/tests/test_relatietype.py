@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    relatietypen_create_counter,
+    relatietypen_delete_counter,
+    relatietypen_update_counter,
+)
 from openplan.plannen.models.factories.relatietype import RelatieTypeFactory
 
 from ...models.relatietype import RelatieType
@@ -91,3 +98,39 @@ class RelatieTypeAPITests(APITestCase):
         self.assertEqual(data["count"], 1)
         self.assertEqual(data["results"][0]["uuid"], str(relatietype_match.uuid))
         self.assertEqual(data["results"][0]["naam"], "Collega")
+
+    @patch.object(
+        relatietypen_create_counter, "add", wraps=relatietypen_create_counter.add
+    )
+    def test_create_relatietype_increments_metric(self, mock_add: MagicMock):
+        url = reverse("plannen:relatietype-list")
+        data = {"naam": RelatieTypeFactory.build().naam}
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(
+        relatietypen_update_counter, "add", wraps=relatietypen_update_counter.add
+    )
+    def test_update_relatietype_increments_metric(self, mock_add: MagicMock):
+        relatietype = RelatieTypeFactory.create()
+        new_naam = RelatieTypeFactory.build().naam
+
+        url = reverse("plannen:relatietype-detail", kwargs={"uuid": relatietype.uuid})
+        data = {"naam": new_naam}
+
+        response = self.client.patch(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(
+        relatietypen_delete_counter, "add", wraps=relatietypen_delete_counter.add
+    )
+    def test_delete_relatietype_increments_metric(self, mock_add: MagicMock):
+        relatietype = RelatieTypeFactory.create()
+
+        url = reverse("plannen:relatietype-detail", kwargs={"uuid": relatietype.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.doelcategorie import DoelCategorie
 
+from ...metrics import (
+    doelcategorieen_create_counter,
+    doelcategorieen_delete_counter,
+    doelcategorieen_update_counter,
+)
 from ..serializers.doelcategorie import DoelCategorieSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -58,6 +63,7 @@ class DoelCategorieViewSet(viewsets.ModelViewSet):
             "doelcategorie_created",
             uuid=str(doelcategorie.uuid),
         )
+        doelcategorieen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -67,6 +73,7 @@ class DoelCategorieViewSet(viewsets.ModelViewSet):
             "doelcategorie_updated",
             uuid=str(doelcategorie.uuid),
         )
+        doelcategorieen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -75,3 +82,4 @@ class DoelCategorieViewSet(viewsets.ModelViewSet):
             "doelcategorie_deleted",
             uuid=str(instance.uuid),
         )
+        doelcategorieen_delete_counter.add(1)

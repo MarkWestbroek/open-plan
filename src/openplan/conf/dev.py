@@ -20,6 +20,7 @@ os.environ.setdefault("DISABLE_2FA", "True")
 os.environ.setdefault("LOG_FORMAT_CONSOLE", "plain_console")
 
 os.environ.setdefault("OTEL_SDK_DISABLED", "true")
+os.environ.setdefault("OTEL_EXPORTER_OTLP_METRICS_INSECURE", "true")
 
 # URNs
 os.environ.setdefault("URN_NAMESPACE", "maykin")

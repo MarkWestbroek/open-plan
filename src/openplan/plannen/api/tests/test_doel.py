@@ -1,9 +1,16 @@
+from unittest.mock import MagicMock, patch
+
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    doelen_create_counter,
+    doelen_delete_counter,
+    doelen_update_counter,
+)
 from openplan.plannen.models.factories.doel import DoelFactory
 from openplan.plannen.models.factories.doeltype import DoelTypeFactory
 from openplan.plannen.models.factories.persoon import PersoonFactory
@@ -248,3 +255,41 @@ class DoelAPITests(APITestCase):
             "Een doel kan niet naar zichzelf verwijzen.",
             val.exception.message_dict["hoofd_doel"][0],
         )
+
+    @patch.object(doelen_create_counter, "add", wraps=doelen_create_counter.add)
+    def test_create_doel_increments_metric(self, mock_add: MagicMock):
+        url = reverse("plannen:doel-list")
+        data = {
+            "doeltypeUuid": str(self.hoofddoel_type.uuid),
+            "planUuid": str(self.plan.uuid),
+            "persoonUuid": str(self.persoon.uuid),
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(doelen_update_counter, "add", wraps=doelen_update_counter.add)
+    def test_update_doel_increments_metric(self, mock_add: MagicMock):
+        doel = DoelFactory.create(
+            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+        )
+        new_doeltype = self.subdoel_type
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        data = {
+            "doeltypeUuid": str(new_doeltype.uuid),
+            "planUuid": str(doel.plan.uuid),
+            "persoonUuid": str(doel.persoon.uuid),
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(doelen_delete_counter, "add", wraps=doelen_delete_counter.add)
+    def test_delete_doel_increments_metric(self, mock_add: MagicMock):
+        doel = DoelFactory.create(
+            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+        )
+        url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

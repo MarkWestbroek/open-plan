@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    instrumenttypen_create_counter,
+    instrumenttypen_delete_counter,
+    instrumenttypen_update_counter,
+)
 from openplan.plannen.models.factories.instrumenttype import InstrumenttypeFactory
 
 from ...models.instrumenttype import InstrumentType
@@ -86,3 +93,40 @@ class InstrumentTypeAPITests(APITestCase):
         url = reverse("plannen:instrumenttype-list")
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @patch.object(
+        instrumenttypen_create_counter, "add", wraps=instrumenttypen_create_counter.add
+    )
+    def test_create_instrumenttype_increments_metric(self, mock_add: MagicMock):
+        url = reverse("plannen:instrumenttype-list")
+        data = {"type": InstrumenttypeFactory.build().type}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(
+        instrumenttypen_update_counter, "add", wraps=instrumenttypen_update_counter.add
+    )
+    def test_update_instrumenttype_increments_metric(self, mock_add: MagicMock):
+        instrumenttype = InstrumenttypeFactory.create()
+        new_type = InstrumenttypeFactory.build().type
+
+        url = reverse(
+            "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
+        )
+        data = {"type": new_type}
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(
+        instrumenttypen_delete_counter, "add", wraps=instrumenttypen_delete_counter.add
+    )
+    def test_delete_instrumenttype_increments_metric(self, mock_add: MagicMock):
+        instrumenttype = InstrumenttypeFactory.create()
+        url = reverse(
+            "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
+        )
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

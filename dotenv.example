@@ -12,3 +12,5 @@ DB_PORT=""
 # Uncomment to record HTTP fixtures for the VCR tests
 # Should be fine to leave as "once" in dev, but *not* in CI.
 # VCR_RECORD_MODE="once"
+
+OTEL_SERVICE_NAME=openplan

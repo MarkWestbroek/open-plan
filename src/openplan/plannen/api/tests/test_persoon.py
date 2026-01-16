@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    personen_create_counter,
+    personen_delete_counter,
+    personen_update_counter,
+)
 from openplan.plannen.models.factories.persoon import PersoonFactory
 
 from ...models.persoon import Persoon
@@ -89,3 +96,32 @@ class PersoonAPITests(APITestCase):
         url = reverse("plannen:persoon-list")
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @patch.object(personen_create_counter, "add", wraps=personen_create_counter.add)
+    def test_create_persoon_increments_metric(self, mock_add: MagicMock):
+        url = reverse("plannen:persoon-list")
+        data = {
+            "persoonsprofiel": "urn:example:persoon:12345",
+            "klant": "urn:example:klant:67890",
+            "bsn": "963773215",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(personen_update_counter, "add", wraps=personen_update_counter.add)
+    def test_update_persoon_increments_metric(self, mock_add: MagicMock):
+        persoon = PersoonFactory.create()
+        new_data = {"bsn": "111222333"}
+        url = reverse("plannen:persoon-detail", kwargs={"uuid": persoon.uuid})
+        response = self.client.patch(url, new_data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(personen_delete_counter, "add", wraps=personen_delete_counter.add)
+    def test_delete_persoon_increments_metric(self, mock_add: MagicMock):
+        persoon = PersoonFactory.create()
+        url = reverse("plannen:persoon-detail", kwargs={"uuid": persoon.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)

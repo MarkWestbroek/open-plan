@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.relatie import Relatie
 
+from ...metrics import (
+    relaties_create_counter,
+    relaties_delete_counter,
+    relaties_update_counter,
+)
 from ..serializers.relatie import RelatieSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -55,6 +60,7 @@ class RelatieViewSet(viewsets.ModelViewSet):
             "relatie_created",
             uuid=str(relatie.uuid),
         )
+        relaties_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -64,6 +70,7 @@ class RelatieViewSet(viewsets.ModelViewSet):
             "relatie_updated",
             uuid=str(relatie.uuid),
         )
+        relaties_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -72,3 +79,4 @@ class RelatieViewSet(viewsets.ModelViewSet):
             "relatie_deleted",
             uuid=str(instance.uuid),
         )
+        relaties_delete_counter.add(1)

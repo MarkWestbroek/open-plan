@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.plantype import PlanType
 
+from ...metrics import (
+    plantypen_create_counter,
+    plantypen_delete_counter,
+    plantypen_update_counter,
+)
 from ..serializers.plantype import PlanTypeSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -58,6 +63,7 @@ class PlanTypeViewSet(viewsets.ModelViewSet):
             "plantype_created",
             uuid=str(plantype.uuid),
         )
+        plantypen_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -67,6 +73,7 @@ class PlanTypeViewSet(viewsets.ModelViewSet):
             "plantype_updated",
             uuid=str(plantype.uuid),
         )
+        plantypen_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -75,3 +82,4 @@ class PlanTypeViewSet(viewsets.ModelViewSet):
             "plantype_deleted",
             uuid=str(instance.uuid),
         )
+        plantypen_delete_counter.add(1)

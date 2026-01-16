@@ -8,6 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from openplan.plannen.models.contactmoment import Contactmoment
 
+from ...metrics import (
+    contactmomenten_create_counter,
+    contactmomenten_delete_counter,
+    contactmomenten_update_counter,
+)
 from ..serializers.contactmoment import ContactmomentSerializer
 
 logger = structlog.stdlib.get_logger(__name__)
@@ -55,6 +60,7 @@ class ContactmomentViewSet(viewsets.ModelViewSet):
             "contactmoment_created",
             uuid=str(contactmoment.uuid),
         )
+        contactmomenten_create_counter.add(1)
 
     @transaction.atomic
     def perform_update(self, serializer):
@@ -64,6 +70,7 @@ class ContactmomentViewSet(viewsets.ModelViewSet):
             "contactmoment_updated",
             uuid=str(contactmoment.uuid),
         )
+        contactmomenten_update_counter.add(1)
 
     @transaction.atomic
     def perform_destroy(self, instance):
@@ -72,3 +79,4 @@ class ContactmomentViewSet(viewsets.ModelViewSet):
             "contactmoment_deleted",
             uuid=str(instance.uuid),
         )
+        contactmomenten_delete_counter.add(1)

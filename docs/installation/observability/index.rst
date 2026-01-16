@@ -23,4 +23,6 @@ their observability stack.
    :caption: Contents
 
    logging
+   metrics
+   otel_config
 

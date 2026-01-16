@@ -11,6 +11,9 @@ WORKER_NAME=${CELERY_WORKER_NAME:="${QUEUE}"@%n}
 export OTEL_SERVICE_NAME="${OTEL_SERVICE_NAME:-openplan-worker-"${QUEUE}"}"
 
 echo "Starting celery worker $WORKER_NAME with queue $QUEUE"
+# unset this if NOT using a process pool
+export _OTEL_DEFER_SETUP="true"
+
 exec celery worker \
     --app openplan \
     -Q $QUEUE \

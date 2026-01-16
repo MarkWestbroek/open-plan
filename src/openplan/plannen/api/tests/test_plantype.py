@@ -1,8 +1,15 @@
+from unittest.mock import MagicMock, patch
+
 from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.metrics import (
+    plantypen_create_counter,
+    plantypen_delete_counter,
+    plantypen_update_counter,
+)
 from openplan.plannen.models.factories.plantype import PlanTypeFactory
 
 from ...models.plantype import PlanType
@@ -92,3 +99,29 @@ class PlanTypeAPITests(APITestCase):
         self.assertEqual(data["count"], 1)
         self.assertEqual(data["results"][0]["uuid"], str(plantype_match.uuid))
         self.assertEqual(data["results"][0]["type"], "pip")
+
+    @patch.object(plantypen_create_counter, "add", wraps=plantypen_create_counter.add)
+    def test_create_plantype_increments_metric(self, mock_add: MagicMock):
+        url = reverse("plannen:plantype-list")
+        data = {"type": PlanTypeFactory.build().type}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 201)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(plantypen_update_counter, "add", wraps=plantypen_update_counter.add)
+    def test_update_plantype_increments_metric(self, mock_add: MagicMock):
+        plantype = PlanTypeFactory.create()
+        new_type = PlanTypeFactory.build().type
+        url = reverse("plannen:plantype-detail", kwargs={"uuid": plantype.uuid})
+        data = {"type": new_type}
+        response = self.client.patch(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_add.assert_called_once_with(1)
+
+    @patch.object(plantypen_delete_counter, "add", wraps=plantypen_delete_counter.add)
+    def test_delete_plantype_increments_metric(self, mock_add: MagicMock):
+        plantype = PlanTypeFactory.create()
+        url = reverse("plannen:plantype-detail", kwargs={"uuid": plantype.uuid})
+        response = self.client.delete(url)
+        self.assertIn(response.status_code, (200, 204))
+        mock_add.assert_called_once_with(1)
