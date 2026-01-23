@@ -256,6 +256,35 @@ class DoelAPITests(APITestCase):
             val.exception.message_dict["hoofd_doel"][0],
         )
 
+    def test_create_doel_fails_with_multiple_persoon_errors(self):
+        persoon = PersoonFactory.create(persoonsprofiel="", klant="", bsn="")
+
+        url = reverse("plannen:doel-list")
+        data = {
+            "doeltypeUuid": str(self.hoofddoel_type.uuid),
+            "planUuid": str(self.plan.uuid),
+            "persoonUuid": str(persoon.uuid),
+        }
+
+        response = self.client.post(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        persoon_errors = [
+            p["reason"]
+            for p in response.data.get("invalid_params", [])
+            if p["name"] == "persoon"
+        ]
+
+        self.assertEqual(
+            persoon_errors,
+            [
+                "Primair persoon moet een persoonsprofiel URL hebben.",
+                "Primair persoon moet een Open Klant koppeling hebben.",
+                "Primair persoon moet een BRP-koppeling (BSN) hebben.",
+            ],
+        )
+
     @patch.object(doelen_create_counter, "add", wraps=doelen_create_counter.add)
     def test_create_doel_increments_metric(self, mock_add: MagicMock):
         url = reverse("plannen:doel-list")
