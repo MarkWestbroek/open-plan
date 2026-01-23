@@ -3,11 +3,13 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+import pghistory
 from vng_api_common.fields import BSNField
 
 from openplan.utils.fields import URNField
 
 
+@pghistory.track()
 class Persoon(models.Model):
     uuid = models.UUIDField(
         unique=True, default=uuid.uuid4, help_text="Unieke resource identifier (UUID4)"

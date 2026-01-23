@@ -11,6 +11,7 @@ from .viewsets.contactmoment import ContactmomentViewSet
 from .viewsets.doel import DoelViewSet
 from .viewsets.doelcategorie import DoelCategorieViewSet
 from .viewsets.doeltype import DoelTypeViewSet
+from .viewsets.history import HistoryViewSet
 from .viewsets.instrument import InstrumentViewSet
 from .viewsets.instrumenttype import InstrumentTypeViewSet
 from .viewsets.persoon import PersoonViewSet
@@ -34,6 +35,7 @@ router.register("relatie", RelatieViewSet)
 router.register("relatietype", RelatieTypeViewSet)
 router.register("instrument", InstrumentViewSet)
 router.register("instrumenttype", InstrumentTypeViewSet)
+router.register("history", HistoryViewSet, basename="plan-history")
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -3,9 +3,12 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+import pghistory
+
 from .validators import validate_hoofd_doel_not_self, validate_primary_persoon
 
 
+@pghistory.track()
 class Doel(models.Model):
     uuid = models.UUIDField(
         unique=True,

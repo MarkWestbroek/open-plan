@@ -3,7 +3,10 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+import pghistory
 
+
+@pghistory.track()
 class RelatieType(models.Model):
     uuid = models.UUIDField(
         unique=True,

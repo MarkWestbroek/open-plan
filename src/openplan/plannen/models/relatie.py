@@ -3,9 +3,12 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+import pghistory
+
 from .validators import validate_relatie_uniqueness
 
 
+@pghistory.track()
 class Relatie(models.Model):
     uuid = models.UUIDField(
         unique=True,
