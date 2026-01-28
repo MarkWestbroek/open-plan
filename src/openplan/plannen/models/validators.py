@@ -23,9 +23,9 @@ def validate_hoofd_doel_not_self(doel):
 
 def validate_primary_persoon(persoon):
     errors = []
-    if not persoon.persoonsprofiel_url:
+    if not persoon.persoonsprofiel:
         errors.append(_("Primair persoon moet een persoonsprofiel URL hebben."))
-    if not persoon.open_klant_url:
+    if not persoon.klant:
         errors.append(_("Primair persoon moet een Open Klant koppeling hebben."))
     if not persoon.bsn:
         errors.append(_("Primair persoon moet een BRP-koppeling (BSN) hebben."))

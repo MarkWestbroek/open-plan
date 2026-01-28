@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
@@ -7,6 +8,7 @@ from openplan.plannen.models.doel import Doel
 from openplan.plannen.models.doeltype import DoelType
 from openplan.plannen.models.persoon import Persoon
 from openplan.plannen.models.plan import Plan
+from openplan.plannen.models.validators import validate_primary_persoon
 from openplan.utils.fields import UUIDRelatedField
 
 from .doeltype import DoelTypeSerializer
@@ -87,3 +89,17 @@ class DoelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "uuid": {"read_only": True},
         }
+
+    def validate(self, attrs):
+        persoon = attrs.get("persoon")
+
+        if persoon is None and self.instance:
+            persoon = self.instance.persoon
+
+        if persoon:
+            try:
+                validate_primary_persoon(persoon)
+            except ValidationError as exc:
+                raise serializers.ValidationError(exc.message_dict)
+
+        return attrs
