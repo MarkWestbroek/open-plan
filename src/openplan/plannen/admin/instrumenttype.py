@@ -4,15 +4,16 @@ from ..models.instrumenttype import InstrumentType
 
 
 @admin.register(InstrumentType)
-class InstrumentAdmin(admin.ModelAdmin):
+class InstrumentTypeAdmin(admin.ModelAdmin):
     list_display = (
-        "type",
         "uuid",
+        "instrument_type",
     )
-    list_filter = ("type",)
-    search_fields = ("type", "uuid")
-    ordering = ("type",)
+    list_filter = ("instrument_type",)
+    search_fields = ("instrument_type", "uuid")
+    ordering = ("instrument_type",)
     readonly_fields = ("uuid",)
+    filter_horizontal = ("categorieen",)
 
     fieldsets = (
         (
@@ -20,8 +21,12 @@ class InstrumentAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "uuid",
-                    "type",
+                    "instrument_type",
+                    "categorieen",
                 ),
             },
         ),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("categorieen")

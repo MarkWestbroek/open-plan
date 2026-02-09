@@ -1,21 +1,19 @@
 from django.contrib import admin
 
-from ..models.doel import Doel
+from ..models.ontwikkelwens import Ontwikkelwens
 
 
-@admin.register(Doel)
-class DoelAdmin(admin.ModelAdmin):
+@admin.register(Ontwikkelwens)
+class OntwikkelwensAdmin(admin.ModelAdmin):
     list_display = (
         "uuid",
         "titel",
-        "persoon",
-        "doeltype",
+        "doel",
         "status",
-        "hoofd_doel",
         "startdatum",
     )
     list_filter = (
-        "doeltype",
+        "doel_categorieen",
         "status",
     )
     search_fields = (
@@ -24,7 +22,7 @@ class DoelAdmin(admin.ModelAdmin):
     )
     ordering = ("-pk",)
     readonly_fields = ("uuid",)
-    filter_horizontal = ("plannen",)
+    filter_horizontal = ("doel_categorieen",)
 
     fieldsets = (
         (
@@ -33,25 +31,31 @@ class DoelAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "titel",
-                    "doeltype",
-                    "plannen",
-                    "persoon",
-                    "hoofd_doel",
+                    "doel",
+                    "doel_categorieen",
                     "status",
-                    "beschrijving",
                 ),
             },
         ),
         (
             "Data",
             {
-                "fields": ("startdatum", "einddatum"),
+                "fields": (
+                    "startdatum",
+                    "einddatum",
+                ),
             },
         ),
         (
-            "Voortgang",
+            "Beschrijving",
             {
-                "fields": ("resultaat", "toelichting_resultaat"),
+                "fields": ("beschrijving",),
+            },
+        ),
+        (
+            "Resultaat",
+            {
+                "fields": ("resultaat",),
             },
         ),
     )
@@ -60,6 +64,6 @@ class DoelAdmin(admin.ModelAdmin):
         return (
             super()
             .get_queryset(request)
-            .select_related("persoon", "doeltype", "hoofd_doel")
-            .prefetch_related("plannen")
+            .select_related("doel")
+            .prefetch_related("doel_categorieen")
         )

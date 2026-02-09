@@ -12,11 +12,16 @@ class InstrumentType(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
     )
-    type = models.CharField(
+    instrument_type = models.CharField(
         choices=InstrumentTypeEnum.choices,
         max_length=50,
         unique=True,
         help_text=_("Het type instrument."),
+    )
+    categorieen = models.ManyToManyField(
+        "plannen.InstrumentCategorie",
+        related_name="instrumenttypes",
+        help_text=_("Categorieën waaraan dit instrumenttype gekoppeld is."),
     )
 
     class Meta:
@@ -24,4 +29,4 @@ class InstrumentType(models.Model):
         verbose_name_plural = _("Instrumenttypen")
 
     def __str__(self):
-        return self.type
+        return self.instrument_type

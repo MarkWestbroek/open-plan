@@ -5,6 +5,8 @@ from .doeltype import DoelType
 from .instrument import Instrument
 from .instrumentcategorie import InstrumentCategorie
 from .instrumenttype import InstrumentType
+from .ontwikkelwens import Ontwikkelwens
+from .overkoepelendplan import OverkoepelendPlan
 from .persoon import Persoon
 from .plan import Plan
 from .plantype import PlanType
@@ -20,6 +22,7 @@ __all__ = [
     "InstrumentType",
     "Ontwikkelwens",
     "Persoon",
+    "OverkoepelendPlan",
     "Plan",
     "PlanType",
     "Relatie",
