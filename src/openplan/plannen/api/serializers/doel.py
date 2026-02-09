@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.models.doel import Doel
 from openplan.plannen.models.doeltype import DoelType
@@ -45,16 +44,13 @@ class NestedDoelSerializer(serializers.ModelSerializer):
 class DoelSerializer(serializers.ModelSerializer):
     doeltype = NestedDoelTypeSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.DoelType", "doel_type"),
     )
     plannen = NestedPlanSerializer(
         many=True,
         read_only=True,
-        help_text=get_help_text("plannen.Plan", "uuid"),
     )
     persoon = PersoonSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Persoon", "uuid"),
     )
 
     doeltype_uuid = UUIDRelatedField(

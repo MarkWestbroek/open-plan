@@ -2711,7 +2711,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
           type: string
           format: uuid
@@ -2735,7 +2734,6 @@ components:
           items:
             $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         plannenUuids:
           type: array
           items:
@@ -2748,7 +2746,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedDoelType'
           readOnly: true
-          description: De unieke naam van dit doeltype.
         doeltypeUuid:
           type: string
           format: uuid
@@ -2758,7 +2755,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
@@ -2854,7 +2850,6 @@ components:
           items:
             $ref: '#/components/schemas/DoelCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
         categorieenUuids:
           type: array
           items:
@@ -2933,7 +2928,6 @@ components:
           items:
             $ref: '#/components/schemas/NestedDoel'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         doelenUuids:
           type: array
           items:
@@ -2947,7 +2941,6 @@ components:
           items:
             $ref: '#/components/schemas/NestedDoel'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         ontwikkelwensenUuids:
           type: array
           items:
@@ -2961,7 +2954,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedInstrumentType'
           readOnly: true
-          description: Het type instrument.
         instrumenttypeUuid:
           type: string
           format: uuid
@@ -2972,7 +2964,6 @@ components:
           items:
             $ref: '#/components/schemas/InstrumentCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
       required:
       - doelen
       - doelenUuids
@@ -3021,7 +3012,6 @@ components:
           items:
             $ref: '#/components/schemas/InstrumentCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
         categorieenUuids:
           type: array
           items:
@@ -3248,7 +3238,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedDoel'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         doelUuid:
           type: string
           format: uuid
@@ -3259,7 +3248,6 @@ components:
           items:
             $ref: '#/components/schemas/DoelCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
         doelCategorieenUuids:
           type: array
           items:
@@ -3643,7 +3631,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
           type: string
           format: uuid
@@ -3662,7 +3649,6 @@ components:
           items:
             $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         plannenUuids:
           type: array
           items:
@@ -3675,7 +3661,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedDoelType'
           readOnly: true
-          description: De unieke naam van dit doeltype.
         doeltypeUuid:
           type: string
           format: uuid
@@ -3685,7 +3670,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
@@ -3768,7 +3752,6 @@ components:
           items:
             $ref: '#/components/schemas/DoelCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
         categorieenUuids:
           type: array
           items:
@@ -3834,7 +3817,6 @@ components:
           items:
             $ref: '#/components/schemas/NestedDoel'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         doelenUuids:
           type: array
           items:
@@ -3848,7 +3830,6 @@ components:
           items:
             $ref: '#/components/schemas/NestedDoel'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         ontwikkelwensenUuids:
           type: array
           items:
@@ -3862,7 +3843,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedInstrumentType'
           readOnly: true
-          description: Het type instrument.
         instrumenttypeUuid:
           type: string
           format: uuid
@@ -3873,7 +3853,6 @@ components:
           items:
             $ref: '#/components/schemas/InstrumentCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
     PatchedInstrumentType:
       type: object
       properties:
@@ -3896,7 +3875,6 @@ components:
           items:
             $ref: '#/components/schemas/InstrumentCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
         categorieenUuids:
           type: array
           items:
@@ -3953,7 +3931,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/NestedDoel'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         doelUuid:
           type: string
           format: uuid
@@ -3964,7 +3941,6 @@ components:
           items:
             $ref: '#/components/schemas/DoelCategorie'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze categorie.
         doelCategorieenUuids:
           type: array
           items:
@@ -4079,7 +4055,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/PlanType'
           readOnly: true
-          description: Het type plan.
         plantypeUuid:
           type: string
           format: uuid
@@ -4089,7 +4064,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/OverkoepelendPlan'
           readOnly: true
-          description: Titel van het overkoepelende plan.
         overkoepelendPlanUuid:
           type: string
           format: uuid
@@ -4142,7 +4116,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
@@ -4152,7 +4125,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         gerelateerdePersoonUuid:
           type: string
           format: uuid
@@ -4162,7 +4134,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/RelatieType'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         relatietypeUuid:
           type: string
           format: uuid
@@ -4257,7 +4228,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/PlanType'
           readOnly: true
-          description: Het type plan.
         plantypeUuid:
           type: string
           format: uuid
@@ -4267,7 +4237,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/OverkoepelendPlan'
           readOnly: true
-          description: Titel van het overkoepelende plan.
         overkoepelendPlanUuid:
           type: string
           format: uuid
@@ -4332,7 +4301,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
@@ -4342,7 +4310,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         gerelateerdePersoonUuid:
           type: string
           format: uuid
@@ -4352,7 +4319,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/RelatieType'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         relatietypeUuid:
           type: string
           format: uuid

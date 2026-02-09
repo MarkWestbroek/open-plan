@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.models.contactmoment import Contactmoment
 from openplan.plannen.models.plan import Plan
@@ -13,7 +12,6 @@ from .plan import NestedPlanSerializer
 class ContactmomentSerializer(serializers.ModelSerializer):
     plan = NestedPlanSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Plan", "uuid"),
     )
 
     plan_uuid = UUIDRelatedField(

@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.models.overkoepelendplan import OverkoepelendPlan
 from openplan.plannen.models.plan import Plan
@@ -37,7 +36,6 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
     plantype = PlanTypeSerializer(
         required=False,
         read_only=True,
-        help_text=get_help_text("plannen.PlanType", "type"),
     )
     plantype_uuid = UUIDRelatedField(
         queryset=PlanType.objects.all(),
@@ -49,7 +47,6 @@ class PlanSerializer(URNModelSerializer, serializers.ModelSerializer):
     overkoepelend_plan = OverkoepelendPlanSerializer(
         required=False,
         read_only=True,
-        help_text=get_help_text("plannen.OverkoepelendPlan", "titel"),
     )
     overkoepelend_plan_uuid = UUIDRelatedField(
         queryset=OverkoepelendPlan.objects.all(),

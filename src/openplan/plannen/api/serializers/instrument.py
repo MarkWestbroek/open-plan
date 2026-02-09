@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.models.doel import Doel
 from openplan.plannen.models.instrument import Instrument
@@ -18,21 +17,17 @@ class InstrumentSerializer(serializers.ModelSerializer):
     doelen = NestedDoelSerializer(
         many=True,
         read_only=True,
-        help_text=get_help_text("plannen.Doel", "uuid"),
     )
     ontwikkelwensen = NestedDoelSerializer(
         many=True,
         read_only=True,
-        help_text=get_help_text("plannen.Ontwikkelwens", "uuid"),
     )
     instrumenttype = NestedInstrumentTypeSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Instrumenttype", "instrument_type"),
     )
     instrument_categorieen = InstrumentCategorieSerializer(
         many=True,
         read_only=True,
-        help_text=get_help_text("plannen.InstrumentCategorie", "uuid"),
     )
 
     doelen_uuids = UUIDRelatedField(

@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.api.serializers.doelcategorie import DoelCategorieSerializer
 from openplan.plannen.models.doelcategorie import DoelCategorie
@@ -23,7 +22,6 @@ class DoelTypeSerializer(serializers.ModelSerializer):
     categorieen = DoelCategorieSerializer(
         many=True,
         read_only=True,
-        help_text=get_help_text("plannen.DoelCategorie", "uuid"),
     )
 
     categorieen_uuids = UUIDRelatedField(
