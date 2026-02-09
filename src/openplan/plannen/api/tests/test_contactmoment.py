@@ -1,3 +1,4 @@
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
@@ -21,7 +22,10 @@ class ContactmomentAPITests(APITestCase):
     def test_create_contactmoment(self):
         plan = PlanFactory.create()
         url = reverse("plannen:contactmoment-list")
-        data = {"plan_uuid": str(plan.uuid)}
+        data = {
+            "plan_uuid": str(plan.uuid),
+            "datum": str(date.today()),
+        }
 
         response = self.client.post(url, data, format="json")
 
@@ -59,7 +63,10 @@ class ContactmomentAPITests(APITestCase):
         url = reverse(
             "plannen:contactmoment-detail", kwargs={"uuid": contactmoment.uuid}
         )
-        data = {"plan_uuid": str(new_plan.uuid)}
+        data = {
+            "plan_uuid": str(new_plan.uuid),
+            "datum": str(date.today()),
+        }
         response = self.client.put(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -73,7 +80,10 @@ class ContactmomentAPITests(APITestCase):
         url = reverse(
             "plannen:contactmoment-detail", kwargs={"uuid": contactmoment.uuid}
         )
-        data = {"plan_uuid": str(new_plan.uuid)}
+        data = {
+            "plan_uuid": str(new_plan.uuid),
+            "datum": str(date.today()),
+        }
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -101,7 +111,10 @@ class ContactmomentAPITests(APITestCase):
     def test_create_contactmoment_increments_metric(self, mock_add: MagicMock):
         plan = PlanFactory.create()
         url = reverse("plannen:contactmoment-list")
-        data = {"plan_uuid": str(plan.uuid)}
+        data = {
+            "plan_uuid": str(plan.uuid),
+            "datum": str(date.today()),
+        }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)
         mock_add.assert_called_once_with(1)
@@ -115,7 +128,10 @@ class ContactmomentAPITests(APITestCase):
         url = reverse(
             "plannen:contactmoment-detail", kwargs={"uuid": contactmoment.uuid}
         )
-        data = {"plan_uuid": str(new_plan.uuid)}
+        data = {
+            "plan_uuid": str(new_plan.uuid),
+            "datum": str(date.today()),
+        }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         mock_add.assert_called_once_with(1)

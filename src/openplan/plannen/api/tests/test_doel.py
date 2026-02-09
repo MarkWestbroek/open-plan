@@ -1,3 +1,4 @@
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import ValidationError
@@ -23,34 +24,34 @@ from .api_testcase import APITestCase
 class DoelAPITests(APITestCase):
     def setUp(self):
         super().setUp()
-        self.hoofddoel_type = DoelTypeFactory.create(type="hoofddoel")
-        self.subdoel_type = DoelTypeFactory.create(type="subdoel")
+        self.hoofddoel_type = DoelTypeFactory.create(doel_type="hoofddoel")
+        self.subdoel_type = DoelTypeFactory.create(doel_type="subdoel")
 
         self.plan = PlanFactory.create()
         self.persoon = PersoonFactory.create()
 
-    def test_create_doel(self):
-        doeltype = self.hoofddoel_type
-        plan = PlanFactory.create()
-        persoon = PersoonFactory.create()
-
-        url = reverse("plannen:doel-list")
-        data = {
-            "doeltypeUuid": str(doeltype.uuid),
-            "planUuid": str(plan.uuid),
-            "persoonUuid": str(persoon.uuid),
+        self.data = {
+            "doeltypeUuid": str(self.hoofddoel_type.uuid),
+            "plannenUuids": [str(self.plan.uuid)],
+            "persoonUuid": str(self.persoon.uuid),
+            "titel": "Test Doel",
+            "startdatum": str(date.today()),
+            "beschrijving": "Beschrijving test",
         }
-        response = self.client.post(url, data, format="json")
+
+    def test_create_doel(self):
+        url = reverse("plannen:doel-list")
+        response = self.client.post(url, self.data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         doel = Doel.objects.get(uuid=response.data["uuid"])
-        self.assertEqual(doel.doeltype.uuid, doeltype.uuid)
+        self.assertEqual(doel.doeltype.uuid, self.hoofddoel_type.uuid)
 
     def test_list_doelens(self):
         doeltype = self.hoofddoel_type
         DoelFactory.create_batch(
-            3, doeltype=doeltype, plan=self.plan, persoon=self.persoon
+            3, doeltype=doeltype, plannen=[self.plan], persoon=self.persoon
         )
 
         url = reverse("plannen:doel-list")
@@ -72,18 +73,21 @@ class DoelAPITests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["uuid"], str(doel.uuid))
-        self.assertEqual(response.data["doeltype"]["type"], str(doel.doeltype))
+        self.assertEqual(response.data["doeltype"]["doel_type"], str(doel.doeltype))
 
     def test_update_doel(self):
         doeltype = self.hoofddoel_type
         doel = DoelFactory.create(doeltype=doeltype)
         new_doeltype = self.subdoel_type
-
+        new_plan = PlanFactory.create()
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         data = {
             "doeltypeUuid": str(new_doeltype.uuid),
-            "planUuid": str(doel.plan.uuid),
+            "plannenUuids": [str(new_plan.uuid)],
             "persoonUuid": str(doel.persoon.uuid),
+            "titel": "Test update Doel",
+            "startdatum": str(date.today()),
+            "beschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")
 
@@ -136,21 +140,23 @@ class DoelAPITests(APITestCase):
 
     def test_list_children_under_parent(self):
         parent = DoelFactory(
-            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
         )
         child1 = DoelFactory(
             hoofd_doel=parent,
             doeltype=self.subdoel_type,
-            plan=self.plan,
+            plannen=[self.plan],
             persoon=self.persoon,
         )
         child2 = DoelFactory(
             hoofd_doel=parent,
             doeltype=self.subdoel_type,
-            plan=self.plan,
+            plannen=[self.plan],
             persoon=self.persoon,
         )
-        DoelFactory(doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon)
+        DoelFactory(
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
+        )
 
         url = reverse("plannen:doel-list")
         response = self.client.get(url)
@@ -179,28 +185,28 @@ class DoelAPITests(APITestCase):
 
     def test_multiple_independent_trees(self):
         root1 = DoelFactory(
-            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
         )
         root2 = DoelFactory(
-            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
         )
 
         child1a = DoelFactory(
             hoofd_doel=root1,
             doeltype=self.subdoel_type,
-            plan=self.plan,
+            plannen=[self.plan],
             persoon=self.persoon,
         )
         child1b = DoelFactory(
             hoofd_doel=root1,
             doeltype=self.subdoel_type,
-            plan=self.plan,
+            plannen=[self.plan],
             persoon=self.persoon,
         )
         child2a = DoelFactory(
             hoofd_doel=root2,
             doeltype=self.subdoel_type,
-            plan=self.plan,
+            plannen=[self.plan],
             persoon=self.persoon,
         )
 
@@ -262,8 +268,11 @@ class DoelAPITests(APITestCase):
         url = reverse("plannen:doel-list")
         data = {
             "doeltypeUuid": str(self.hoofddoel_type.uuid),
-            "planUuid": str(self.plan.uuid),
+            "plannenUuids": [str(self.plan.uuid)],
             "persoonUuid": str(persoon.uuid),
+            "titel": "Test Doel",
+            "startdatum": str(date.today()),
+            "beschrijving": "Beschrijving test",
         }
 
         response = self.client.post(url, data, format="json")
@@ -288,26 +297,26 @@ class DoelAPITests(APITestCase):
     @patch.object(doelen_create_counter, "add", wraps=doelen_create_counter.add)
     def test_create_doel_increments_metric(self, mock_add: MagicMock):
         url = reverse("plannen:doel-list")
-        data = {
-            "doeltypeUuid": str(self.hoofddoel_type.uuid),
-            "planUuid": str(self.plan.uuid),
-            "persoonUuid": str(self.persoon.uuid),
-        }
-        response = self.client.post(url, data, format="json")
+
+        response = self.client.post(url, self.data, format="json")
         self.assertEqual(response.status_code, 201)
         mock_add.assert_called_once_with(1)
 
     @patch.object(doelen_update_counter, "add", wraps=doelen_update_counter.add)
     def test_update_doel_increments_metric(self, mock_add: MagicMock):
         doel = DoelFactory.create(
-            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
         )
         new_doeltype = self.subdoel_type
+        new_plan = PlanFactory.create()
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         data = {
             "doeltypeUuid": str(new_doeltype.uuid),
-            "planUuid": str(doel.plan.uuid),
+            "plannenUuids": [str(new_plan.uuid)],
             "persoonUuid": str(doel.persoon.uuid),
+            "titel": "Test update Doel",
+            "startdatum": str(date.today()),
+            "beschrijving": "Beschrijving update test",
         }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -316,7 +325,7 @@ class DoelAPITests(APITestCase):
     @patch.object(doelen_delete_counter, "add", wraps=doelen_delete_counter.add)
     def test_delete_doel_increments_metric(self, mock_add: MagicMock):
         doel = DoelFactory.create(
-            doeltype=self.hoofddoel_type, plan=self.plan, persoon=self.persoon
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
         )
         url = reverse("plannen:doel-detail", kwargs={"uuid": doel.uuid})
         response = self.client.delete(url)
