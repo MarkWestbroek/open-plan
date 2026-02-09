@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 class DoelTypeEnum(models.TextChoices):
     HOOFDDOEL = "hoofddoel", _("Hoofddoel")
     SUBDOEL = "subdoel", _("Subdoel")
-    ONTWIKKELWENS = "ontwikkelwens", _("Ontwikkelwens")
 
 
 class HoofddoelEnum(models.TextChoices):

@@ -27,6 +27,10 @@ class ContactmomentSerializer(serializers.ModelSerializer):
         model = Contactmoment
         fields = [
             "uuid",
+            "status",
+            "datum",
+            "toelichting_status",
+            "notitie",
             "plan",
             "plan_uuid",
         ]

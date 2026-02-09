@@ -11,7 +11,7 @@ from openplan.plannen.models.plan import Plan
 from openplan.plannen.models.validators import validate_primary_persoon
 from openplan.utils.fields import UUIDRelatedField
 
-from .doeltype import DoelTypeSerializer
+from .doeltype import NestedDoelTypeSerializer
 from .persoon import PersoonSerializer
 from .plan import NestedPlanSerializer
 
@@ -28,6 +28,13 @@ class NestedDoelSerializer(serializers.ModelSerializer):
         model = Doel
         fields = [
             "uuid",
+            "status",
+            "titel",
+            "beschrijving",
+            "startdatum",
+            "einddatum",
+            "resultaat",
+            "toelichting_resultaat",
             "hoofd_doel",
         ]
         extra_kwargs = {
@@ -36,11 +43,12 @@ class NestedDoelSerializer(serializers.ModelSerializer):
 
 
 class DoelSerializer(serializers.ModelSerializer):
-    doeltype = DoelTypeSerializer(
+    doeltype = NestedDoelTypeSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.DoelType", "type"),
+        help_text=get_help_text("plannen.DoelType", "doel_type"),
     )
-    plan = NestedPlanSerializer(
+    plannen = NestedPlanSerializer(
+        many=True,
         read_only=True,
         help_text=get_help_text("plannen.Plan", "uuid"),
     )
@@ -55,11 +63,12 @@ class DoelSerializer(serializers.ModelSerializer):
         source="doeltype",
         help_text=_("UUID van de gekoppelde doeltype."),
     )
-    plan_uuid = UUIDRelatedField(
+    plannen_uuids = UUIDRelatedField(
         queryset=Plan.objects.all(),
+        many=True,
         write_only=True,
-        source="plan",
-        help_text=_("UUID van het plan waarbij dit doel hoort."),
+        source="plannen",
+        help_text=_("UUID van de plannen waaraan dit doel gekoppelt is."),
     )
     persoon_uuid = UUIDRelatedField(
         queryset=Persoon.objects.all(),
@@ -78,12 +87,19 @@ class DoelSerializer(serializers.ModelSerializer):
         model = Doel
         fields = [
             "uuid",
-            "plan",
-            "plan_uuid",
+            "plannen",
+            "plannen_uuids",
             "doeltype",
             "doeltype_uuid",
             "persoon",
             "persoon_uuid",
+            "status",
+            "titel",
+            "beschrijving",
+            "startdatum",
+            "einddatum",
+            "resultaat",
+            "toelichting_resultaat",
             "hoofd_doel",
         ]
         extra_kwargs = {
@@ -103,3 +119,10 @@ class DoelSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(exc.message_dict)
 
         return attrs
+
+    def validate_plannen(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                "Een doel moet aan minstens één plan gekoppeld zijn."
+            )
+        return value
