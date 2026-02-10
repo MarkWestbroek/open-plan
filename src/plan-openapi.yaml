@@ -634,6 +634,18 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle doeltypen opvragen.
       parameters:
+      - in: query
+        name: doelType
+        schema:
+          type: string
+          enum:
+          - hoofddoel
+          - subdoel
+        description: |-
+          Het type doel.
+
+          * `hoofddoel` - Hoofddoel
+          * `subdoel` - Subdoel
       - name: page
         required: false
         in: query
@@ -646,20 +658,6 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
-      - in: query
-        name: type
-        schema:
-          type: string
-          enum:
-          - hoofddoel
-          - ontwikkelwens
-          - subdoel
-        description: |-
-          De unieke naam van dit doeltype.
-
-          * `hoofddoel` - Hoofddoel
-          * `subdoel` - Subdoel
-          * `ontwikkelwens` - Ontwikkelwens
       tags:
       - Doeltype
       security:
@@ -1234,6 +1232,404 @@ paths:
         required: true
       tags:
       - Instrumenttype
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /ontwikkelwens:
+    get:
+      operationId: ontwikkelwens_list
+      description: Deze lijst kan gefilterd worden met query-string parameters.
+      summary: Alle ontwikkelwensen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Ontwikkelwens
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOntwikkelwensList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOntwikkelwensList'
+          description: ''
+    post:
+      operationId: ontwikkelwens_create
+      description: Voeg een nieuwe ontwikkelwens toe aan het systeem.
+      summary: Nieuwe ontwikkelwens aanmaken.
+      tags:
+      - Ontwikkelwens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ontwikkelwens'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+          description: ''
+  /ontwikkelwens/{uuid}:
+    get:
+      operationId: ontwikkelwens_retrieve
+      description: Een specifieke ontwikkelwens opvragen via UUID.
+      summary: Een specifieke ontwikkelwens opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Ontwikkelwens
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+          description: ''
+    put:
+      operationId: ontwikkelwens_update
+      description: Werk alle gegevens van een ontwikkelwens bij.
+      summary: Ontwikkelwens volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Ontwikkelwens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ontwikkelwens'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+          description: ''
+    patch:
+      operationId: ontwikkelwens_partial_update
+      description: Werk enkele gegevens van een ontwikkelwens bij.
+      summary: Ontwikkelwens gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Ontwikkelwens
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOntwikkelwens'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Ontwikkelwens'
+          description: ''
+    delete:
+      operationId: ontwikkelwens_destroy
+      description: Verwijder een specifieke ontwikkelwens.
+      summary: Ontwikkelwens verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        required: true
+      tags:
+      - Ontwikkelwens
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          description: No response body
+  /overkoepelendplan:
+    get:
+      operationId: overkoepelendplan_list
+      description: Deze lijst kan gefilterd wordt met query-string parameters.
+      summary: Alle overkoepelende plannen opvragen.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Een pagina binnen de gepagineerde set resultaten.
+        schema:
+          type: integer
+      - name: pageSize
+        required: false
+        in: query
+        description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
+        schema:
+          type: integer
+      tags:
+      - Overkoepelend Plan
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOverkoepelendPlanList'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOverkoepelendPlanList'
+          description: ''
+    post:
+      operationId: overkoepelendplan_create
+      description: Voeg een nieuw overkoepelend plan toe aan het systeem.
+      summary: Nieuw overkoepelend plan aanmaken.
+      tags:
+      - Overkoepelend Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverkoepelendPlan'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '201':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+          description: ''
+  /overkoepelendplan/{uuid}:
+    get:
+      operationId: overkoepelendplan_retrieve
+      description: Een specifiek overkoepelend plan opvragen via UUID.
+      summary: Een specifiek overkoepelend plan opvragen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Overkoepelend Plan
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+          description: ''
+    put:
+      operationId: overkoepelendplan_update
+      description: Werk alle gegevens van een overkoepelend plan bij.
+      summary: Overkoepelend plan volledig bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Overkoepelend Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OverkoepelendPlan'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+          description: ''
+    patch:
+      operationId: overkoepelendplan_partial_update
+      description: Werk enkele gegevens van een overkoepelend plan bij.
+      summary: Overkoepelend plan gedeeltelijk bijwerken.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Overkoepelend Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOverkoepelendPlan'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          headers:
+            API-version:
+              schema:
+                type: string
+              description: 'Geeft een specifieke API-versie aan in de context van
+                een specifieke aanroep. Voorbeeld: 1.2.1.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/OverkoepelendPlan'
+          description: ''
+    delete:
+      operationId: overkoepelendplan_destroy
+      description: Verwijder een specifiek overkoepelend plan.
+      summary: Overkoepelend plan verwijderen.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Overkoepelend Plan
       security:
       - tokenAuth: []
       responses:
@@ -2279,6 +2675,9 @@ paths:
           description: No response body
 components:
   schemas:
+    BlankEnum:
+      enum:
+      - ''
     Contactmoment:
       type: object
       properties:
@@ -2287,17 +2686,38 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het contactmoment.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        datum:
+          type: string
+          format: date-time
+          description: Startdatum van het contactmoment.
+        toelichtingStatus:
+          type: string
+          description: Toelichting bij de status van het contactmoment.
+          maxLength: 1000
+        notitie:
+          type: string
+          description: Notitie bij het contactmoment.
+          maxLength: 1000
         plan:
           allOf:
           - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van het plan waarbij dit contactmoment hoort.
       required:
+      - datum
       - plan
       - planUuid
       - uuid
@@ -2309,21 +2729,23 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        plan:
-          allOf:
-          - $ref: '#/components/schemas/NestedPlan'
+        plannen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
-        planUuid:
-          type: string
-          format: uuid
+        plannenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
           writeOnly: true
-          description: UUID van het plan waarbij dit doel hoort.
+          description: UUID van de plannen waaraan dit doel gekoppelt is.
         doeltype:
           allOf:
-          - $ref: '#/components/schemas/DoelType'
+          - $ref: '#/components/schemas/NestedDoelType'
           readOnly: true
-          description: De unieke naam van dit doeltype.
         doeltypeUuid:
           type: string
           format: uuid
@@ -2333,12 +2755,50 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde persoon.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het doel.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        titel:
+          type: string
+          description: Titel van het doel.
+          maxLength: 255
+        beschrijving:
+          type: string
+          description: Beschrijving van het doel.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het doel.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het doel.
+        resultaat:
+          description: |-
+            Resultaat van het doel.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        toelichtingResultaat:
+          type: string
+          description: Toelichting bij het resultaat van het doel.
+          maxLength: 1000
         hoofdDoel:
           type: string
           format: uuid
@@ -2349,8 +2809,10 @@ components:
       - doeltypeUuid
       - persoon
       - persoonUuid
-      - plan
-      - planUuid
+      - plannen
+      - plannenUuids
+      - startdatum
+      - titel
       - uuid
     DoelCategorie:
       type: object
@@ -2375,28 +2837,41 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        type:
+        doelType:
           allOf:
-          - $ref: '#/components/schemas/DoelTypeTypeEnum'
+          - $ref: '#/components/schemas/DoelTypeEnum'
           description: |-
-            De unieke naam van dit doeltype.
+            Het type doel.
 
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
-            * `ontwikkelwens` - Ontwikkelwens
+        categorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelCategorie'
+          readOnly: true
+        categorieenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de doelcategorieen waaraan dit doeltype gekoppeld
+            is.
       required:
-      - type
+      - categorieen
+      - categorieenUuids
+      - doelType
       - uuid
-    DoelTypeTypeEnum:
+    DoelTypeEnum:
       enum:
       - hoofddoel
       - subdoel
-      - ontwikkelwens
       type: string
       description: |-
         * `hoofddoel` - Hoofddoel
         * `subdoel` - Subdoel
-        * `ontwikkelwens` - Ontwikkelwens
     Instrument:
       type: object
       properties:
@@ -2405,31 +2880,115 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        doel:
-          allOf:
-          - $ref: '#/components/schemas/NestedDoel'
-          readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
-        doelUuid:
+        titel:
           type: string
-          format: uuid
+          description: Titel van het instrument.
+          maxLength: 255
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het instrument.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het instrument.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het instrument.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        product:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de bijbehorende product in het productsysteem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        zaak:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar het bijbehorende zaak in het zaaksysteem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        resultaat:
+          description: |-
+            Resultaat van het instrument.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        doelen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
           writeOnly: true
-          description: UUID van het doel waaraan dit instrument gekoppeld is.
+          description: UUID's van het doel waaraan dit instrument gekoppeld is.
+        ontwikkelwensen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        ontwikkelwensenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van het ontwikkelwens waaraan dit instrument gekoppeld
+            is.
         instrumenttype:
           allOf:
-          - $ref: '#/components/schemas/InstrumentType'
+          - $ref: '#/components/schemas/NestedInstrumentType'
           readOnly: true
-          description: Het type instrument.
         instrumenttypeUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van het type instrument dat hier wordt toegepast.
+        instrumentCategorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentCategorie'
+          readOnly: true
       required:
-      - doel
-      - doelUuid
+      - doelen
+      - doelenUuids
+      - instrumentCategorieen
       - instrumenttype
       - instrumenttypeUuid
+      - ontwikkelwensen
+      - ontwikkelwensenUuids
+      - startdatum
+      - titel
+      - uuid
+    InstrumentCategorie:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze categorie.
+        naam:
+          type: string
+          description: Naam van de instrumentcategorie.
+          maxLength: 200
+      required:
+      - naam
       - uuid
     InstrumentType:
       type: object
@@ -2439,19 +2998,35 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        type:
+        instrumentType:
           allOf:
-          - $ref: '#/components/schemas/InstrumentTypeTypeEnum'
+          - $ref: '#/components/schemas/InstrumentTypeEnum'
           description: |-
             Het type instrument.
 
             * `training` - Training
             * `coaching` - Coaching
             * `financiele_ondersteuning` - Financiele ondersteuning
+        categorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentCategorie'
+          readOnly: true
+        categorieenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de instrumentcategorieen waaraan dit instrument
+            gekoppeld is.
       required:
-      - type
+      - categorieen
+      - categorieenUuids
+      - instrumentType
       - uuid
-    InstrumentTypeTypeEnum:
+    InstrumentTypeEnum:
       enum:
       - training
       - coaching
@@ -2469,12 +3044,92 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het doel.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        titel:
+          type: string
+          description: Titel van het doel.
+          maxLength: 255
+        beschrijving:
+          type: string
+          description: Beschrijving van het doel.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het doel.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het doel.
+        resultaat:
+          description: |-
+            Resultaat van het doel.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        toelichtingResultaat:
+          type: string
+          description: Toelichting bij het resultaat van het doel.
+          maxLength: 1000
         hoofdDoel:
           type: string
           format: uuid
           nullable: true
           description: UUID van de bovenliggende doel (optioneel).
       required:
+      - startdatum
+      - titel
+      - uuid
+    NestedDoelType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        doelType:
+          allOf:
+          - $ref: '#/components/schemas/DoelTypeEnum'
+          description: |-
+            Het type doel.
+
+            * `hoofddoel` - Hoofddoel
+            * `subdoel` - Subdoel
+      required:
+      - doelType
+      - uuid
+    NestedInstrumentType:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        instrumentType:
+          allOf:
+          - $ref: '#/components/schemas/InstrumentTypeEnum'
+          description: |-
+            Het type instrument.
+
+            * `training` - Training
+            * `coaching` - Coaching
+            * `financiele_ondersteuning` - Financiele ondersteuning
+      required:
+      - instrumentType
       - uuid
     NestedPlan:
       type: object
@@ -2484,7 +3139,165 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het plan.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        titel:
+          type: string
+          description: Titel van het plan.
+          maxLength: 255
+        notitie:
+          type: string
+          description: Notitie bij het plan.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het plan.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het plan.
+        redenEinde:
+          type: string
+          description: Reden waarom het plan is beëindigd.
+          maxLength: 1000
+        zaak:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de bijbehorende zaak in het zaaksysteem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        domeinregister:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar het domeinregister voor dit plan.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        medewerker:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de medewerker in het HR-systeem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
       required:
+      - startdatum
+      - titel
+      - uuid
+    Ontwikkelwens:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        titel:
+          type: string
+          description: Titel van het ontwikkelwens.
+          maxLength: 255
+        beschrijving:
+          type: string
+          description: Beschrijving van het ontwikkelwens.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het ontwikkelwens.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het ontwikkelwens.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het ontwikkelwens.
+        resultaat:
+          description: |-
+            Resultaat van het ontwikkelwens.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel waaraan deze ontwikkelwens gekoppeld is.
+        doelCategorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelCategorie'
+          readOnly: true
+        doelCategorieenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUIDs van de doelcategorieën waaraan deze ontwikkelwens gekoppeld
+            is.
+      required:
+      - doel
+      - doelCategorieen
+      - doelCategorieenUuids
+      - doelUuid
+      - startdatum
+      - titel
+      - uuid
+    OverkoepelendPlan:
+      type: object
+      properties:
+        urn:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        titel:
+          type: string
+          description: Titel van het overkoepelende plan.
+          maxLength: 255
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het overkoepelende plan.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        medewerker:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de medewerker in het HR-systeem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+      required:
+      - titel
+      - urn
       - uuid
     PaginatedContactmomentList:
       type: object
@@ -2624,6 +3437,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstrumentType'
+    PaginatedOntwikkelwensList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ontwikkelwens'
+    PaginatedOverkoepelendPlanList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverkoepelendPlan'
     PaginatedPersoonList:
       type: object
       required:
@@ -2747,11 +3606,31 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het contactmoment.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        datum:
+          type: string
+          format: date-time
+          description: Startdatum van het contactmoment.
+        toelichtingStatus:
+          type: string
+          description: Toelichting bij de status van het contactmoment.
+          maxLength: 1000
+        notitie:
+          type: string
+          description: Notitie bij het contactmoment.
+          maxLength: 1000
         plan:
           allOf:
           - $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         planUuid:
           type: string
           format: uuid
@@ -2765,21 +3644,23 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        plan:
-          allOf:
-          - $ref: '#/components/schemas/NestedPlan'
+        plannen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedPlan'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
-        planUuid:
-          type: string
-          format: uuid
+        plannenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
           writeOnly: true
-          description: UUID van het plan waarbij dit doel hoort.
+          description: UUID van de plannen waaraan dit doel gekoppelt is.
         doeltype:
           allOf:
-          - $ref: '#/components/schemas/DoelType'
+          - $ref: '#/components/schemas/NestedDoelType'
           readOnly: true
-          description: De unieke naam van dit doeltype.
         doeltypeUuid:
           type: string
           format: uuid
@@ -2789,12 +3670,50 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde persoon.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het doel.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        titel:
+          type: string
+          description: Titel van het doel.
+          maxLength: 255
+        beschrijving:
+          type: string
+          description: Beschrijving van het doel.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het doel.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het doel.
+        resultaat:
+          description: |-
+            Resultaat van het doel.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        toelichtingResultaat:
+          type: string
+          description: Toelichting bij het resultaat van het doel.
+          maxLength: 1000
         hoofdDoel:
           type: string
           format: uuid
@@ -2820,15 +3739,28 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        type:
+        doelType:
           allOf:
-          - $ref: '#/components/schemas/DoelTypeTypeEnum'
+          - $ref: '#/components/schemas/DoelTypeEnum'
           description: |-
-            De unieke naam van dit doeltype.
+            Het type doel.
 
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
-            * `ontwikkelwens` - Ontwikkelwens
+        categorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelCategorie'
+          readOnly: true
+        categorieenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de doelcategorieen waaraan dit doeltype gekoppeld
+            is.
     PatchedInstrument:
       type: object
       properties:
@@ -2837,26 +3769,90 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        doel:
-          allOf:
-          - $ref: '#/components/schemas/NestedDoel'
-          readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
-        doelUuid:
+        titel:
           type: string
-          format: uuid
+          description: Titel van het instrument.
+          maxLength: 255
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het instrument.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het instrument.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het instrument.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        product:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de bijbehorende product in het productsysteem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        zaak:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar het bijbehorende zaak in het zaaksysteem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
+        resultaat:
+          description: |-
+            Resultaat van het instrument.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        doelen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
           writeOnly: true
-          description: UUID van het doel waaraan dit instrument gekoppeld is.
+          description: UUID's van het doel waaraan dit instrument gekoppeld is.
+        ontwikkelwensen:
+          type: array
+          items:
+            $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        ontwikkelwensenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van het ontwikkelwens waaraan dit instrument gekoppeld
+            is.
         instrumenttype:
           allOf:
-          - $ref: '#/components/schemas/InstrumentType'
+          - $ref: '#/components/schemas/NestedInstrumentType'
           readOnly: true
-          description: Het type instrument.
         instrumenttypeUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van het type instrument dat hier wordt toegepast.
+        instrumentCategorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentCategorie'
+          readOnly: true
     PatchedInstrumentType:
       type: object
       properties:
@@ -2865,15 +3861,125 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
-        type:
+        instrumentType:
           allOf:
-          - $ref: '#/components/schemas/InstrumentTypeTypeEnum'
+          - $ref: '#/components/schemas/InstrumentTypeEnum'
           description: |-
             Het type instrument.
 
             * `training` - Training
             * `coaching` - Coaching
             * `financiele_ondersteuning` - Financiele ondersteuning
+        categorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstrumentCategorie'
+          readOnly: true
+        categorieenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUID's van de instrumentcategorieen waaraan dit instrument
+            gekoppeld is.
+    PatchedOntwikkelwens:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unieke resource identifier (UUID4) voor deze functie.
+        titel:
+          type: string
+          description: Titel van het ontwikkelwens.
+          maxLength: 255
+        beschrijving:
+          type: string
+          description: Beschrijving van het ontwikkelwens.
+          maxLength: 1000
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het ontwikkelwens.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het ontwikkelwens.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het ontwikkelwens.
+        resultaat:
+          description: |-
+            Resultaat van het ontwikkelwens.
+
+            * `behaald` - Behaald
+            * `gefaald` - Gefaald
+          oneOf:
+          - $ref: '#/components/schemas/ResultaatEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        doel:
+          allOf:
+          - $ref: '#/components/schemas/NestedDoel'
+          readOnly: true
+        doelUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het doel waaraan deze ontwikkelwens gekoppeld is.
+        doelCategorieen:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoelCategorie'
+          readOnly: true
+        doelCategorieenUuids:
+          type: array
+          items:
+            type: string
+            format: uuid
+            writeOnly: true
+          writeOnly: true
+          description: UUIDs van de doelcategorieën waaraan deze ontwikkelwens gekoppeld
+            is.
+    PatchedOverkoepelendPlan:
+      type: object
+      properties:
+        urn:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        titel:
+          type: string
+          description: Titel van het overkoepelende plan.
+          maxLength: 255
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het overkoepelende plan.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        medewerker:
+          type: string
+          example: urn:namespace:component:resource:uuid
+          description: URN naar de medewerker in het HR-systeem.
+          pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
+          maxLength: 255
     PatchedPersoon:
       type: object
       properties:
@@ -2915,16 +4021,54 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het plan.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        titel:
+          type: string
+          description: Titel van het plan.
+          maxLength: 255
+        notitie:
+          type: string
+          description: Notitie bij het plan.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het plan.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het plan.
+        redenEinde:
+          type: string
+          description: Reden waarom het plan is beëindigd.
+          maxLength: 1000
         plantype:
           allOf:
           - $ref: '#/components/schemas/PlanType'
           readOnly: true
-          description: Het type plan.
         plantypeUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde plantype.
+        overkoepelendPlan:
+          allOf:
+          - $ref: '#/components/schemas/OverkoepelendPlan'
+          readOnly: true
+        overkoepelendPlanUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het overkoepelend plan.
         zaak:
           type: string
           example: urn:namespace:component:resource:uuid
@@ -2953,7 +4097,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         type:
           allOf:
-          - $ref: '#/components/schemas/PlanTypeTypeEnum'
+          - $ref: '#/components/schemas/TypeEnum'
           description: |-
             Het type plan.
 
@@ -2972,7 +4116,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
@@ -2982,7 +4125,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         gerelateerdePersoonUuid:
           type: string
           format: uuid
@@ -2992,7 +4134,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/RelatieType'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         relatietypeUuid:
           type: string
           format: uuid
@@ -3053,16 +4194,54 @@ components:
           format: uuid
           readOnly: true
           description: Unieke resource identifier (UUID4) voor deze functie.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: |-
+            Status van het plan.
+
+            * `actief` - Actief
+            * `afgerond` - Afgerond
+            * `geannuleerd` - Geannuleerd
+        titel:
+          type: string
+          description: Titel van het plan.
+          maxLength: 255
+        notitie:
+          type: string
+          description: Notitie bij het plan.
+          maxLength: 1000
+        startdatum:
+          type: string
+          format: date-time
+          description: Startdatum van het plan.
+        einddatum:
+          type: string
+          format: date-time
+          nullable: true
+          description: Einddatum van het plan.
+        redenEinde:
+          type: string
+          description: Reden waarom het plan is beëindigd.
+          maxLength: 1000
         plantype:
           allOf:
           - $ref: '#/components/schemas/PlanType'
           readOnly: true
-          description: Het type plan.
         plantypeUuid:
           type: string
           format: uuid
           writeOnly: true
           description: UUID van de gekoppelde plantype.
+        overkoepelendPlan:
+          allOf:
+          - $ref: '#/components/schemas/OverkoepelendPlan'
+          readOnly: true
+        overkoepelendPlanUuid:
+          type: string
+          format: uuid
+          writeOnly: true
+          description: UUID van het overkoepelend plan.
         zaak:
           type: string
           example: urn:namespace:component:resource:uuid
@@ -3082,8 +4261,12 @@ components:
           pattern: ^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\?\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\?)*)?$
           maxLength: 255
       required:
+      - overkoepelendPlan
+      - overkoepelendPlanUuid
       - plantype
       - plantypeUuid
+      - startdatum
+      - titel
       - urn
       - uuid
     PlanType:
@@ -3096,7 +4279,7 @@ components:
           description: Unieke resource identifier (UUID4) voor deze functie.
         type:
           allOf:
-          - $ref: '#/components/schemas/PlanTypeTypeEnum'
+          - $ref: '#/components/schemas/TypeEnum'
           description: |-
             Het type plan.
 
@@ -3106,16 +4289,6 @@ components:
       required:
       - type
       - uuid
-    PlanTypeTypeEnum:
-      enum:
-      - pip
-      - werk
-      - inkomen
-      type: string
-      description: |-
-        * `pip` - Persoonlijk plan inburgering en perticipatie
-        * `werk` - Werk
-        * `inkomen` - Inkomen
     Relatie:
       type: object
       properties:
@@ -3128,7 +4301,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         persoonUuid:
           type: string
           format: uuid
@@ -3138,7 +4310,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Persoon'
           readOnly: true
-          description: Unieke resource identifier (UUID4)
         gerelateerdePersoonUuid:
           type: string
           format: uuid
@@ -3148,7 +4319,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/RelatieType'
           readOnly: true
-          description: Unieke resource identifier (UUID4) voor deze functie.
         relatietypeUuid:
           type: string
           format: uuid
@@ -3177,6 +4347,34 @@ components:
       required:
       - naam
       - uuid
+    ResultaatEnum:
+      enum:
+      - behaald
+      - gefaald
+      type: string
+      description: |-
+        * `behaald` - Behaald
+        * `gefaald` - Gefaald
+    StatusEnum:
+      enum:
+      - actief
+      - afgerond
+      - geannuleerd
+      type: string
+      description: |-
+        * `actief` - Actief
+        * `afgerond` - Afgerond
+        * `geannuleerd` - Geannuleerd
+    TypeEnum:
+      enum:
+      - pip
+      - werk
+      - inkomen
+      type: string
+      description: |-
+        * `pip` - Persoonlijk plan inburgering en perticipatie
+        * `werk` - Werk
+        * `inkomen` - Inkomen
   securitySchemes:
     tokenAuth:
       type: apiKey

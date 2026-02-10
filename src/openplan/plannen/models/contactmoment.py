@@ -3,6 +3,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from openplan.plannen.enums.status import PlanStatus
 from openplan.utils.fields import URNField
 
 
@@ -17,6 +18,26 @@ class Contactmoment(models.Model):
         on_delete=models.CASCADE,
         related_name="contactmomenten",
         help_text=_("Het plan waarbij dit contactmoment hoort."),
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=PlanStatus.choices,
+        default=PlanStatus.ACTIEF,
+        help_text=_("Status van het contactmoment."),
+    )
+    toelichting_status = models.TextField(
+        blank=True,
+        max_length=1000,
+        help_text=_("Toelichting bij de status van het contactmoment."),
+    )
+    datum = models.DateTimeField(
+        help_text=_("Startdatum van het contactmoment."),
+        db_index=True,
+    )
+    notitie = models.TextField(
+        blank=True,
+        max_length=1000,
+        help_text=_("Notitie bij het contactmoment."),
     )
 
     persoonsprofiel = URNField(

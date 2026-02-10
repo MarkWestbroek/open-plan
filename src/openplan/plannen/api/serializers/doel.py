@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.models.doel import Doel
 from openplan.plannen.models.doeltype import DoelType
@@ -11,7 +10,7 @@ from openplan.plannen.models.plan import Plan
 from openplan.plannen.models.validators import validate_primary_persoon
 from openplan.utils.fields import UUIDRelatedField
 
-from .doeltype import DoelTypeSerializer
+from .doeltype import NestedDoelTypeSerializer
 from .persoon import PersoonSerializer
 from .plan import NestedPlanSerializer
 
@@ -28,6 +27,13 @@ class NestedDoelSerializer(serializers.ModelSerializer):
         model = Doel
         fields = [
             "uuid",
+            "status",
+            "titel",
+            "beschrijving",
+            "startdatum",
+            "einddatum",
+            "resultaat",
+            "toelichting_resultaat",
             "hoofd_doel",
         ]
         extra_kwargs = {
@@ -36,17 +42,15 @@ class NestedDoelSerializer(serializers.ModelSerializer):
 
 
 class DoelSerializer(serializers.ModelSerializer):
-    doeltype = DoelTypeSerializer(
+    doeltype = NestedDoelTypeSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.DoelType", "type"),
     )
-    plan = NestedPlanSerializer(
+    plannen = NestedPlanSerializer(
+        many=True,
         read_only=True,
-        help_text=get_help_text("plannen.Plan", "uuid"),
     )
     persoon = PersoonSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Persoon", "uuid"),
     )
 
     doeltype_uuid = UUIDRelatedField(
@@ -55,11 +59,12 @@ class DoelSerializer(serializers.ModelSerializer):
         source="doeltype",
         help_text=_("UUID van de gekoppelde doeltype."),
     )
-    plan_uuid = UUIDRelatedField(
+    plannen_uuids = UUIDRelatedField(
         queryset=Plan.objects.all(),
+        many=True,
         write_only=True,
-        source="plan",
-        help_text=_("UUID van het plan waarbij dit doel hoort."),
+        source="plannen",
+        help_text=_("UUID van de plannen waaraan dit doel gekoppelt is."),
     )
     persoon_uuid = UUIDRelatedField(
         queryset=Persoon.objects.all(),
@@ -78,12 +83,19 @@ class DoelSerializer(serializers.ModelSerializer):
         model = Doel
         fields = [
             "uuid",
-            "plan",
-            "plan_uuid",
+            "plannen",
+            "plannen_uuids",
             "doeltype",
             "doeltype_uuid",
             "persoon",
             "persoon_uuid",
+            "status",
+            "titel",
+            "beschrijving",
+            "startdatum",
+            "einddatum",
+            "resultaat",
+            "toelichting_resultaat",
             "hoofd_doel",
         ]
         extra_kwargs = {

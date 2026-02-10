@@ -6,12 +6,20 @@ from ..models.contactmoment import Contactmoment
 @admin.register(Contactmoment)
 class ContactmomentAdmin(admin.ModelAdmin):
     list_display = (
-        "plan",
         "uuid",
+        "plan",
+        "status",
+        "datum",
     )
-    list_filter = ("plan",)
-    # search_fields = ("plan", "uuid")
-    ordering = ("plan",)
+    list_filter = (
+        "plan",
+        "status",
+    )
+    search_fields = ("uuid",)
+    ordering = (
+        "plan",
+        "-datum",
+    )
     readonly_fields = ("uuid",)
 
     fieldsets = (
@@ -21,8 +29,27 @@ class ContactmomentAdmin(admin.ModelAdmin):
                 "fields": (
                     "uuid",
                     "plan",
-                    "persoonsprofiel",
+                    "status",
+                    "datum",
                 ),
             },
         ),
+        (
+            "Beschrijving",
+            {
+                "fields": (
+                    "toelichting_status",
+                    "notitie",
+                ),
+            },
+        ),
+        (
+            "Relatie",
+            {
+                "fields": ("persoonsprofiel",),
+            },
+        ),
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("plan")

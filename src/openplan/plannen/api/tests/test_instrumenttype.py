@@ -10,6 +10,9 @@ from openplan.plannen.metrics import (
     instrumenttypen_delete_counter,
     instrumenttypen_update_counter,
 )
+from openplan.plannen.models.factories.instrumentcategorie import (
+    InstrumentCategorieFactory,
+)
 from openplan.plannen.models.factories.instrumenttype import InstrumenttypeFactory
 
 from ...models.instrumenttype import InstrumentType
@@ -17,14 +20,21 @@ from .api_testcase import APITestCase
 
 
 class InstrumentTypeAPITests(APITestCase):
+    def setUp(self):
+        super().setUp()
+        self.categorie = InstrumentCategorieFactory.create()
+
     def test_create_instrumenttype(self):
         url = reverse("plannen:instrumenttype-list")
-        data = {"type": InstrumenttypeFactory.build().type}
+        data = {
+            "instrument_type": InstrumenttypeFactory.build().instrument_type,
+            "categorieen_uuids": [str(self.categorie.uuid)],
+        }
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         instrumenttype = InstrumentType.objects.get(uuid=response.data["uuid"])
-        self.assertEqual(instrumenttype.type, data["type"])
+        self.assertEqual(instrumenttype.instrument_type, data["instrument_type"])
 
     def test_list_instrumenttypes(self):
         InstrumenttypeFactory.create_batch(3)
@@ -37,7 +47,7 @@ class InstrumentTypeAPITests(APITestCase):
         self.assertEqual(len(data), 3)
         for it in data:
             self.assertIn("uuid", it)
-            self.assertIn("type", it)
+            self.assertIn("instrumentType", it)
 
     def test_retrieve_instrumenttype(self):
         instrumenttype = InstrumenttypeFactory.create()
@@ -47,35 +57,40 @@ class InstrumentTypeAPITests(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["uuid"], str(instrumenttype.uuid))
-        self.assertEqual(response.data["type"], instrumenttype.type)
+        self.assertEqual(
+            response.data["instrument_type"], instrumenttype.instrument_type
+        )
 
     def test_update_instrumenttype(self):
         instrumenttype = InstrumenttypeFactory.create()
-        new_type = InstrumenttypeFactory.build().type
+        new_type = InstrumenttypeFactory.build().instrument_type
 
         url = reverse(
             "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
         )
-        data = {"type": new_type}
+        data = {
+            "instrument_type": new_type,
+            "categorieen_uuids": [str(self.categorie.uuid)],
+        }
         response = self.client.put(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         instrumenttype.refresh_from_db()
-        self.assertEqual(instrumenttype.type, new_type)
+        self.assertEqual(instrumenttype.instrument_type, new_type)
 
     def test_partial_update_instrumenttype(self):
         instrumenttype = InstrumenttypeFactory.create()
-        new_type = InstrumenttypeFactory.build().type
+        new_type = InstrumenttypeFactory.build().instrument_type
 
         url = reverse(
             "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
         )
-        data = {"type": new_type}
+        data = {"instrument_type": new_type}
         response = self.client.patch(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         instrumenttype.refresh_from_db()
-        self.assertEqual(instrumenttype.type, new_type)
+        self.assertEqual(instrumenttype.instrument_type, new_type)
 
     def test_delete_instrumenttype(self):
         instrumenttype = InstrumenttypeFactory.create()
@@ -99,7 +114,10 @@ class InstrumentTypeAPITests(APITestCase):
     )
     def test_create_instrumenttype_increments_metric(self, mock_add: MagicMock):
         url = reverse("plannen:instrumenttype-list")
-        data = {"type": InstrumenttypeFactory.build().type}
+        data = {
+            "instrument_type": InstrumenttypeFactory.build().instrument_type,
+            "categorieen_uuids": [str(self.categorie.uuid)],
+        }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)
         mock_add.assert_called_once_with(1)
@@ -108,13 +126,15 @@ class InstrumentTypeAPITests(APITestCase):
         instrumenttypen_update_counter, "add", wraps=instrumenttypen_update_counter.add
     )
     def test_update_instrumenttype_increments_metric(self, mock_add: MagicMock):
-        instrumenttype = InstrumenttypeFactory.create()
-        new_type = InstrumenttypeFactory.build().type
-
+        instrumenttype = InstrumenttypeFactory.create(categorieen=[self.categorie])
+        new_type = InstrumenttypeFactory.build().instrument_type
         url = reverse(
             "plannen:instrumenttype-detail", kwargs={"uuid": instrumenttype.uuid}
         )
-        data = {"type": new_type}
+        data = {
+            "instrument_type": new_type,
+            "categorieen_uuids": [str(self.categorie.uuid)],
+        }
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 200)
         mock_add.assert_called_once_with(1)

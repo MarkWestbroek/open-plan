@@ -12,11 +12,15 @@ class DoelType(models.Model):
         default=uuid.uuid4,
         help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
     )
-    type = models.CharField(
+    doel_type = models.CharField(
         max_length=50,
         choices=DoelTypeEnum.choices,
-        unique=True,
-        help_text=_("De unieke naam van dit doeltype."),
+        help_text=_("Het type doel."),
+    )
+    categorieen = models.ManyToManyField(
+        "plannen.DoelCategorie",
+        related_name="doeltypes",
+        help_text=_("Categorieën waaraan dit doeltype gekoppeld is."),
     )
 
     class Meta:
@@ -24,4 +28,4 @@ class DoelType(models.Model):
         verbose_name_plural = "Doeltypen"
 
     def __str__(self):
-        return self.type
+        return self.doel_type

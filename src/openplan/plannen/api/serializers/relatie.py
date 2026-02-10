@@ -1,7 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
-from vng_api_common.utils import get_help_text
 
 from openplan.plannen.models.persoon import Persoon
 from openplan.plannen.models.relatie import Relatie
@@ -15,15 +14,12 @@ from .relatietype import RelatieTypeSerializer
 class RelatieSerializer(serializers.ModelSerializer):
     persoon = PersoonSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Persoon", "uuid"),
     )
     gerelateerde_persoon = PersoonSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Persoon", "uuid"),
     )
     relatietype = RelatieTypeSerializer(
         read_only=True,
-        help_text=get_help_text("plannen.Relatietype", "uuid"),
     )
 
     persoon_uuid = UUIDRelatedField(

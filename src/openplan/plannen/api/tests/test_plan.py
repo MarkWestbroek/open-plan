@@ -1,3 +1,4 @@
+import datetime
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
@@ -11,6 +12,9 @@ from openplan.plannen.metrics import (
     plannen_delete_counter,
     plannen_update_counter,
 )
+from openplan.plannen.models.factories.overkoepelendplan import (
+    OverkoepelendPlanFactory,
+)
 from openplan.plannen.models.factories.plan import PlanFactory
 from openplan.plannen.models.factories.plantype import PlanTypeFactory
 
@@ -21,9 +25,15 @@ from .api_testcase import APITestCase
 class PlanAPITests(APITestCase):
     def test_create_plan(self):
         plantype = PlanTypeFactory.create()
+        overkoepelend_plan = OverkoepelendPlanFactory.create()
 
         url = reverse("plannen:plan-list")
-        data = {"plantypeUuid": str(plantype.uuid)}
+        data = {
+            "titel": "Test Instrument",
+            "startdatum": datetime.date.today().isoformat(),
+            "plantypeUuid": str(plantype.uuid),
+            "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
+        }
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -58,11 +68,19 @@ class PlanAPITests(APITestCase):
 
     def test_update_plan(self):
         plantype = PlanTypeFactory.create()
-        plan = PlanFactory.create(plantype=plantype)
+        overkoepelend_plan = OverkoepelendPlanFactory.create()
+        plan = PlanFactory.create(
+            plantype=plantype, overkoepelend_plan=overkoepelend_plan
+        )
         new_plantype = PlanTypeFactory.create()
 
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
-        data = {"plantypeUuid": str(new_plantype.uuid)}
+        data = {
+            "titel": "Test update instrument",
+            "startdatum": datetime.date.today().isoformat(),
+            "plantypeUuid": str(new_plantype.uuid),
+            "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
+        }
         response = self.client.put(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -170,8 +188,14 @@ class PlanAPITests(APITestCase):
     @patch.object(plannen_create_counter, "add", wraps=plannen_create_counter.add)
     def test_create_plan_increments_metric(self, mock_add: MagicMock):
         plantype = PlanTypeFactory.create()
+        overkoepelend_plan = OverkoepelendPlanFactory.create()
         url = reverse("plannen:plan-list")
-        data = {"plantypeUuid": str(plantype.uuid)}
+        data = {
+            "titel": "Test Instrument",
+            "startdatum": datetime.date.today().isoformat(),
+            "plantypeUuid": str(plantype.uuid),
+            "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
+        }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 201)
         mock_add.assert_called_once_with(1)
