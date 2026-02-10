@@ -15,8 +15,7 @@ class DoelType(models.Model):
     doel_type = models.CharField(
         max_length=50,
         choices=DoelTypeEnum.choices,
-        unique=True,
-        help_text=_("De unieke naam van dit doeltype."),
+        help_text=_("Het type doel."),
     )
     categorieen = models.ManyToManyField(
         "plannen.DoelCategorie",

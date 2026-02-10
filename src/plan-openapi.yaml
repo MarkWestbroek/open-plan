@@ -642,7 +642,7 @@ paths:
           - hoofddoel
           - subdoel
         description: |-
-          De unieke naam van dit doeltype.
+          Het type doel.
 
           * `hoofddoel` - Hoofddoel
           * `subdoel` - Subdoel
@@ -2841,7 +2841,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DoelTypeEnum'
           description: |-
-            De unieke naam van dit doeltype.
+            Het type doel.
 
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
@@ -3104,7 +3104,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DoelTypeEnum'
           description: |-
-            De unieke naam van dit doeltype.
+            Het type doel.
 
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel
@@ -3743,7 +3743,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DoelTypeEnum'
           description: |-
-            De unieke naam van dit doeltype.
+            Het type doel.
 
             * `hoofddoel` - Hoofddoel
             * `subdoel` - Subdoel

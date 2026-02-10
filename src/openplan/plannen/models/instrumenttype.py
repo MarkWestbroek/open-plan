@@ -15,7 +15,6 @@ class InstrumentType(models.Model):
     instrument_type = models.CharField(
         choices=InstrumentTypeEnum.choices,
         max_length=50,
-        unique=True,
         help_text=_("Het type instrument."),
     )
     categorieen = models.ManyToManyField(

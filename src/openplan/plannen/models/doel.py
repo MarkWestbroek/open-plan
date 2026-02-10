@@ -81,7 +81,7 @@ class Doel(models.Model):
         verbose_name_plural = _("Doelen")
 
     def __str__(self):
-        return str(self.titel)
+        return self.titel
 
     def clean(self):
         if not self.persoon_id:

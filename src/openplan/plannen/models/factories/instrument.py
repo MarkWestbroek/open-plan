@@ -4,6 +4,7 @@ from django.utils import timezone
 
 import factory
 
+from openplan.plannen.enums.status import PlanStatus
 from openplan.plannen.models.factories.doel import DoelFactory
 
 from ..instrument import Instrument
@@ -17,7 +18,7 @@ class InstrumentFactory(factory.django.DjangoModelFactory):
     titel = factory.Faker("sentence", nb_words=3)
     startdatum = factory.LazyFunction(timezone.now)
 
-    status = "actief"
+    status = PlanStatus.ACTIEF
 
     class Meta:
         model = Instrument
