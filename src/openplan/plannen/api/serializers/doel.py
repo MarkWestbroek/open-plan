@@ -115,10 +115,3 @@ class DoelSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(exc.message_dict)
 
         return attrs
-
-    def validate_plannen(self, value):
-        if not value:
-            raise serializers.ValidationError(
-                "Een doel moet aan minstens één plan gekoppeld zijn."
-            )
-        return value
