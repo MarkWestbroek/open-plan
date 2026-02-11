@@ -8,9 +8,10 @@ from .validators import validate_relatie_uniqueness
 
 class Relatie(models.Model):
     uuid = models.UUIDField(
-        unique=True,
+        primary_key=True,
+        editable=False,
         default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     persoon = models.ForeignKey(
         "plannen.Persoon",

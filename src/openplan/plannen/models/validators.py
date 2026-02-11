@@ -36,9 +36,9 @@ def validate_primary_persoon(persoon):
 
 def validate_relatie_uniqueness(relatie):
     if (
-        not relatie.persoon_id
-        or not relatie.gerelateerde_persoon_id
-        or not relatie.relatietype_id
+        not relatie.persoon
+        or not relatie.gerelateerde_persoon
+        or not relatie.relatietype
     ):
         return
 

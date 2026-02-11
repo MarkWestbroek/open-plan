@@ -10,9 +10,10 @@ from ..enums.status import PlanStatus
 
 class Plan(models.Model):
     uuid = models.UUIDField(
-        unique=True,
+        primary_key=True,
+        editable=False,
         default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     overkoepelend_plan = models.ForeignKey(
         "plannen.Overkoepelendplan",
@@ -79,6 +80,7 @@ class Plan(models.Model):
     class Meta:
         verbose_name = _("Plan")
         verbose_name_plural = _("Plannen")
+        ordering = ("-startdatum",)
 
     def __str__(self):
         return str(self.plantype)

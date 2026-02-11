@@ -11,7 +11,6 @@ class InstrumentTypeAdmin(admin.ModelAdmin):
     )
     list_filter = ("instrument_type",)
     search_fields = ("instrument_type", "uuid")
-    ordering = ("instrument_type",)
     readonly_fields = ("uuid",)
     filter_horizontal = ("categorieen",)
 

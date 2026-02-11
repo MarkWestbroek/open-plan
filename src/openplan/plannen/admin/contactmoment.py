@@ -16,10 +16,6 @@ class ContactmomentAdmin(admin.ModelAdmin):
         "status",
     )
     search_fields = ("uuid",)
-    ordering = (
-        "plan",
-        "-datum",
-    )
     readonly_fields = ("uuid",)
 
     fieldsets = (

@@ -21,7 +21,6 @@ class InstrumentAdmin(admin.ModelAdmin):
         "uuid",
         "titel",
     )
-    ordering = ("-pk",)
     readonly_fields = ("uuid",)
     filter_horizontal = (
         "doelen",

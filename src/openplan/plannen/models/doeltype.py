@@ -8,9 +8,10 @@ from ..enums.doel import DoelTypeEnum
 
 class DoelType(models.Model):
     uuid = models.UUIDField(
-        unique=True,
+        primary_key=True,
+        editable=False,
         default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     doel_type = models.CharField(
         max_length=50,

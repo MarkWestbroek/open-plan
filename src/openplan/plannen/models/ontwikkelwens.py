@@ -8,9 +8,10 @@ from ..enums.status import PlanStatus, Resultaat
 
 class Ontwikkelwens(models.Model):
     uuid = models.UUIDField(
-        unique=True,
+        primary_key=True,
+        editable=False,
         default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     doel = models.ForeignKey(
         "plannen.Doel",
@@ -55,8 +56,9 @@ class Ontwikkelwens(models.Model):
     )
 
     class Meta:
-        verbose_name = "Ontwikkelwens"
-        verbose_name_plural = "Ontwikkelwensen"
+        verbose_name = _("Ontwikkelwens")
+        verbose_name_plural = _("Ontwikkelwensen")
+        ordering = ("-startdatum",)
 
     def __str__(self):
         return self.titel
