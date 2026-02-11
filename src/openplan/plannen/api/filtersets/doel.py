@@ -35,5 +35,5 @@ class DoelFilter(FilterSet):
             "titel": ["exact", "icontains"],
             "startdatum": ["exact", "gte", "lte"],
             "einddatum": ["exact", "gte", "lte"],
-            "resultaat": ["exact", "icontains"],
+            "resultaat": ["exact"],
         }

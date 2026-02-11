@@ -1,12 +1,14 @@
-import datetime
+from datetime import date, datetime
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APIClient
 from vng_api_common.tests import get_validation_errors
 
+from openplan.plannen.enums.status import PlanStatus
 from openplan.plannen.metrics import (
     plannen_create_counter,
     plannen_delete_counter,
@@ -23,6 +25,13 @@ from .api_testcase import APITestCase
 
 
 class PlanAPITests(APITestCase):
+    def setUp(self):
+        super().setUp()
+        self.plantype1 = PlanTypeFactory.create()
+        self.plantype2 = PlanTypeFactory.create()
+        self.over_plan1 = OverkoepelendPlanFactory.create()
+        self.over_plan2 = OverkoepelendPlanFactory.create()
+
     def test_create_plan(self):
         plantype = PlanTypeFactory.create()
         overkoepelend_plan = OverkoepelendPlanFactory.create()
@@ -30,7 +39,7 @@ class PlanAPITests(APITestCase):
         url = reverse("plannen:plan-list")
         data = {
             "titel": "Test Instrument",
-            "startdatum": datetime.date.today().isoformat(),
+            "startdatum": date.today().isoformat(),
             "plantypeUuid": str(plantype.uuid),
             "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
         }
@@ -77,7 +86,7 @@ class PlanAPITests(APITestCase):
         url = reverse("plannen:plan-detail", kwargs={"uuid": plan.uuid})
         data = {
             "titel": "Test update instrument",
-            "startdatum": datetime.date.today().isoformat(),
+            "startdatum": date.today().isoformat(),
             "plantypeUuid": str(new_plantype.uuid),
             "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
         }
@@ -117,18 +126,145 @@ class PlanAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_filter_plantype_uuid(self):
-        type1 = PlanTypeFactory()
-        type2 = PlanTypeFactory()
-
-        plan1 = PlanFactory(plantype=type1)
-        PlanFactory(plantype=type2)
+        plan1 = PlanFactory.create(plantype=self.plantype1)
+        PlanFactory.create(plantype=self.plantype2)
 
         url = reverse("plannen:plan-list")
-        response = self.client.get(url, {"plantype_uuid": str(type1.uuid)})
+        response = self.client.get(url, {"plantype_uuid": str(self.plantype1.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_overkoepelend_plan_uuid(self):
+        plan1 = PlanFactory.create(overkoepelend_plan=self.over_plan1)
+        PlanFactory.create(overkoepelend_plan=self.over_plan2)
+
+        url = reverse("plannen:plan-list")
+        response = self.client.get(
+            url, {"overkoepelend_plan_uuid": str(self.over_plan1.uuid)}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_status(self):
+        plan1 = PlanFactory.create(status=PlanStatus.ACTIEF)
+        PlanFactory.create(status=PlanStatus.AFGEROND)
+
+        url = reverse("plannen:plan-list")
+        response = self.client.get(url, {"status": "actief"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_fase(self):
+        plan1 = PlanFactory.create(fase=PlanStatus.ACTIEF)
+        PlanFactory.create(fase=PlanStatus.AFGEROND)
+
+        url = reverse("plannen:plan-list")
+        response = self.client.get(url, {"fase": "actief"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_titel(self):
+        plan1 = PlanFactory.create(titel="Project Start")
+        PlanFactory.create(titel="Project End")
+
+        url = reverse("plannen:plan-list")
+        with self.subTest("exact"):
+            response = self.client.get(url, {"titel": "Project Start"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+        with self.subTest("icontains"):
+            response = self.client.get(url, {"titel__icontains": "Start"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_medewerker(self):
+        plan1 = PlanFactory.create(medewerker="urn:example:zaak:1")
+        PlanFactory.create(medewerker="urn:example:zaak:2")
+
+        url = reverse("plannen:plan-list")
+        response = self.client.get(url, {"medewerker": "urn:example:zaak:1"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_zaak(self):
+        plan1 = PlanFactory.create(zaak="urn:example:zaak:1")
+        PlanFactory.create(zaak="urn:example:zaak:2")
+
+        url = reverse("plannen:plan-list")
+        response = self.client.get(url, {"zaak": "urn:example:zaak:1"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_filter_domeinregister(self):
+        plan1 = PlanFactory.create(domeinregister="urn:example:domein:1")
+        PlanFactory.create(domeinregister="urn:example:domein:2")
+
+        url = reverse("plannen:plan-list")
+        response = self.client.get(url, {"domeinregister": "urn:example:domein:1"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+    def test_startdatum_filter(self):
+        plan1 = PlanFactory.create(startdatum=timezone.make_aware(datetime(2026, 1, 1)))
+        PlanFactory.create(startdatum=timezone.make_aware(datetime(2026, 2, 1)))
+
+        url = reverse("plannen:plan-list")
+        with self.subTest("exact"):
+            response = self.client.get(url, {"startdatum": "2026-01-01"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+        with self.subTest("lte"):
+            response = self.client.get(url, {"startdatum__lte": "2026-01-31"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+        with self.subTest("gte"):
+            response = self.client.get(url, {"startdatum__gte": "2026-02-01"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_einddatum_filter(self):
+        plan1 = PlanFactory.create(
+            startdatum=timezone.make_aware(datetime(2026, 1, 1)),
+            einddatum=timezone.make_aware(datetime(2026, 1, 15)),
+        )
+        PlanFactory.create(
+            startdatum=timezone.make_aware(datetime(2026, 2, 1)),
+            einddatum=timezone.make_aware(datetime(2026, 2, 15)),
+        )
+
+        url = reverse("plannen:plan-list")
+        with self.subTest("exact"):
+            response = self.client.get(url, {"einddatum": "2026-01-15"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(plan1.uuid))
+
+        with self.subTest("lte"):
+            response = self.client.get(url, {"einddatum__lte": "2026-01-31"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+        with self.subTest("gte"):
+            response = self.client.get(url, {"einddatum__gte": "2026-02-01"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
 
     def test_plan_urn(self):
         plantype = PlanTypeFactory.create()
@@ -192,7 +328,7 @@ class PlanAPITests(APITestCase):
         url = reverse("plannen:plan-list")
         data = {
             "titel": "Test Instrument",
-            "startdatum": datetime.date.today().isoformat(),
+            "startdatum": date.today().isoformat(),
             "plantypeUuid": str(plantype.uuid),
             "overkoepelendPlanUuid": str(overkoepelend_plan.uuid),
         }
