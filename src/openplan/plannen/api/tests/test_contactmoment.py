@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.enums.status import PlanStatus
 from openplan.plannen.metrics import (
     contactmomenten_create_counter,
     contactmomenten_delete_counter,
@@ -19,6 +20,11 @@ from .api_testcase import APITestCase
 
 
 class ContactmomentAPITests(APITestCase):
+    def setUp(self):
+        super().setUp()
+        self.plan = PlanFactory.create()
+        self.other_plan = PlanFactory.create()
+
     def test_create_contactmoment(self):
         plan = PlanFactory.create()
         url = reverse("plannen:contactmoment-list")
@@ -104,6 +110,60 @@ class ContactmomentAPITests(APITestCase):
         url = reverse("plannen:contactmoment-list")
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_filter_by_plan_uuid(self):
+        cm1 = ContactmomentFactory.create(plan=self.plan)
+        ContactmomentFactory.create(plan=self.other_plan)
+
+        url = reverse("plannen:contactmoment-list")
+        response = self.client.get(url, {"plan_uuid": str(self.plan.uuid)})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(cm1.uuid))
+
+    def test_filter_by_status(self):
+        cm1 = ContactmomentFactory.create(status=PlanStatus.ACTIEF)
+        ContactmomentFactory.create(status=PlanStatus.AFGEROND)
+
+        url = reverse("plannen:contactmoment-list")
+        response = self.client.get(url, {"status": "actief"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(cm1.uuid))
+
+    def test_filter_by_persoonsprofiel(self):
+        cm1 = ContactmomentFactory.create(persoonsprofiel="urn:profile:1")
+        ContactmomentFactory.create(persoonsprofiel="urn:profile:2")
+
+        url = reverse("plannen:contactmoment-list")
+        response = self.client.get(url, {"persoonsprofiel": "urn:profile:1"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(cm1.uuid))
+
+    def test_filter_datum(self):
+        ContactmomentFactory.create(datum="2024-06-07T00:00:00Z")
+        ContactmomentFactory.create(datum="2025-06-07T00:00:00Z")
+
+        url = reverse("plannen:contactmoment-list")
+
+        with self.subTest("exact"):
+            response = self.client.get(url, {"datum": "2024-06-07T00:00:00Z"})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 1)
+
+        with self.subTest("lte"):
+            response = self.client.get(url, {"datum__lte": "2024-07-07T00:00:00Z"})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 1)
+
+        with self.subTest("gte"):
+            response = self.client.get(url, {"datum__gte": "2025-04-07T00:00:00Z"})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 1)
 
     @patch.object(
         contactmomenten_create_counter, "add", wraps=contactmomenten_create_counter.add

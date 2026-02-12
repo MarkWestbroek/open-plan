@@ -122,6 +122,55 @@ class RelatieAPITests(APITestCase):
         response = client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_filter_persoon_uuid(self):
+        persoon_a = PersoonFactory.create()
+        persoon_b = PersoonFactory.create()
+        relatietype = RelatieTypeFactory.create()
+
+        relatie = RelatieFactory.create(
+            persoon=persoon_a, gerelateerde_persoon=persoon_b, relatietype=relatietype
+        )
+
+        url = reverse("plannen:relatie-list")
+        response = self.client.get(url, {"persoonUuid": str(persoon_a.uuid)})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(relatie.uuid))
+
+    def test_filter_gerelateerde_persoon_uuid(self):
+        persoon_a = PersoonFactory.create()
+        persoon_b = PersoonFactory.create()
+        relatietype = RelatieTypeFactory.create()
+
+        relatie = RelatieFactory.create(
+            persoon=persoon_a, gerelateerde_persoon=persoon_b, relatietype=relatietype
+        )
+
+        url = reverse("plannen:relatie-list")
+        response = self.client.get(
+            url, {"gerelateerdePersoonUuid": str(persoon_b.uuid)}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(relatie.uuid))
+
+    def test_filter_relatietype_uuid(self):
+        persoon_a = PersoonFactory.create()
+        persoon_b = PersoonFactory.create()
+        relatietype = RelatieTypeFactory.create()
+        relatie = RelatieFactory.create(
+            persoon=persoon_a, gerelateerde_persoon=persoon_b, relatietype=relatietype
+        )
+
+        url = reverse("plannen:relatie-list")
+        response = self.client.get(url, {"relatietypeUuid": str(relatietype.uuid)})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(relatie.uuid))
+
     def test_prevent_duplicate_relatie(self):
         persoon = PersoonFactory.create()
         gerelateerde_persoon = PersoonFactory.create()

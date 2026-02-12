@@ -16,6 +16,24 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle contactmomenten opvragen.
       parameters:
+      - in: query
+        name: datum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het contactmoment.
+      - in: query
+        name: datum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het contactmoment.
+      - in: query
+        name: datum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het contactmoment.
       - name: page
         required: false
         in: query
@@ -28,6 +46,40 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: persoonsprofiel
+        schema:
+          type: string
+        description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
+      - in: query
+        name: persoonsprofiel__icontains
+        schema:
+          type: string
+        description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
+      - in: query
+        name: planUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID van het gekoppelde plan.
+        explode: false
+        style: form
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het contactmoment.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
       tags:
       - Contactmoment
       security:
@@ -2700,6 +2752,16 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle relaties opvragen.
       parameters:
+      - in: query
+        name: gerelateerdePersoonUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID van de gerelateerde persoon.
+        explode: false
+        style: form
       - name: page
         required: false
         in: query
@@ -2712,6 +2774,26 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: persoonUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID van de primaire persoon.
+        explode: false
+        style: form
+      - in: query
+        name: relatietypeUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID van het relatietype.
+        explode: false
+        style: form
       tags:
       - Relatie
       security:

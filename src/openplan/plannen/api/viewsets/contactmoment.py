@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from openplan.plannen.api.filtersets.contactmoment import ContactmomentFilter
 from openplan.plannen.models.contactmoment import Contactmoment
 
 from ...metrics import (
@@ -48,6 +49,7 @@ logger = structlog.stdlib.get_logger(__name__)
 class ContactmomentViewSet(viewsets.ModelViewSet):
     queryset = Contactmoment.objects.all()
     serializer_class = ContactmomentSerializer
+    filterset_class = ContactmomentFilter
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)

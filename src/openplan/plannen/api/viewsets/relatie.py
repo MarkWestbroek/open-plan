@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from openplan.plannen.api.filtersets.relatie import RelatieFilter
 from openplan.plannen.models.relatie import Relatie
 
 from ...metrics import (
@@ -48,6 +49,7 @@ logger = structlog.stdlib.get_logger(__name__)
 class RelatieViewSet(viewsets.ModelViewSet):
     queryset = Relatie.objects.all()
     serializer_class = RelatieSerializer
+    filterset_class = RelatieFilter
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
