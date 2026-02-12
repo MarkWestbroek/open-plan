@@ -9,9 +9,10 @@ from openplan.utils.fields import URNField
 
 class Instrument(models.Model):
     uuid = models.UUIDField(
-        unique=True,
+        primary_key=True,
+        editable=False,
         default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     doelen = models.ManyToManyField(
         "plannen.Doel",
@@ -73,6 +74,7 @@ class Instrument(models.Model):
     class Meta:
         verbose_name = _("Instrument")
         verbose_name_plural = _("Instrumenten")
+        ordering = ("-startdatum",)
 
     def __str__(self):
         return str(self.uuid)

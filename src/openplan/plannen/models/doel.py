@@ -10,9 +10,10 @@ from .validators import validate_hoofd_doel_not_self, validate_primary_persoon
 
 class Doel(models.Model):
     uuid = models.UUIDField(
-        unique=True,
+        primary_key=True,
+        editable=False,
         default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4) voor deze functie."),
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     plannen = models.ManyToManyField(
         "plannen.Plan",
@@ -79,12 +80,15 @@ class Doel(models.Model):
     class Meta:
         verbose_name = _("Doel")
         verbose_name_plural = _("Doelen")
+        ordering = ("-startdatum",)
 
     def __str__(self):
         return self.titel
 
     def clean(self):
-        if not self.persoon_id:
+        super().clean()
+
+        if not self.persoon:
             return
 
         validate_hoofd_doel_not_self(self)

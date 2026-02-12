@@ -11,7 +11,6 @@ class OverkoepelendPlanAdmin(admin.ModelAdmin):
         "status",
     )
     search_fields = ("uuid", "titel")
-    ordering = ("-pk",)
     readonly_fields = ("uuid",)
 
     fieldsets = (

@@ -10,7 +10,10 @@ from openplan.utils.fields import URNField
 
 class Persoon(models.Model):
     uuid = models.UUIDField(
-        unique=True, default=uuid.uuid4, help_text="Unieke resource identifier (UUID4)"
+        primary_key=True,
+        editable=False,
+        default=uuid.uuid4,
+        help_text=_("Unieke resource identifier (UUID4)."),
     )
     persoonsprofiel = URNField(
         blank=True,
@@ -34,8 +37,8 @@ class Persoon(models.Model):
     )
 
     class Meta:
-        verbose_name = "Persoon"
-        verbose_name_plural = "Personen"
+        verbose_name = _("Persoon")
+        verbose_name_plural = _("Personen")
 
     def __str__(self):
         return f"Persoon {self.uuid}"

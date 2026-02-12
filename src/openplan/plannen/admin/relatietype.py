@@ -11,7 +11,6 @@ class RelatieTypeAdmin(admin.ModelAdmin):
     )
     list_filter = ("naam",)
     search_fields = ("naam", "uuid")
-    ordering = ("naam",)
     readonly_fields = ("uuid",)
 
     fieldsets = (

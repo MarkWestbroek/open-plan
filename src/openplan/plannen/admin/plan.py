@@ -24,7 +24,6 @@ class PlanAdmin(admin.ModelAdmin):
         "titel",
     )
 
-    ordering = ("-pk",)
     readonly_fields = ("uuid",)
 
     fieldsets = (
