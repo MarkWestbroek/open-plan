@@ -958,6 +958,64 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle instrumenten opvragen.
       parameters:
+      - in: query
+        name: doelenUuids
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde doelen.
+        explode: false
+        style: form
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het instrument.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het instrument.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het instrument.
+      - in: query
+        name: instrumentCategorieenUuids
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde instrumentcategorieën.
+        explode: false
+        style: form
+      - in: query
+        name: instrumenttypeUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID van het instrumenttype.
+        explode: false
+        style: form
+      - in: query
+        name: ontwikkelwensenUuids
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde ontwikkelwensen.
+        explode: false
+        style: form
       - name: page
         required: false
         in: query
@@ -970,6 +1028,70 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: product
+        schema:
+          type: string
+        description: URN naar de bijbehorende product in het productsysteem.
+      - in: query
+        name: resultaat
+        schema:
+          type: string
+          enum:
+          - behaald
+          - gefaald
+        description: |-
+          Resultaat van het instrument.
+
+          * `behaald` - Behaald
+          * `gefaald` - Gefaald
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het instrument.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het instrument.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het instrument.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het instrument.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: titel
+        schema:
+          type: string
+        description: Titel van het instrument.
+      - in: query
+        name: titel__icontains
+        schema:
+          type: string
+        description: Titel van het instrument.
+      - in: query
+        name: zaak
+        schema:
+          type: string
+        description: URN naar het bijbehorende zaak in het zaaksysteem.
       tags:
       - Instrument
       security:
@@ -1360,6 +1482,44 @@ paths:
       description: Deze lijst kan gefilterd worden met query-string parameters.
       summary: Alle ontwikkelwensen opvragen.
       parameters:
+      - in: query
+        name: doelCategorieenUuids
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde doelcategorieën.
+        explode: false
+        style: form
+      - in: query
+        name: doelUuid
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde doelen.
+        explode: false
+        style: form
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het ontwikkelwens.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het ontwikkelwens.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het ontwikkelwens.
       - name: page
         required: false
         in: query
@@ -1372,6 +1532,60 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: resultaat
+        schema:
+          type: string
+          enum:
+          - behaald
+          - gefaald
+        description: |-
+          Resultaat van het ontwikkelwens.
+
+          * `behaald` - Behaald
+          * `gefaald` - Gefaald
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het ontwikkelwens.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het ontwikkelwens.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het ontwikkelwens.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het ontwikkelwens.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: titel
+        schema:
+          type: string
+        description: Titel van het ontwikkelwens.
+      - in: query
+        name: titel__icontains
+        schema:
+          type: string
+        description: Titel van het ontwikkelwens.
       tags:
       - Ontwikkelwens
       security:
