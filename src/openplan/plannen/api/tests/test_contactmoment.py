@@ -116,7 +116,7 @@ class ContactmomentAPITests(APITestCase):
         ContactmomentFactory.create(plan=self.other_plan)
 
         url = reverse("plannen:contactmoment-list")
-        response = self.client.get(url, {"plan_uuid": str(self.plan.uuid)})
+        response = self.client.get(url, {"plan__uuid": str(self.plan.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)

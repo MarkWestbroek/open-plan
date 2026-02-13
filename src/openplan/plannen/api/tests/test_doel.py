@@ -134,7 +134,7 @@ class DoelAPITests(APITestCase):
         DoelFactory(doeltype=type2)
 
         url = reverse("plannen:doel-list")
-        response = self.client.get(url, {"doeltype_uuid": str(type1.uuid)})
+        response = self.client.get(url, {"doeltype__uuid": str(type1.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
@@ -151,7 +151,7 @@ class DoelAPITests(APITestCase):
         )
 
         url = reverse("plannen:doel-list")
-        response = self.client.get(url, {"persoon_uuid": str(self.persoon.uuid)})
+        response = self.client.get(url, {"persoon__uuid": str(self.persoon.uuid)})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
@@ -162,17 +162,32 @@ class DoelAPITests(APITestCase):
     def test_filter_plannen_uuids(self):
         plan1 = self.plan
         plan2 = PlanFactory.create()
+
         doel1 = DoelFactory(
             doeltype=self.hoofddoel_type, plannen=[plan1], persoon=self.persoon
         )
-        DoelFactory(doeltype=self.hoofddoel_type, plannen=[plan2], persoon=self.persoon)
+        doel2 = DoelFactory(
+            doeltype=self.hoofddoel_type, plannen=[plan2], persoon=self.persoon
+        )
+        DoelFactory.create()
 
         url = reverse("plannen:doel-list")
-        response = self.client.get(url, {"plannen_uuids": str(plan1.uuid)})
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+        with self.subTest("exact"):
+            response = self.client.get(url, {"plannen__uuid": str(plan1.uuid)})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+        with self.subTest("__in"):
+            response = self.client.get(
+                url, {"plannen__uuid__in": f"{plan1.uuid},{plan2.uuid}"}
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 2)
+            uuids = [r["uuid"] for r in response.data["results"]]
+            self.assertIn(str(doel1.uuid), uuids)
+            self.assertIn(str(doel2.uuid), uuids)
 
     def test_filter_hoofd_doel_uuid(self):
         parent = DoelFactory(
@@ -189,7 +204,7 @@ class DoelAPITests(APITestCase):
         )
 
         url = reverse("plannen:doel-list")
-        response = self.client.get(url, {"hoofd_doel_uuid": str(parent.uuid)})
+        response = self.client.get(url, {"hoofd_doel__uuid": str(parent.uuid)})
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)

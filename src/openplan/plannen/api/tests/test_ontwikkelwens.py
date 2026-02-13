@@ -116,28 +116,43 @@ class OntwikkelwensAPITests(APITestCase):
         OntwikkelwensFactory.create(doel=DoelFactory.create())
 
         url = reverse("plannen:ontwikkelwens-list")
-        response = self.client.get(url, {"doel_uuid": str(self.doel.uuid)})
+        response = self.client.get(url, {"doel__uuid": str(self.doel.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(ow1.uuid))
 
     def test_filter_doel_categorieen_uuids(self):
-        ow1 = OntwikkelwensFactory.create(doel=self.doel)
-        ow1.doel_categorieen.add(self.doel_categorie)
+        cat1 = self.doel_categorie
+        cat2 = DoelCategorieFactory.create()
+        cat3 = DoelCategorieFactory.create()
 
-        other = OntwikkelwensFactory.create(doel=self.doel)
-        other.doel_categorieen.add(DoelCategorieFactory.create())
+        ow1 = OntwikkelwensFactory.create(doel=self.doel)
+        ow1.doel_categorieen.add(cat1)
+
+        ow2 = OntwikkelwensFactory.create(doel=self.doel)
+        ow2.doel_categorieen.add(cat2)
+
+        OntwikkelwensFactory.create(doel=self.doel).doel_categorieen.add(cat3)
 
         url = reverse("plannen:ontwikkelwens-list")
-        response = self.client.get(
-            url,
-            {"doel_categorieen_uuids": str(self.doel_categorie.uuid)},
-        )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(ow1.uuid))
+        with self.subTest("exact"):
+            response = self.client.get(url, {"doel_categorieen__uuid": str(cat1.uuid)})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(ow1.uuid))
+
+        with self.subTest("in"):
+            response = self.client.get(
+                url,
+                {"doel_categorieen__uuid__in": f"{cat1.uuid},{cat2.uuid}"},
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 2)
+            uuids = [r["uuid"] for r in response.data["results"]]
+            self.assertIn(str(ow1.uuid), uuids)
+            self.assertIn(str(ow2.uuid), uuids)
 
     def test_filter_status(self):
         OntwikkelwensFactory.create(status=PlanStatus.AFGEROND)

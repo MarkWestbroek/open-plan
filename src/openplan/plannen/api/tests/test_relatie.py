@@ -132,7 +132,7 @@ class RelatieAPITests(APITestCase):
         )
 
         url = reverse("plannen:relatie-list")
-        response = self.client.get(url, {"persoonUuid": str(persoon_a.uuid)})
+        response = self.client.get(url, {"persoon__uuid": str(persoon_a.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
@@ -149,7 +149,7 @@ class RelatieAPITests(APITestCase):
 
         url = reverse("plannen:relatie-list")
         response = self.client.get(
-            url, {"gerelateerdePersoonUuid": str(persoon_b.uuid)}
+            url, {"gerelateerde_persoon__uuid": str(persoon_b.uuid)}
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -165,7 +165,7 @@ class RelatieAPITests(APITestCase):
         )
 
         url = reverse("plannen:relatie-list")
-        response = self.client.get(url, {"relatietypeUuid": str(relatietype.uuid)})
+        response = self.client.get(url, {"relatietype__uuid": str(relatietype.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)

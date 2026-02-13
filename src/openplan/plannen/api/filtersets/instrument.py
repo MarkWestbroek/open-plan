@@ -7,24 +7,19 @@ from openplan.utils.filters import UUIDFInFilter
 
 
 class InstrumentFilter(FilterSet):
-    doelen_uuids = UUIDFInFilter(
+    doelen__uuid__in = UUIDFInFilter(
         field_name="doelen__uuid",
         distinct=True,
         help_text=_("UUID's van gekoppelde doelen."),
     )
 
-    ontwikkelwensen_uuids = UUIDFInFilter(
+    ontwikkelwensen__uuid__in = UUIDFInFilter(
         field_name="ontwikkelwensen__uuid",
         distinct=True,
         help_text=_("UUID's van gekoppelde ontwikkelwensen."),
     )
 
-    instrumenttype_uuid = UUIDFInFilter(
-        field_name="instrumenttype__uuid",
-        help_text=_("UUID van het instrumenttype."),
-    )
-
-    instrument_categorieen_uuids = UUIDFInFilter(
+    instrument_categorieen__uuid__in = UUIDFInFilter(
         field_name="instrument_categorieen__uuid",
         distinct=True,
         help_text=_("UUID's van gekoppelde instrumentcategorieën."),
@@ -33,6 +28,10 @@ class InstrumentFilter(FilterSet):
     class Meta:
         model = Instrument
         fields = {
+            "doelen__uuid": ["exact"],
+            "ontwikkelwensen__uuid": ["exact"],
+            "instrument_categorieen__uuid": ["exact"],
+            "instrumenttype__uuid": ["exact"],
             "status": ["exact"],
             "titel": ["exact", "icontains"],
             "resultaat": ["exact"],

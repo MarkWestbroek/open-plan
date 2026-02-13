@@ -136,7 +136,7 @@ class InstrumentAPITests(APITestCase):
         InstrumentFactory.create(instrumenttype=type2)
 
         url = reverse("plannen:instrument-list")
-        response = self.client.get(url, {"instrumenttype_uuid": str(type1.uuid)})
+        response = self.client.get(url, {"instrumenttype__uuid": str(type1.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
@@ -145,46 +145,127 @@ class InstrumentAPITests(APITestCase):
     def test_filter_doelen_uuids(self):
         doel1 = self.doel
         doel2 = DoelFactory.create()
+        doel3 = DoelFactory.create()
 
         inst1 = InstrumentFactory.create(doelen=[doel1])
-        InstrumentFactory.create(doelen=[doel2])
+        inst2 = InstrumentFactory.create(doelen=[doel2])
+        InstrumentFactory.create(doelen=[doel3])
 
         url = reverse("plannen:instrument-list")
-        response = self.client.get(url, {"doelen_uuids": str(doel1.uuid)})
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(inst1.uuid))
+        with self.subTest("exact"):
+            response = self.client.get(url, {"doelen__uuid": str(doel1.uuid)})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(inst1.uuid))
+
+        with self.subTest("in"):
+            response = self.client.get(
+                url, {"doelen__uuid__in": f"{doel1.uuid},{doel2.uuid}"}
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 2)
+            uuids = [r["uuid"] for r in response.data["results"]]
+            self.assertIn(str(inst1.uuid), uuids)
+            self.assertIn(str(inst2.uuid), uuids)
+
+    def test_filter_doelen_uuids_duplicates(self):
+        doel1 = self.doel
+        doel2 = DoelFactory.create()
+
+        InstrumentFactory.create(doelen=[doel1])
+        InstrumentFactory.create(doelen=[doel2])
+
+        InstrumentFactory.create(doelen=[doel1, doel2])
+
+        url = reverse("plannen:instrument-list")
+
+        response = self.client.get(
+            url, {"doelen__uuid__in": f"{doel1.uuid},{doel2.uuid}"}
+        )
+        returned_ids = [r["uuid"] for r in response.data["results"]]
+
+        unique_ids = set(returned_ids)
+
+        self.assertEqual(len(unique_ids), 3)
+
+    def test_invalid_uuid_returns_failure(self):
+        url = reverse("plannen:instrument-list")
+
+        response = self.client.get(url, {"doelen__uuid__in": "invalid-uuid"})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        expected_error = {
+            "name": "doelen__uuid__in",
+            "code": "invalid",
+            "reason": "Voer een geldige UUID in.",
+        }
+
+        self.assertIn("invalid_params", response.data)
+        self.assertIn(expected_error, response.data["invalid_params"])
 
     def test_filter_ontwikkelwensen_uuids(self):
         wens1 = self.ontwikkelwens
         wens2 = OntwikkelwensFactory.create()
+        wens3 = OntwikkelwensFactory.create()
 
         inst1 = InstrumentFactory.create(ontwikkelwensen=[wens1])
-        InstrumentFactory.create(ontwikkelwensen=[wens2])
+        inst2 = InstrumentFactory.create(ontwikkelwensen=[wens2])
+        InstrumentFactory.create(ontwikkelwensen=[wens3])
 
         url = reverse("plannen:instrument-list")
-        response = self.client.get(url, {"ontwikkelwensen_uuids": str(wens1.uuid)})
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(inst1.uuid))
+        with self.subTest("exact"):
+            response = self.client.get(url, {"ontwikkelwensen__uuid": str(wens1.uuid)})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(inst1.uuid))
+
+        with self.subTest("in"):
+            response = self.client.get(
+                url, {"ontwikkelwensen__uuid__in": f"{wens1.uuid},{wens2.uuid}"}
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 2)
+            uuids = [r["uuid"] for r in response.data["results"]]
+            self.assertIn(str(inst1.uuid), uuids)
+            self.assertIn(str(inst2.uuid), uuids)
 
     def test_filter_instrument_categorieen_uuids(self):
         cat1 = self.categorie
         cat2 = InstrumentCategorieFactory.create()
+        cat3 = InstrumentCategorieFactory.create()
 
         inst1 = InstrumentFactory.create(instrument_categorieen=[cat1])
-        InstrumentFactory.create(instrument_categorieen=[cat2])
+        inst2 = InstrumentFactory.create(instrument_categorieen=[cat2])
+        InstrumentFactory.create(instrument_categorieen=[cat3])
 
         url = reverse("plannen:instrument-list")
-        response = self.client.get(
-            url, {"instrument_categorieen_uuids": str(cat1.uuid)}
-        )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["uuid"], str(inst1.uuid))
+        with self.subTest("exact"):
+            response = self.client.get(
+                url, {"instrument_categorieen__uuid": str(cat1.uuid)}
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(inst1.uuid))
+
+        with self.subTest("in"):
+            response = self.client.get(
+                url,
+                {
+                    "instrument_categorieen__uuid__in": f"{cat1.uuid},{cat2.uuid}",
+                },
+            )
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 2)
+
+            uuids = [r["uuid"] for r in response.data["results"]]
+            self.assertIn(str(inst1.uuid), uuids)
+            self.assertIn(str(inst2.uuid), uuids)
 
     def test_filter_product(self):
         inst1 = InstrumentFactory.create(product="urn:example:product:1")

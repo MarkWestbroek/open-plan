@@ -57,15 +57,11 @@ paths:
           type: string
         description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
       - in: query
-        name: planUuid
+        name: plan__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID van het gekoppelde plan.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
         name: status
         schema:
@@ -270,15 +266,11 @@ paths:
       summary: Alle doelen opvragen.
       parameters:
       - in: query
-        name: doeltypeUuid
+        name: doeltype__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van de gekoppelde doeltypen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
         name: einddatum
         schema:
@@ -298,15 +290,11 @@ paths:
           format: date-time
         description: Einddatum van het doel.
       - in: query
-        name: hoofdDoelUuid
+        name: hoofdDoel__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van de bovenliggende doelen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - name: page
         required: false
         in: query
@@ -320,17 +308,19 @@ paths:
         schema:
           type: integer
       - in: query
-        name: persoonUuid
+        name: persoon__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van de gekoppelde personen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
-        name: plannenUuids
+        name: plannen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: plannen__uuid__in
         schema:
           type: array
           items:
@@ -1011,7 +1001,13 @@ paths:
       summary: Alle instrumenten opvragen.
       parameters:
       - in: query
-        name: doelenUuids
+        name: doelen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: doelen__uuid__in
         schema:
           type: array
           items:
@@ -1039,7 +1035,13 @@ paths:
           format: date-time
         description: Einddatum van het instrument.
       - in: query
-        name: instrumentCategorieenUuids
+        name: instrumentCategorieen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: instrumentCategorieen__uuid__in
         schema:
           type: array
           items:
@@ -1049,17 +1051,19 @@ paths:
         explode: false
         style: form
       - in: query
-        name: instrumenttypeUuid
+        name: instrumenttype__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID van het instrumenttype.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
-        name: ontwikkelwensenUuids
+        name: ontwikkelwensen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: ontwikkelwensen__uuid__in
         schema:
           type: array
           items:
@@ -1535,7 +1539,13 @@ paths:
       summary: Alle ontwikkelwensen opvragen.
       parameters:
       - in: query
-        name: doelCategorieenUuids
+        name: doelCategorieen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: doelCategorieen__uuid__in
         schema:
           type: array
           items:
@@ -1545,15 +1555,11 @@ paths:
         explode: false
         style: form
       - in: query
-        name: doelUuid
+        name: doel__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van gekoppelde doelen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
         name: einddatum
         schema:
@@ -2270,15 +2276,11 @@ paths:
           type: string
         description: URN naar de medewerker in het HR-systeem.
       - in: query
-        name: overkoepelendPlanUuid
+        name: overkoepelendPlan__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID van het overkoepelend plan.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - name: page
         required: false
         in: query
@@ -2292,15 +2294,11 @@ paths:
         schema:
           type: integer
       - in: query
-        name: plantypeUuid
+        name: plantype__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van de gekoppelde plantypen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
         name: startdatum
         schema:
@@ -2753,15 +2751,11 @@ paths:
       summary: Alle relaties opvragen.
       parameters:
       - in: query
-        name: gerelateerdePersoonUuid
+        name: gerelateerdePersoon__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID van de gerelateerde persoon.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - name: page
         required: false
         in: query
@@ -2775,25 +2769,17 @@ paths:
         schema:
           type: integer
       - in: query
-        name: persoonUuid
+        name: persoon__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID van de primaire persoon.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - in: query
-        name: relatietypeUuid
+        name: relatietype__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID van het relatietype.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       tags:
       - Relatie
       security:

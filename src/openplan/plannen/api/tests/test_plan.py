@@ -130,7 +130,7 @@ class PlanAPITests(APITestCase):
         PlanFactory.create(plantype=self.plantype2)
 
         url = reverse("plannen:plan-list")
-        response = self.client.get(url, {"plantype_uuid": str(self.plantype1.uuid)})
+        response = self.client.get(url, {"plantype__uuid": str(self.plantype1.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
@@ -142,7 +142,7 @@ class PlanAPITests(APITestCase):
 
         url = reverse("plannen:plan-list")
         response = self.client.get(
-            url, {"overkoepelend_plan_uuid": str(self.over_plan1.uuid)}
+            url, {"overkoepelend_plan__uuid": str(self.over_plan1.uuid)}
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
