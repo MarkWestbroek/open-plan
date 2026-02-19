@@ -16,6 +16,24 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle contactmomenten opvragen.
       parameters:
+      - in: query
+        name: datum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het contactmoment.
+      - in: query
+        name: datum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het contactmoment.
+      - in: query
+        name: datum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het contactmoment.
       - name: page
         required: false
         in: query
@@ -28,6 +46,36 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: persoonsprofiel
+        schema:
+          type: string
+        description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
+      - in: query
+        name: persoonsprofiel__icontains
+        schema:
+          type: string
+        description: URL naar het persoonsprofiel (alleen voor primaire personen verplicht).
+      - in: query
+        name: plan__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het contactmoment.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
       tags:
       - Contactmoment
       security:
@@ -218,15 +266,35 @@ paths:
       summary: Alle doelen opvragen.
       parameters:
       - in: query
-        name: doeltypeUuid
+        name: doeltype__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van de gekoppelde doeltypen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het doel.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het doel.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het doel.
+      - in: query
+        name: hoofdDoel__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - name: page
         required: false
         in: query
@@ -239,6 +307,91 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: persoon__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: plannen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: plannen__uuid__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van de gekoppelde plannen.
+        explode: false
+        style: form
+      - in: query
+        name: resultaat
+        schema:
+          type: string
+          enum:
+          - behaald
+          - gefaald
+        description: |-
+          Resultaat van het doel.
+
+          * `behaald` - Behaald
+          * `gefaald` - Gefaald
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het doel.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het doel.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het doel.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het doel.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: status__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Meerdere waarden kunnen gescheiden worden door komma's.
+        explode: false
+        style: form
+      - in: query
+        name: titel
+        schema:
+          type: string
+        description: Titel van het doel.
+      - in: query
+        name: titel__icontains
+        schema:
+          type: string
+        description: Titel van het doel.
       tags:
       - Doel
       security:
@@ -847,6 +1000,78 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle instrumenten opvragen.
       parameters:
+      - in: query
+        name: doelen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: doelen__uuid__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde doelen.
+        explode: false
+        style: form
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het instrument.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het instrument.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het instrument.
+      - in: query
+        name: instrumentCategorieen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: instrumentCategorieen__uuid__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde instrumentcategorieën.
+        explode: false
+        style: form
+      - in: query
+        name: instrumenttype__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: ontwikkelwensen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: ontwikkelwensen__uuid__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde ontwikkelwensen.
+        explode: false
+        style: form
       - name: page
         required: false
         in: query
@@ -859,6 +1084,70 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: product
+        schema:
+          type: string
+        description: URN naar de bijbehorende product in het productsysteem.
+      - in: query
+        name: resultaat
+        schema:
+          type: string
+          enum:
+          - behaald
+          - gefaald
+        description: |-
+          Resultaat van het instrument.
+
+          * `behaald` - Behaald
+          * `gefaald` - Gefaald
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het instrument.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het instrument.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het instrument.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het instrument.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: titel
+        schema:
+          type: string
+        description: Titel van het instrument.
+      - in: query
+        name: titel__icontains
+        schema:
+          type: string
+        description: Titel van het instrument.
+      - in: query
+        name: zaak
+        schema:
+          type: string
+        description: URN naar het bijbehorende zaak in het zaaksysteem.
       tags:
       - Instrument
       security:
@@ -1249,6 +1538,46 @@ paths:
       description: Deze lijst kan gefilterd worden met query-string parameters.
       summary: Alle ontwikkelwensen opvragen.
       parameters:
+      - in: query
+        name: doelCategorieen__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: doelCategorieen__uuid__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: UUID's van gekoppelde doelcategorieën.
+        explode: false
+        style: form
+      - in: query
+        name: doel__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het ontwikkelwens.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het ontwikkelwens.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het ontwikkelwens.
       - name: page
         required: false
         in: query
@@ -1261,6 +1590,60 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: resultaat
+        schema:
+          type: string
+          enum:
+          - behaald
+          - gefaald
+        description: |-
+          Resultaat van het ontwikkelwens.
+
+          * `behaald` - Behaald
+          * `gefaald` - Gefaald
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het ontwikkelwens.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het ontwikkelwens.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het ontwikkelwens.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het ontwikkelwens.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: titel
+        schema:
+          type: string
+        description: Titel van het ontwikkelwens.
+      - in: query
+        name: titel__icontains
+        schema:
+          type: string
+        description: Titel van het ontwikkelwens.
       tags:
       - Ontwikkelwens
       security:
@@ -1850,6 +2233,54 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle plannen opvragen.
       parameters:
+      - in: query
+        name: domeinregister
+        schema:
+          type: string
+        description: URN naar het domeinregister voor dit plan.
+      - in: query
+        name: einddatum
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het plan.
+      - in: query
+        name: einddatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het plan.
+      - in: query
+        name: einddatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Einddatum van het plan.
+      - in: query
+        name: fase
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Fase van het plan.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: medewerker
+        schema:
+          type: string
+        description: URN naar de medewerker in het HR-systeem.
+      - in: query
+        name: overkoepelendPlan__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - name: page
         required: false
         in: query
@@ -1863,15 +2294,58 @@ paths:
         schema:
           type: integer
       - in: query
-        name: plantypeUuid
+        name: plantype__uuid
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        description: UUID's van de gekoppelde plantypen.
-        explode: false
-        style: form
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: startdatum
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het plan.
+      - in: query
+        name: startdatum__gte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het plan.
+      - in: query
+        name: startdatum__lte
+        schema:
+          type: string
+          format: date-time
+        description: Startdatum van het plan.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - actief
+          - afgerond
+          - geannuleerd
+        description: |-
+          Status van het plan.
+
+          * `actief` - Actief
+          * `afgerond` - Afgerond
+          * `geannuleerd` - Geannuleerd
+      - in: query
+        name: titel
+        schema:
+          type: string
+        description: Titel van het plan.
+      - in: query
+        name: titel__icontains
+        schema:
+          type: string
+        description: Titel van het plan.
+      - in: query
+        name: zaak
+        schema:
+          type: string
+        description: URN naar de bijbehorende zaak in het zaaksysteem.
       tags:
       - Plan
       security:
@@ -2276,6 +2750,12 @@ paths:
       description: Deze lijst kan gefilterd wordt met query-string parameters.
       summary: Alle relaties opvragen.
       parameters:
+      - in: query
+        name: gerelateerdePersoon__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       - name: page
         required: false
         in: query
@@ -2288,6 +2768,18 @@ paths:
         description: 'Het aantal resultaten terug te geven per pagina. (default: 100).'
         schema:
           type: integer
+      - in: query
+        name: persoon__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
+      - in: query
+        name: relatietype__uuid
+        schema:
+          type: string
+          format: uuid
+        description: Unieke resource identifier (UUID4).
       tags:
       - Relatie
       security:

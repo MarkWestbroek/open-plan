@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from openplan.plannen.api.filtersets.instrument import InstrumentFilter
 from openplan.plannen.models.instrument import Instrument
 
 from ...metrics import (
@@ -48,6 +49,7 @@ logger = structlog.stdlib.get_logger(__name__)
 class InstrumentViewSet(viewsets.ModelViewSet):
     queryset = Instrument.objects.all()
     serializer_class = InstrumentSerializer
+    filterset_class = InstrumentFilter
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)

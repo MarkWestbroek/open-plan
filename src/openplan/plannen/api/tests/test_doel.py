@@ -1,12 +1,14 @@
-from datetime import date
+from datetime import date, datetime
 from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.utils import timezone
 
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openplan.plannen.enums.status import PlanStatus, Resultaat
 from openplan.plannen.metrics import (
     doelen_create_counter,
     doelen_delete_counter,
@@ -132,11 +134,168 @@ class DoelAPITests(APITestCase):
         DoelFactory(doeltype=type2)
 
         url = reverse("plannen:doel-list")
-        response = self.client.get(url, {"doeltype_uuid": str(type1.uuid)})
+        response = self.client.get(url, {"doeltype__uuid": str(type1.uuid)})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+    def test_filter_persoon_uuid(self):
+        doel_with_persoon = DoelFactory(
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
+        )
+        DoelFactory(
+            doeltype=self.hoofddoel_type,
+            plannen=[self.plan],
+            persoon=PersoonFactory.create(),
+        )
+
+        url = reverse("plannen:doel-list")
+        response = self.client.get(url, {"persoon__uuid": str(self.persoon.uuid)})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["uuid"], str(doel_with_persoon.uuid)
+        )
+
+    def test_filter_plannen_uuids(self):
+        plan1 = self.plan
+        plan2 = PlanFactory.create()
+
+        doel1 = DoelFactory(
+            doeltype=self.hoofddoel_type, plannen=[plan1], persoon=self.persoon
+        )
+        doel2 = DoelFactory(
+            doeltype=self.hoofddoel_type, plannen=[plan2], persoon=self.persoon
+        )
+        DoelFactory.create()
+
+        url = reverse("plannen:doel-list")
+
+        with self.subTest("exact"):
+            response = self.client.get(url, {"plannen__uuid": str(plan1.uuid)})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+        with self.subTest("__in"):
+            response = self.client.get(
+                url, {"plannen__uuid__in": f"{plan1.uuid},{plan2.uuid}"}
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["count"], 2)
+            uuids = [r["uuid"] for r in response.data["results"]]
+            self.assertIn(str(doel1.uuid), uuids)
+            self.assertIn(str(doel2.uuid), uuids)
+
+    def test_filter_hoofd_doel_uuid(self):
+        parent = DoelFactory(
+            doeltype=self.hoofddoel_type, plannen=[self.plan], persoon=self.persoon
+        )
+        child1 = DoelFactory(
+            hoofd_doel=parent,
+            doeltype=self.subdoel_type,
+            plannen=[self.plan],
+            persoon=self.persoon,
+        )
+        DoelFactory(
+            doeltype=self.subdoel_type, plannen=[self.plan], persoon=self.persoon
+        )
+
+        url = reverse("plannen:doel-list")
+        response = self.client.get(url, {"hoofd_doel__uuid": str(parent.uuid)})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(child1.uuid))
+
+    def test_filter_status(self):
+        doel1 = DoelFactory(doeltype=self.hoofddoel_type, status=PlanStatus.ACTIEF)
+        DoelFactory(doeltype=self.hoofddoel_type, status=PlanStatus.AFGEROND)
+
+        url = reverse("plannen:doel-list")
+        response = self.client.get(url, {"status": "actief"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+    def test_filter_titel_icontains(self):
+        doel1 = DoelFactory(doeltype=self.hoofddoel_type, titel="taalcursus")
+        DoelFactory(doeltype=self.hoofddoel_type, titel="Rijden")
+
+        url = reverse("plannen:doel-list")
+        response = self.client.get(url, {"titel__icontains": "taal"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+    def test_filter_resultaat(self):
+        doel1 = DoelFactory(resultaat=Resultaat.BEHAALD)
+        DoelFactory(resultaat=Resultaat.GEFAALD)
+
+        url = reverse("plannen:doel-list")
+
+        response = self.client.get(url, {"resultaat": "behaald"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+    def test_startdatum_filter(self):
+        doel1 = DoelFactory(
+            startdatum=timezone.make_aware(datetime(2026, 1, 1)),
+        )
+        DoelFactory(
+            startdatum=timezone.make_aware(datetime(2026, 2, 1)),
+        )
+
+        url = reverse("plannen:doel-list")
+
+        with self.subTest("exact"):
+            response = self.client.get(url, {"startdatum": "2026-01-01"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+        with self.subTest("lte"):
+            response = self.client.get(url, {"startdatum__lte": "2026-01-31"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+        with self.subTest("gte"):
+            response = self.client.get(url, {"startdatum__gte": "2026-02-01"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+    def test_einddatum_filter(self):
+        doel1 = DoelFactory(
+            startdatum=timezone.make_aware(datetime(2026, 1, 1)),
+            einddatum=timezone.make_aware(datetime(2026, 1, 15)),
+        )
+        DoelFactory(
+            startdatum=timezone.make_aware(datetime(2026, 2, 1)),
+            einddatum=timezone.make_aware(datetime(2026, 2, 15)),
+        )
+
+        url = reverse("plannen:doel-list")
+
+        with self.subTest("exact"):
+            response = self.client.get(url, {"einddatum": "2026-01-15"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+            self.assertEqual(response.data["results"][0]["uuid"], str(doel1.uuid))
+
+        with self.subTest("lte"):
+            response = self.client.get(url, {"einddatum__lte": "2026-01-31"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
+
+        with self.subTest("gte"):
+            response = self.client.get(url, {"einddatum__gte": "2026-02-01"})
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 1)
 
     def test_list_children_under_parent(self):
         parent = DoelFactory(

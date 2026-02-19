@@ -16,7 +16,6 @@ class PlanType(models.Model):
     type = models.CharField(
         choices=PlanTypeEnum.choices,
         max_length=50,
-        unique=True,
         help_text=_("Het type plan."),
     )
 

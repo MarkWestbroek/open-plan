@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from openplan.plannen.api.filtersets.ontwikkelwens import OntwikkelwensFilter
 from openplan.plannen.api.serializers.ontwikkelwens import OntwikkelwensSerializer
 from openplan.plannen.models.ontwikkelwens import Ontwikkelwens
 
@@ -42,6 +43,7 @@ logger = structlog.stdlib.get_logger(__name__)
 class OntwikkelwensViewSet(viewsets.ModelViewSet):
     queryset = Ontwikkelwens.objects.all()
     serializer_class = OntwikkelwensSerializer
+    filterset_class = OntwikkelwensFilter
     lookup_field = "uuid"
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
