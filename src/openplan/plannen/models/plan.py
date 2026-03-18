@@ -1,20 +1,15 @@
-import uuid
-
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from openplan.utils.fields import URNField
+from openplan.utils.state import TemporalManager
 
 from ..enums.status import PlanStatus
+from .state import StableModel, StateModel
 
 
-class Plan(models.Model):
-    uuid = models.UUIDField(
-        primary_key=True,
-        editable=False,
-        default=uuid.uuid4,
-        help_text=_("Unieke resource identifier (UUID4)."),
-    )
+class Plan(StableModel):
     overkoepelend_plan = models.ForeignKey(
         "plannen.Overkoepelendplan",
         on_delete=models.PROTECT,
@@ -26,42 +21,6 @@ class Plan(models.Model):
         on_delete=models.PROTECT,
         help_text=_("Type van het plan."),
     )
-    status = models.CharField(
-        max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.ACTIEF,
-        help_text=_("Status van het plan."),
-    )
-    fase = models.CharField(
-        max_length=20,
-        choices=PlanStatus.choices,
-        default=PlanStatus.ACTIEF,
-        help_text=_("Fase van het plan."),
-    )
-    titel = models.CharField(
-        max_length=255,
-        help_text=_("Titel van het plan."),
-    )
-    notitie = models.TextField(
-        blank=True,
-        max_length=1000,
-        help_text=_("Notitie bij het plan."),
-    )
-    startdatum = models.DateTimeField(
-        help_text=_("Startdatum van het plan."),
-        db_index=True,
-    )
-    einddatum = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text=_("Einddatum van het plan."),
-    )
-    reden_einde = models.TextField(
-        blank=True,
-        max_length=1000,
-        help_text=_("Reden waarom het plan is beëindigd."),
-    )
-
     zaak = URNField(
         help_text=_("URN naar de bijbehorende zaak in het zaaksysteem."),
         blank=True,
@@ -76,6 +35,11 @@ class Plan(models.Model):
         help_text=_("URN naar de medewerker in het HR-systeem."),
         blank=True,
     )
+    startdatum = models.DateTimeField(
+        default=timezone.now,
+        help_text=_("Startdatum van het plan."),
+        db_index=True,
+    )
 
     class Meta:
         verbose_name = _("Plan")
@@ -84,3 +48,32 @@ class Plan(models.Model):
 
     def __str__(self):
         return str(self.plantype)
+
+
+class PlanState(StateModel):
+    plan = models.ForeignKey(
+        Plan,
+        on_delete=models.CASCADE,
+        related_name="states",
+    )
+
+    titel = models.CharField(max_length=255)
+    notitie = models.TextField(blank=True, max_length=1000)
+    status = models.CharField(max_length=20, choices=PlanStatus.choices)
+    fase = models.CharField(max_length=20, choices=PlanStatus.choices)
+    reden_einde = models.TextField(blank=True, max_length=1000)
+
+    objects = TemporalManager()
+
+    @staticmethod
+    def stable_field_name():
+        return "plan"
+
+    class Meta:
+        verbose_name = _("Plan State")
+        verbose_name_plural = _("Plan States")
+        ordering = ["startdatum"]
+        indexes = [
+            models.Index(fields=["plan", "startdatum"]),
+            models.Index(fields=["einddatum"]),
+        ]
