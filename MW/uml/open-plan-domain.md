@@ -189,14 +189,14 @@ De frontend-sitemap (slide 20 van de PPTX) vertaalt zich als volgt naar backend-
 Containerniveau: één overkoepelend plan per burger. Bevat een `medewerker`-URN (verwijzing naar het HR-systeem) en een `PlanStatus`.
 
 ### Plan
-Het eigenlijke deelplan (bijv. een Persoonlijk InburgeringsPlan of een werkplan). Heeft naast de status een `fase`-veld. Externe koppelingen via URN naar `zaak` (zaaksysteem) en `domeinregister`. Bevat een `PlanType`.
+Het eigenlijke deelplan (bijv. een Persoonlijk InburgeringsP lan of een werkplan). Heeft naast de status een `fase`-veld. Externe koppelingen via URN naar `zaak` (zaaksysteem) en `domeinregister`. Bevat een `PlanType`.
 
 **PlanType** (`PlanTypeEnum`): `pip` · `werk` · `inkomen`
 
 ### Doel
 Een beoogd resultaat binnen een plan. Doelen zijn **veel-op-veel** gekoppeld aan plannen en altijd verbonden aan één primaire `Persoon`. Doelen kunnen recursief genest zijn (`hoofd_doel` / `subdoelen`). Na afloop registreren: `Resultaat` (`behaald` / `gefaald`) + toelichting.
 
-**DoelType** (`DoelTypeEnum`): `hoofddoel` · `subdoel`
+**DoelType** (`DoelTypeEnum`): `hoofddoel` · `subdoel`  
 **DoelCategorie**: vrij configureerbaar lookup-object.
 
 ### Ontwikkelwens
@@ -205,7 +205,7 @@ Een concrete deelwens onder een `Doel` (vergelijkbaar met een takenreeks). Gekop
 ### Instrument
 Een interventie die aan één of meer doelen en/of ontwikkelwensen hangt (training, coaching, financiële ondersteuning). Externe koppelingen via URN naar `product` (productsysteem) en `zaak` (zaaksysteem).
 
-**InstrumentType** (`InstrumentTypeEnum`): `training` · `coaching` · `financiele_ondersteuning`
+**InstrumentType** (`InstrumentTypeEnum`): `training` · `coaching` · `financiele_ondersteuning`  
 **InstrumentCategorie**: vrij configureerbaar lookup-object.
 
 ### Contactmoment
@@ -215,22 +215,22 @@ Gespreksregistratie, altijd verbonden aan een `Plan`. Bevat datum, notitie, stat
 Vertegenwoordigt een individu in het systeem. **Primaire** personen hebben een `bsn` (BRP-koppeling), een `klant`-URN en een `persoonsprofiel`-URN verplicht. Secundaire personen (contactpersonen) mogen deze velden leeg laten.
 
 ### Relatie
-Koppelt twee personen (`persoon` naar `gerelateerde_persoon`) via een `RelatieType`. De combinatie van drie velden is uniek (database-constraint).
+Koppelt twee personen (`persoon` → `gerelateerde_persoon`) via een `RelatieType`. De combinatie van drie velden is uniek (database-constraint).
 
 ---
 
 ## Externe koppelingen (URN-velden)
 
-Open Plan slaat geen kopie op van externe data; het linkt via URN naar andere VNG-registers:
+Open Plan slaat géén kopie op van externe data; het linkt via URN naar andere VNG-registers:
 
-| Veld              | Resource                        | Extern systeem      |
-|-------------------|---------------------------------|---------------------|
-| `zaak`            | Plan, Instrument                | Zaaksysteem         |
-| `domeinregister`  | Plan                            | Domeinregister      |
-| `medewerker`      | Plan, OverkoepelendPlan         | HR-systeem          |
-| `klant`           | Persoon                         | Klantensysteem      |
-| `persoonsprofiel` | Persoon, Contactmoment          | Profielregister     |
-| `product`         | Instrument                      | Productsysteem      |
+| Veld              | Resource       | Extern systeem     |
+|-------------------|----------------|--------------------|
+| `zaak`            | Plan, Instrument | Zaaksysteem      |
+| `domeinregister`  | Plan           | Domeinregister     |
+| `medewerker`      | Plan, OverkoepelendPlan | HR-systeem |
+| `klant`           | Persoon        | Klantensysteem     |
+| `persoonsprofiel` | Persoon, Contactmoment | Profielregister |
+| `product`         | Instrument     | Productsysteem     |
 
 ---
 
@@ -244,7 +244,7 @@ Open Plan slaat geen kopie op van externe data; het linkt via URN naar andere VN
 
 Doelen, ontwikkelwensen en instrumenten hebben aanvullend een **Resultaat**:
 
-| Waarde    | Betekenis         |
-|-----------|-------------------|
+| Waarde    | Betekenis        |
+|-----------|------------------|
 | `behaald` | Doel gerealiseerd |
 | `gefaald` | Doel niet behaald |

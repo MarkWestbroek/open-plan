@@ -45,3 +45,7 @@ local.py
 # Static files
 src/openplan/static/bundles/
 src/openplan/fonts/
+
+# Office files
+*.pptx
+*~$*.pptx

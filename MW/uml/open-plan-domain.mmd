@@ -142,6 +142,7 @@ classDiagram
         subdoel
     }
 
+    %% --- Compositie / aggregatie -------------------------------------------------
     OverkoepelendPlan "1" o-- "*" Plan : plannen
     Plan "1" --> "1" PlanType : plantype
     Plan "1" *-- "*" Contactmoment : contactmomenten
