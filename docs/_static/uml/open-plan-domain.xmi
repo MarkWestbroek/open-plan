@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Open Plan – domeinmodel / API resources (UML 2.5.1, XMI 2.5.1)
+  Reverse-engineered uit src/openplan/plannen/models/* en src/plan-openapi.yaml.
+  Te importeren in o.a. Enterprise Architect, MagicDraw, Modelio, StarUML, Papyrus.
+-->
+<xmi:XMI xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+         xmlns:uml="http://www.omg.org/spec/UML/20131001">
+  <xmi:Documentation exporter="reverse-engineered by GitHub Copilot"
+                     exporterVersion="1.0"/>
+
+  <uml:Model xmi:id="model_openplan" name="OpenPlan">
+
+    <!-- ========== Package: domain ========== -->
+    <packagedElement xmi:type="uml:Package" xmi:id="pkg_domain" name="plannen">
+
+      <!-- ===== Enumerations ===== -->
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_planstatus" name="PlanStatus">
+        <ownedLiteral xmi:id="enum_planstatus_actief"      name="actief"/>
+        <ownedLiteral xmi:id="enum_planstatus_afgerond"    name="afgerond"/>
+        <ownedLiteral xmi:id="enum_planstatus_geannuleerd" name="geannuleerd"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_resultaat" name="Resultaat">
+        <ownedLiteral xmi:id="enum_resultaat_behaald" name="behaald"/>
+        <ownedLiteral xmi:id="enum_resultaat_gefaald" name="gefaald"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_plantype" name="PlanTypeEnum">
+        <ownedLiteral xmi:id="enum_plantype_pip"     name="pip"/>
+        <ownedLiteral xmi:id="enum_plantype_werk"    name="werk"/>
+        <ownedLiteral xmi:id="enum_plantype_inkomen" name="inkomen"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_instrumenttype" name="InstrumentTypeEnum">
+        <ownedLiteral xmi:id="enum_instrumenttype_training"  name="training"/>
+        <ownedLiteral xmi:id="enum_instrumenttype_coaching"  name="coaching"/>
+        <ownedLiteral xmi:id="enum_instrumenttype_financ"    name="financiele_ondersteuning"/>
+      </packagedElement>
+      <packagedElement xmi:type="uml:Enumeration" xmi:id="enum_doeltype" name="DoelTypeEnum">
+        <ownedLiteral xmi:id="enum_doeltype_hoofddoel" name="hoofddoel"/>
+        <ownedLiteral xmi:id="enum_doeltype_subdoel"   name="subdoel"/>
+      </packagedElement>
+
+      <!-- Primitive types we reference. -->
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="t_uuid"     name="UUID"/>
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="t_string"   name="String"/>
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="t_datetime" name="DateTime"/>
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="t_urn"      name="URN"/>
+      <packagedElement xmi:type="uml:PrimitiveType" xmi:id="t_bsn"      name="BSN"/>
+
+      <!-- =========================================================== -->
+      <!-- Class: OverkoepelendPlan                                    -->
+      <!-- =========================================================== -->
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_overkoepelendplan" name="OverkoepelendPlan">
+        <ownedAttribute xmi:id="okp_uuid"       name="uuid"       type="t_uuid"      isID="true"/>
+        <ownedAttribute xmi:id="okp_titel"      name="titel"      type="t_string"/>
+        <ownedAttribute xmi:id="okp_status"     name="status"     type="enum_planstatus"/>
+        <ownedAttribute xmi:id="okp_medewerker" name="medewerker" type="t_urn"/>
+      </packagedElement>
+
+      <!-- =========================================================== -->
+      <!-- Class: Plan                                                 -->
+      <!-- =========================================================== -->
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_plan" name="Plan">
+        <ownedAttribute xmi:id="plan_uuid"           name="uuid"           type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="plan_status"         name="status"         type="enum_planstatus"/>
+        <ownedAttribute xmi:id="plan_fase"           name="fase"           type="enum_planstatus"/>
+        <ownedAttribute xmi:id="plan_titel"          name="titel"          type="t_string"/>
+        <ownedAttribute xmi:id="plan_notitie"        name="notitie"        type="t_string"/>
+        <ownedAttribute xmi:id="plan_startdatum"     name="startdatum"     type="t_datetime"/>
+        <ownedAttribute xmi:id="plan_einddatum"      name="einddatum"      type="t_datetime">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="plan_einddatum_lo" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="plan_einddatum_up" value="1"/>
+        </ownedAttribute>
+        <ownedAttribute xmi:id="plan_reden_einde"    name="reden_einde"    type="t_string"/>
+        <ownedAttribute xmi:id="plan_zaak"           name="zaak"           type="t_urn"/>
+        <ownedAttribute xmi:id="plan_domeinregister" name="domeinregister" type="t_urn"/>
+        <ownedAttribute xmi:id="plan_medewerker"     name="medewerker"     type="t_urn"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_plantype" name="PlanType">
+        <ownedAttribute xmi:id="pt_uuid" name="uuid" type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="pt_type" name="type" type="enum_plantype"/>
+      </packagedElement>
+
+      <!-- =========================================================== -->
+      <!-- Class: Doel                                                 -->
+      <!-- =========================================================== -->
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_doel" name="Doel">
+        <ownedAttribute xmi:id="doel_uuid"        name="uuid"        type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="doel_status"      name="status"      type="enum_planstatus"/>
+        <ownedAttribute xmi:id="doel_titel"       name="titel"       type="t_string"/>
+        <ownedAttribute xmi:id="doel_beschrijving" name="beschrijving" type="t_string"/>
+        <ownedAttribute xmi:id="doel_startdatum"  name="startdatum"  type="t_datetime"/>
+        <ownedAttribute xmi:id="doel_einddatum"   name="einddatum"   type="t_datetime"/>
+        <ownedAttribute xmi:id="doel_resultaat"   name="resultaat"   type="enum_resultaat"/>
+        <ownedAttribute xmi:id="doel_toel_res"    name="toelichting_resultaat" type="t_string"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_doeltype" name="DoelType">
+        <ownedAttribute xmi:id="dt_uuid"      name="uuid"      type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="dt_doel_type" name="doel_type" type="enum_doeltype"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_doelcategorie" name="DoelCategorie">
+        <ownedAttribute xmi:id="dc_uuid" name="uuid" type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="dc_naam" name="naam" type="t_string"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_ontwikkelwens" name="Ontwikkelwens">
+        <ownedAttribute xmi:id="ow_uuid"        name="uuid"        type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="ow_status"      name="status"      type="enum_planstatus"/>
+        <ownedAttribute xmi:id="ow_titel"       name="titel"       type="t_string"/>
+        <ownedAttribute xmi:id="ow_beschrijving" name="beschrijving" type="t_string"/>
+        <ownedAttribute xmi:id="ow_startdatum"  name="startdatum"  type="t_datetime"/>
+        <ownedAttribute xmi:id="ow_einddatum"   name="einddatum"   type="t_datetime"/>
+        <ownedAttribute xmi:id="ow_resultaat"   name="resultaat"   type="enum_resultaat"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_instrument" name="Instrument">
+        <ownedAttribute xmi:id="ins_uuid"       name="uuid"       type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="ins_status"     name="status"     type="enum_planstatus"/>
+        <ownedAttribute xmi:id="ins_titel"      name="titel"      type="t_string"/>
+        <ownedAttribute xmi:id="ins_startdatum" name="startdatum" type="t_datetime"/>
+        <ownedAttribute xmi:id="ins_einddatum"  name="einddatum"  type="t_datetime"/>
+        <ownedAttribute xmi:id="ins_resultaat"  name="resultaat"  type="enum_resultaat"/>
+        <ownedAttribute xmi:id="ins_product"    name="product"    type="t_urn"/>
+        <ownedAttribute xmi:id="ins_zaak"       name="zaak"       type="t_urn"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_instrumenttype" name="InstrumentType">
+        <ownedAttribute xmi:id="it_uuid"             name="uuid"             type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="it_instrument_type"  name="instrument_type"  type="enum_instrumenttype"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_instrumentcategorie" name="InstrumentCategorie">
+        <ownedAttribute xmi:id="ic_uuid" name="uuid" type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="ic_naam" name="naam" type="t_string"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_contactmoment" name="Contactmoment">
+        <ownedAttribute xmi:id="cm_uuid"               name="uuid"               type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="cm_status"             name="status"             type="enum_planstatus"/>
+        <ownedAttribute xmi:id="cm_toelichting_status" name="toelichting_status" type="t_string"/>
+        <ownedAttribute xmi:id="cm_datum"              name="datum"              type="t_datetime"/>
+        <ownedAttribute xmi:id="cm_notitie"            name="notitie"            type="t_string"/>
+        <ownedAttribute xmi:id="cm_persoonsprofiel"    name="persoonsprofiel"    type="t_urn"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_persoon" name="Persoon">
+        <ownedAttribute xmi:id="p_uuid"            name="uuid"            type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="p_persoonsprofiel" name="persoonsprofiel" type="t_urn"/>
+        <ownedAttribute xmi:id="p_klant"           name="klant"           type="t_urn"/>
+        <ownedAttribute xmi:id="p_bsn"             name="bsn"             type="t_bsn"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_relatie" name="Relatie">
+        <ownedAttribute xmi:id="r_uuid" name="uuid" type="t_uuid" isID="true"/>
+      </packagedElement>
+
+      <packagedElement xmi:type="uml:Class" xmi:id="cls_relatietype" name="RelatieType">
+        <ownedAttribute xmi:id="rt_uuid" name="uuid" type="t_uuid" isID="true"/>
+        <ownedAttribute xmi:id="rt_naam" name="naam" type="t_string"/>
+      </packagedElement>
+
+      <!-- =========================================================== -->
+      <!-- Associations                                                -->
+      <!-- =========================================================== -->
+
+      <!-- OverkoepelendPlan 1 to * Plan -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_okp_plan" name="overkoepelend_plan">
+        <memberEnd xmi:idref="end_okp_plan_a"/>
+        <memberEnd xmi:idref="end_okp_plan_b"/>
+        <ownedEnd xmi:id="end_okp_plan_a" type="cls_overkoepelendplan" association="assoc_okp_plan">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m1" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m2" value="1"/>
+        </ownedEnd>
+        <ownedEnd xmi:id="end_okp_plan_b" type="cls_plan" association="assoc_okp_plan" name="plannen">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m3" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m4" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Plan * to 1 PlanType -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_plan_pt">
+        <memberEnd xmi:idref="end_plan_pt_a"/>
+        <memberEnd xmi:idref="end_plan_pt_b"/>
+        <ownedEnd xmi:id="end_plan_pt_a" type="cls_plan" association="assoc_plan_pt"/>
+        <ownedEnd xmi:id="end_plan_pt_b" type="cls_plantype" association="assoc_plan_pt" name="plantype">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m5" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m6" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Plan 1 to * Contactmoment (composition) -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_plan_cm">
+        <memberEnd xmi:idref="end_plan_cm_a"/>
+        <memberEnd xmi:idref="end_plan_cm_b"/>
+        <ownedEnd xmi:id="end_plan_cm_a" type="cls_plan" association="assoc_plan_cm" aggregation="composite">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m7" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m8" value="1"/>
+        </ownedEnd>
+        <ownedEnd xmi:id="end_plan_cm_b" type="cls_contactmoment" association="assoc_plan_cm" name="contactmomenten">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m9"  value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m10" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Plan * to * Doel (M2M) -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_plan_doel">
+        <memberEnd xmi:idref="end_plan_doel_a"/>
+        <memberEnd xmi:idref="end_plan_doel_b"/>
+        <ownedEnd xmi:id="end_plan_doel_a" type="cls_plan" association="assoc_plan_doel" name="plannen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m11" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m12" value="*"/>
+        </ownedEnd>
+        <ownedEnd xmi:id="end_plan_doel_b" type="cls_doel" association="assoc_plan_doel" name="doelen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m13" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m14" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Doel * to 1 Persoon -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_doel_persoon">
+        <memberEnd xmi:idref="end_dp_a"/>
+        <memberEnd xmi:idref="end_dp_b"/>
+        <ownedEnd xmi:id="end_dp_a" type="cls_doel"    association="assoc_doel_persoon"/>
+        <ownedEnd xmi:id="end_dp_b" type="cls_persoon" association="assoc_doel_persoon" name="persoon">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m15" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m16" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Doel * to 1 DoelType -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_doel_dt">
+        <memberEnd xmi:idref="end_ddt_a"/>
+        <memberEnd xmi:idref="end_ddt_b"/>
+        <ownedEnd xmi:id="end_ddt_a" type="cls_doel"     association="assoc_doel_dt"/>
+        <ownedEnd xmi:id="end_ddt_b" type="cls_doeltype" association="assoc_doel_dt" name="doeltype">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m17" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m18" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Doel reflexive: hoofd_doel/subdoelen -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_doel_hoofd">
+        <memberEnd xmi:idref="end_dhd_a"/>
+        <memberEnd xmi:idref="end_dhd_b"/>
+        <ownedEnd xmi:id="end_dhd_a" type="cls_doel" association="assoc_doel_hoofd" name="hoofd_doel">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m19" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m20" value="1"/>
+        </ownedEnd>
+        <ownedEnd xmi:id="end_dhd_b" type="cls_doel" association="assoc_doel_hoofd" name="subdoelen">
+          <lowerValue xmi:type="uml:LiteralInteger"          xmi:id="m21" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m22" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Doel 1 to * Ontwikkelwens (composition) -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_doel_ow">
+        <memberEnd xmi:idref="end_dow_a"/>
+        <memberEnd xmi:idref="end_dow_b"/>
+        <ownedEnd xmi:id="end_dow_a" type="cls_doel" association="assoc_doel_ow" aggregation="composite">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m23" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m24" value="1"/>
+        </ownedEnd>
+        <ownedEnd xmi:id="end_dow_b" type="cls_ontwikkelwens" association="assoc_doel_ow" name="ontwikkelwensen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m25" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m26" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Ontwikkelwens * to * DoelCategorie -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_ow_dc">
+        <memberEnd xmi:idref="end_owdc_a"/>
+        <memberEnd xmi:idref="end_owdc_b"/>
+        <ownedEnd xmi:id="end_owdc_a" type="cls_ontwikkelwens" association="assoc_ow_dc"/>
+        <ownedEnd xmi:id="end_owdc_b" type="cls_doelcategorie" association="assoc_ow_dc" name="doel_categorieen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m27" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m28" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- DoelType * to * DoelCategorie -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_dt_dc">
+        <memberEnd xmi:idref="end_dtdc_a"/>
+        <memberEnd xmi:idref="end_dtdc_b"/>
+        <ownedEnd xmi:id="end_dtdc_a" type="cls_doeltype"      association="assoc_dt_dc"/>
+        <ownedEnd xmi:id="end_dtdc_b" type="cls_doelcategorie" association="assoc_dt_dc" name="categorieen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m29" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m30" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Doel * to * Instrument -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_doel_ins">
+        <memberEnd xmi:idref="end_dins_a"/>
+        <memberEnd xmi:idref="end_dins_b"/>
+        <ownedEnd xmi:id="end_dins_a" type="cls_doel"       association="assoc_doel_ins" name="doelen"/>
+        <ownedEnd xmi:id="end_dins_b" type="cls_instrument" association="assoc_doel_ins" name="instrumenten">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m31" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m32" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Ontwikkelwens * to * Instrument -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_ow_ins">
+        <memberEnd xmi:idref="end_owins_a"/>
+        <memberEnd xmi:idref="end_owins_b"/>
+        <ownedEnd xmi:id="end_owins_a" type="cls_ontwikkelwens" association="assoc_ow_ins" name="ontwikkelwensen"/>
+        <ownedEnd xmi:id="end_owins_b" type="cls_instrument"    association="assoc_ow_ins" name="instrumenten">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m33" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m34" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Instrument * to 1 InstrumentType -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_ins_it">
+        <memberEnd xmi:idref="end_insit_a"/>
+        <memberEnd xmi:idref="end_insit_b"/>
+        <ownedEnd xmi:id="end_insit_a" type="cls_instrument"     association="assoc_ins_it"/>
+        <ownedEnd xmi:id="end_insit_b" type="cls_instrumenttype" association="assoc_ins_it" name="instrumenttype">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m35" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m36" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Instrument * to * InstrumentCategorie -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_ins_ic">
+        <memberEnd xmi:idref="end_insic_a"/>
+        <memberEnd xmi:idref="end_insic_b"/>
+        <ownedEnd xmi:id="end_insic_a" type="cls_instrument"          association="assoc_ins_ic"/>
+        <ownedEnd xmi:id="end_insic_b" type="cls_instrumentcategorie" association="assoc_ins_ic" name="instrument_categorieen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m37" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m38" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- InstrumentType * to * InstrumentCategorie -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_it_ic">
+        <memberEnd xmi:idref="end_itic_a"/>
+        <memberEnd xmi:idref="end_itic_b"/>
+        <ownedEnd xmi:id="end_itic_a" type="cls_instrumenttype"      association="assoc_it_ic"/>
+        <ownedEnd xmi:id="end_itic_b" type="cls_instrumentcategorie" association="assoc_it_ic" name="categorieen">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m39" value="0"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m40" value="*"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Relatie * to 1 Persoon (persoon) -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_rel_persoon_a">
+        <memberEnd xmi:idref="end_rpa_a"/>
+        <memberEnd xmi:idref="end_rpa_b"/>
+        <ownedEnd xmi:id="end_rpa_a" type="cls_relatie" association="assoc_rel_persoon_a" name="relaties_vanuit"/>
+        <ownedEnd xmi:id="end_rpa_b" type="cls_persoon" association="assoc_rel_persoon_a" name="persoon">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m41" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m42" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Relatie * to 1 Persoon (gerelateerde_persoon) -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_rel_persoon_b">
+        <memberEnd xmi:idref="end_rpb_a"/>
+        <memberEnd xmi:idref="end_rpb_b"/>
+        <ownedEnd xmi:id="end_rpb_a" type="cls_relatie" association="assoc_rel_persoon_b" name="relaties_naar"/>
+        <ownedEnd xmi:id="end_rpb_b" type="cls_persoon" association="assoc_rel_persoon_b" name="gerelateerde_persoon">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m43" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m44" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+      <!-- Relatie * to 1 RelatieType -->
+      <packagedElement xmi:type="uml:Association" xmi:id="assoc_rel_rt">
+        <memberEnd xmi:idref="end_rrt_a"/>
+        <memberEnd xmi:idref="end_rrt_b"/>
+        <ownedEnd xmi:id="end_rrt_a" type="cls_relatie"     association="assoc_rel_rt"/>
+        <ownedEnd xmi:id="end_rrt_b" type="cls_relatietype" association="assoc_rel_rt" name="relatietype">
+          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="m45" value="1"/>
+          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="m46" value="1"/>
+        </ownedEnd>
+      </packagedElement>
+
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>
