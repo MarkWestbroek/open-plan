@@ -2,7 +2,7 @@
 Converts open-plan-domain.md to open-plan-domain.docx using python-docx.
 The Mermaid fenced-code block is replaced by a note that the diagram
 lives in open-plan-domain.mmd (Word cannot render Mermaid natively).
-Run:  python3 docs/_static/uml/build_docx.py
+Run:  python3 MW/uml/build_docx.py
 """
 
 import re
